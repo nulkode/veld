@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>elytron</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #cube-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #cube-controls svg path {
+        cursor: pointer;
+        transition: fill 0.2s;
+      }
+      #cube-controls svg path:hover {
+        filter: brightness(1.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="cube-controls">
+      <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="60" height="60" viewBox="0 0 58 58">
+        <path id="top-face" d="M3 13 28 0l27 13-26 13z" style="fill:#434c6d"/>
+        <path id="side-face" d="M29 58 3 45V13l26 13z" style="fill:#26b99a"/>
+        <path id="front-face" d="m29 58 26-13V13L29 26z" style="fill:#556080"/>
+      </svg>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

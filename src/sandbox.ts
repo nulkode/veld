@@ -33,6 +33,11 @@ export abstract class PhysicalEntity {
     _fields: Field[],
     ..._charges: Charge[]
   ): THREE.Vector3;
+
+  abstract toJSON(): any;
+  static fromJSON(_data: any): PhysicalEntity {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export class Charge extends PhysicalEntity {
@@ -207,6 +212,26 @@ export class Charge extends PhysicalEntity {
 
     return force;
   }
+
+  toJSON() {
+    return {
+      uuid: this.uuid,
+      value: this.value,
+      velocity: this.velocity.toArray(),
+      mass: this.mass,
+      position: this.object.position.toArray(),
+    };
+  }
+
+  static fromJSON(data: any) {
+    const charge = new Charge(
+      data.value,
+      new THREE.Vector3().fromArray(data.velocity),
+      new THREE.Vector3().fromArray(data.position),
+      data.mass
+    );
+    return charge;
+  }
 }
 
 export abstract class Field {
@@ -216,14 +241,21 @@ export abstract class Field {
   variation: THREE.Vector3;
   arrowColor: number = 0x0000ff;
 
-  constructor(field: THREE.Vector3, show: boolean = true, arrowColor?: number) {
+  constructor(
+    field: THREE.Vector3,
+    show: boolean = true,
+    variation?: THREE.Vector3,
+    arrowColor?: number
+  ) {
     this.value = field;
     this.visible = show;
-    this.variation = new THREE.Vector3(
-      Math.random() * 3,
-      Math.random() * 3,
-      Math.random() * 3
-    );
+    this.variation =
+      variation ??
+      new THREE.Vector3(
+        Math.random() * 3,
+        Math.random() * 3,
+        Math.random() * 3
+      );
     if (arrowColor) {
       this.arrowColor = arrowColor;
     }
@@ -234,21 +266,53 @@ export abstract class Field {
   }
 
   abstract calculateForce(charge: Charge): THREE.Vector3;
+
+  abstract toJSON(): any;
+  static fromJSON(_data: any): Field {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export class ElectricField extends Field {
-  constructor(field: THREE.Vector3) {
-    super(field);
-  }
+  constructor(
+    field: THREE.Vector3,
+    show: boolean = true,
+    variation?: THREE.Vector3,
+    arrowColor?: number
+  ) {
+    super(field, show, variation, arrowColor);
+  };
 
   calculateForce(charge: Charge): THREE.Vector3 {
     return this.value.clone().multiplyScalar(charge.value);
   }
+
+  toJSON() {
+    return {
+      type: 'ElectricField',
+      uuid: this.uuid,
+      value: this.value.toArray(),
+      variation: this.variation.toArray(),
+    };
+  }
+
+  static fromJSON(data: any) {
+    return new ElectricField(
+      new THREE.Vector3().fromArray(data.value),
+      true,
+      new THREE.Vector3().fromArray(data.variation)
+    );
+  }
 }
 
 export class MagneticField extends Field {
-  constructor(field: THREE.Vector3) {
-    super(field);
+  constructor(
+    field: THREE.Vector3,
+    show: boolean = true,
+    variation?: THREE.Vector3,
+    arrowColor?: number
+  ) {
+    super(field, show, variation, arrowColor);
   }
 
   calculateForce(charge: Charge): THREE.Vector3 {
@@ -256,6 +320,23 @@ export class MagneticField extends Field {
       .clone()
       .cross(charge.velocity)
       .multiplyScalar(charge.value);
+  }
+
+  toJSON() {
+    return {
+      type: 'MagneticField',
+      uuid: this.uuid,
+      value: this.value.toArray(),
+      variation: this.variation.toArray(),
+    };
+  }
+
+  static fromJSON(data: any) {
+    return new MagneticField(
+      new THREE.Vector3().fromArray(data.value),
+      true,
+      new THREE.Vector3().fromArray(data.variation)
+    );
   }
 }
 
@@ -286,6 +367,11 @@ export class Sandbox extends EventEmitter {
     distanceUnit: 1,
     ignoreGravity: true,
   };
+  initialState: {
+    entities: any[];
+    fields: any[];
+    sandboxContext: SandboxContext;
+  };
 
   private fieldsObjects: THREE.Object3D[];
 
@@ -296,6 +382,11 @@ export class Sandbox extends EventEmitter {
     this.fields = [];
     this.status = SandboxStatus.PAUSED;
     this.fieldsObjects = [];
+    this.initialState = {
+      entities: [],
+      fields: [],
+      sandboxContext: this.context,
+    };
   }
 
   appendEntity(entity: PhysicalEntity) {
@@ -371,6 +462,13 @@ export class Sandbox extends EventEmitter {
 
   play() {
     selectManager.deselect();
+
+    this.initialState = {
+      entities: this.entities.map((e) => e.toJSON()),
+      fields: this.fields.map((f) => f.toJSON()),
+      sandboxContext: this.context,
+    };
+
     this.status = SandboxStatus.PLAYING;
   }
 
@@ -380,8 +478,41 @@ export class Sandbox extends EventEmitter {
   }
 
   reset() {
-    throw new Error('Method not implemented.');
-    // TODO: reset all entities to their initial positions
+    selectManager.deselect();
+    this.status = SandboxStatus.PAUSED;
+
+    for (const entity of this.entities) {
+      this.deleteEntity(entity);
+    }
+    const entities = this.initialState.entities.map((data: any) =>
+      Charge.fromJSON(data)
+    );
+
+    for (const entity of entities) {
+      this.appendEntity(entity);
+    }
+
+    for (const field of this.fields) {
+      this.deleteField(field);
+    }
+
+    const fields = this.initialState.fields.map((data: any) => {
+      if (data.type === 'ElectricField') {
+        return ElectricField.fromJSON(data);
+      } else if (data.type === 'MagneticField') {
+        return MagneticField.fromJSON(data);
+      } else {
+        throw new Error('Invalid field type');
+      }
+    });
+
+    for (const field of fields) {
+      this.addField(field);
+    }
+
+    this.context = this.initialState.sandboxContext;
+
+    this.emit('reset');
   }
 
   deleteEntity(entity: PhysicalEntity) {
@@ -430,7 +561,7 @@ export class Sandbox extends EventEmitter {
     this.emit('fieldAdded', field);
   }
 
-  removeField(field: Field) {
+  deleteField(field: Field) {
     this.fields = this.fields.filter((f) => f !== field);
     this.emit('fieldRemoved', field);
   }

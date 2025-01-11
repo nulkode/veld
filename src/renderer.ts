@@ -1,10 +1,10 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { TransformControls } from "three/addons/controls/TransformControls.js";
-import gsap from "gsap";
-import "./style.css";
-import { Sandbox } from "./sandbox";
-import { selectManager } from "./ui";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import gsap from 'gsap';
+import './style.css';
+import { Sandbox } from './sandbox';
+import { selectManager } from './ui';
 
 let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;
@@ -30,7 +30,7 @@ function init() {
   orbitControls = new OrbitControls(camera, renderer.domElement);
   transformControls = new TransformControls(camera, renderer.domElement);
 
-  transformControls.addEventListener("dragging-changed", function (event) {
+  transformControls.addEventListener('dragging-changed', function (event) {
     orbitControls.enabled = !event.value;
   });
 
@@ -65,7 +65,7 @@ function init() {
 
     if (event.target instanceof Element) {
       const target = event.target as Element;
-      if (target.closest(".ui")) {
+      if (target.closest('.ui')) {
         return;
       }
     }
@@ -76,7 +76,7 @@ function init() {
     selectManager.onIntersects(intersects);
   }
 
-  window.addEventListener("click", onMouseClick, false);
+  window.addEventListener('click', onMouseClick, false);
 
   let lastTime = 0;
 
@@ -110,7 +110,7 @@ function rotateCameraToPosition(
     y: newPosition.y,
     z: newPosition.z,
     duration: 0.5,
-    ease: "power2.inOut",
+    ease: 'power2.inOut',
     onUpdate: () => {
       camera.lookAt(orbitControls.target);
       orbitControls.update();

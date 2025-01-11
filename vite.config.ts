@@ -1,13 +1,13 @@
-import { defineConfig } from "vite";
-import { terser } from "rollup-plugin-terser";
+import { defineConfig } from 'vite';
+import { terser } from 'rollup-plugin-terser';
 
 export default defineConfig({
-  base: "/veld/",
+  base: '/veld/',
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
-          three: ["three"],
+          three: ['three'],
         },
       },
       plugins: [

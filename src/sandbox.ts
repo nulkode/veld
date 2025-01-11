@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { selectManager } from "./ui";
-import { EventEmitter } from "./utils";
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { selectManager } from './ui';
+import { EventEmitter } from './ui/managers/EventManager';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
 
@@ -10,12 +10,12 @@ export let electronModel: THREE.Object3D | null = null;
 
 const loader = new GLTFLoader();
 
-loader.load("./proton.glb", (gltf) => {
+loader.load('./proton.glb', (gltf) => {
   protonModel = gltf.scene.children[0];
   selectManager.onChargeLoad();
 });
 
-loader.load("./electron.glb", (gltf) => {
+loader.load('./electron.glb', (gltf) => {
   electronModel = gltf.scene.children[0];
   selectManager.onChargeLoad();
 });
@@ -51,7 +51,7 @@ export class Charge extends PhysicalEntity {
     mass: number = 1
   ) {
     if (!protonModel || !electronModel) {
-      throw new Error("Models not loaded");
+      throw new Error('Models not loaded');
     }
     const object = charge < 0 ? electronModel.clone() : protonModel.clone();
     object.position.copy(position);
@@ -72,7 +72,7 @@ export class Charge extends PhysicalEntity {
 
   setCharge(charge: number) {
     if (!protonModel || !electronModel) {
-      throw new Error("Models not loaded");
+      throw new Error('Models not loaded');
     }
     if (charge < 0 && this.value >= 0) {
       this.value = charge;
@@ -297,7 +297,7 @@ export class Sandbox extends EventEmitter {
   appendEntity(entity: PhysicalEntity) {
     this.entities.push(entity);
     this.scene.add(entity.object);
-    this.emit("entityAdded", entity);
+    this.emit('entityAdded', entity);
   }
 
   setDistanceUnit(unit: number) {
@@ -376,14 +376,14 @@ export class Sandbox extends EventEmitter {
   }
 
   reset() {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
     // TODO: reset all entities to their initial positions
   }
 
   deleteEntity(entity: PhysicalEntity) {
     this.entities = this.entities.filter((e) => e !== entity);
     this.scene.remove(entity.object);
-    this.emit("entityRemoved", entity);
+    this.emit('entityRemoved', entity);
   }
 
   update(deltaTime: number) {
@@ -408,7 +408,7 @@ export class Sandbox extends EventEmitter {
           );
         }
 
-        this.emit("entityUpdated", entity);
+        this.emit('entityUpdated', entity);
 
         if (entity.object.position.length() > 1e5) {
           this.deleteEntity(entity);
@@ -423,11 +423,11 @@ export class Sandbox extends EventEmitter {
 
   addField(field: Field) {
     this.fields.push(field);
-    this.emit("fieldAdded", field);
+    this.emit('fieldAdded', field);
   }
 
   removeField(field: Field) {
     this.fields = this.fields.filter((f) => f !== field);
-    this.emit("fieldRemoved", field);
+    this.emit('fieldRemoved', field);
   }
 }

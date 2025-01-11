@@ -115,7 +115,7 @@ export class PanelManager {
           'Show Acceleration',
           entity.showAcceleration,
           (value) => {
-            entity.setShowAcceleration(value, sandbox);
+            entity.setShowAcceleration(value);
           }
         ),
       ]);

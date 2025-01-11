@@ -122,35 +122,11 @@ export class Charge extends PhysicalEntity {
     }
   }
 
-  setShowAcceleration(show: boolean, sandbox: Sandbox) {
+  setShowAcceleration(show: boolean) {
     this.showAcceleration = show;
-    if (show && !this.accelerationArrow) {
-      const acceleration = this.calculateAcceleration(sandbox);
-      if (acceleration.length() === 0) return;
-      this.accelerationArrow = new THREE.ArrowHelper(
-        acceleration.clone().normalize(),
-        new THREE.Vector3(0, 0, 0),
-        4,
-        0x00ff00,
-        0.5, // headLength
-        0.3 // headWidth
-      );
-      this.object.add(this.accelerationArrow);
-    } else if (!show && this.accelerationArrow) {
+    if (!show && this.accelerationArrow) {
       this.object.remove(this.accelerationArrow);
       this.accelerationArrow = null;
-    } else if (show && this.accelerationArrow) {
-      const acceleration = this.calculateAcceleration(sandbox);
-      if (acceleration.length() === 0) return;
-      if (this.accelerationArrow) this.object.remove(this.accelerationArrow);
-      this.accelerationArrow = new THREE.ArrowHelper(
-        acceleration.clone().normalize(),
-        new THREE.Vector3(0, 0, 0),
-        4,
-        0x00ff00,
-        0.5, // headLength
-        0.3 // headWidth
-      );
     }
   }
 

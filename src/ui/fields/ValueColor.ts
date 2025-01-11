@@ -65,6 +65,5 @@ export class PanelValueColorField extends ValuePanelField<number> {
 
   setValue(value: number): void {
     this.value = value;
-    // Optionally, update the UI to reflect the selected color
   }
 }

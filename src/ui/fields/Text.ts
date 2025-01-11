@@ -12,7 +12,5 @@ export class PanelTextField extends PanelField {
     return `<div><label>${this.label}</label><p>${this.content}</p></div>`;
   }
 
-  attachEvents() {
-    // No events to attach for static text
-  }
+  attachEvents() {}
 }

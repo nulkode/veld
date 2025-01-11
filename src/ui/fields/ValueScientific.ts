@@ -8,7 +8,7 @@ export class PanelValueScientificField extends ValuePanelField<number> {
   constructor(
     id: string,
     label: string,
-    unit: string, // Added unit argument
+    unit: string,
     value: number,
     onUpdate: (value: number) => void,
     labelGenerator?: (value: number) => string,

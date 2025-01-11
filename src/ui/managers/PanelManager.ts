@@ -11,6 +11,7 @@ import { selectManager } from '../../ui';
 import { Panel } from '../components/Panel';
 import { PanelButtonField } from '../fields/Button';
 import { ValuePanelField } from '../fields/PanelField';
+import { PanelValueColorField } from '../fields/ValueColor';
 import { PanelValueScientificField } from '../fields/ValueScientific';
 import { PanelValueToggleField } from '../fields/ValueToggle';
 import * as THREE from 'three';
@@ -150,6 +151,25 @@ export class PanelManager {
   }
 
   onFieldAdded(field: Field) {
+    const rotateField = new PanelButtonField(
+      `rotate-${field.uuid}`,
+      'Rotate Field',
+      'Rotate',
+      () => {
+        selectManager.deselect();
+        selectManager.selectField(field);
+      }
+    );
+
+    const colorField = new PanelValueColorField(
+      `color-${field.uuid}`,
+      'Color',
+      field.arrowColor,
+      (value) => {
+        field.arrowColor = value;
+      }
+    );
+
     if (field instanceof MagneticField) {
       const magneticFieldPanel = new Panel(
         `magnetic-field-${field.uuid}`,
@@ -166,15 +186,8 @@ export class PanelManager {
             undefined,
             false
           ),
-          new PanelButtonField(
-            `rotate-${field.uuid}`,
-            'Rotate Field',
-            'Rotate',
-            () => {
-              selectManager.deselect();
-              selectManager.selectField(field);
-            }
-          ),
+          colorField,
+          rotateField,
         ]
       );
       this.addPanel(magneticFieldPanel);
@@ -194,15 +207,8 @@ export class PanelManager {
             undefined,
             false
           ),
-          new PanelButtonField(
-            `rotate-${field.uuid}`,
-            'Rotate Field',
-            'Rotate',
-            () => {
-              selectManager.deselect();
-              selectManager.selectField(field);
-            }
-          ),
+          colorField,
+          rotateField,
         ]
       );
       this.addPanel(electricFieldPanel);

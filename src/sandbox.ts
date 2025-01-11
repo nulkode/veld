@@ -214,8 +214,9 @@ export abstract class Field {
   value: THREE.Vector3;
   visible: boolean = true;
   variation: THREE.Vector3;
+  arrowColor: number = 0x0000ff;
 
-  constructor(field: THREE.Vector3, show: boolean = true) {
+  constructor(field: THREE.Vector3, show: boolean = true, arrowColor?: number) {
     this.value = field;
     this.visible = show;
     this.variation = new THREE.Vector3(
@@ -223,6 +224,9 @@ export abstract class Field {
       Math.random() * 3,
       Math.random() * 3
     );
+    if (arrowColor) {
+      this.arrowColor = arrowColor;
+    }
   }
 
   changeField(newField: THREE.Vector3) {
@@ -343,7 +347,7 @@ export class Sandbox extends EventEmitter {
             if (dist < minDistance || dist > maxDistance) continue;
 
             this.fieldsObjects.push(
-              new THREE.ArrowHelper(direction, point, 5, 0x0000ff)
+              new THREE.ArrowHelper(direction, point, 5, field.arrowColor)
             );
           }
         }

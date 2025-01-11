@@ -85,6 +85,8 @@ export class Charge extends PhysicalEntity {
     } else if (charge > 0 && this.value <= 0) {
       this.value = charge;
       this.replace3DObject(protonModel.clone());
+    } else {
+      this.value = charge;
     }
 
     // TODO: scale it based on the charge

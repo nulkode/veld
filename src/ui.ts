@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import * as THREE from "three";
+import { TransformControls } from "three/addons/controls/TransformControls.js";
 import {
   camera,
   renderer,
@@ -7,7 +7,7 @@ import {
   rotateCameraToPosition,
   transformControls,
   orbitControls,
-} from './renderer';
+} from "./renderer";
 import {
   Sandbox,
   SandboxStatus,
@@ -18,7 +18,7 @@ import {
   Field,
   MagneticField,
   ElectricField,
-} from './sandbox';
+} from "./sandbox";
 
 export class Panel {
   id: string;
@@ -37,12 +37,12 @@ export class Panel {
     this.minimized = !this.minimized;
     const panelContent = document.getElementById(`${this.id}-content`);
     if (panelContent) {
-      panelContent.style.display = this.minimized ? 'none' : 'block';
+      panelContent.style.display = this.minimized ? "none" : "block";
     }
   }
 
   getHTML() {
-    const fieldsHTML = this.fields.map((field) => field.getHTML()).join('');
+    const fieldsHTML = this.fields.map((field) => field.getHTML()).join("");
     return `
       <div class="panel ui" id="${this.id}">
         <div class="panel-header" id="${this.id}-header">
@@ -59,7 +59,7 @@ export class Panel {
   attachEvents() {
     document
       .getElementById(`${this.id}-toggle`)
-      ?.addEventListener('click', () => this.toggleMinimize());
+      ?.addEventListener("click", () => this.toggleMinimize());
     this.fields.forEach((field) => field.attachEvents());
   }
 }
@@ -104,9 +104,9 @@ abstract class ValuePanelField<T> extends PanelField {
     const input = document.getElementById(this.id) as HTMLInputElement;
     if (input) {
       input.value =
-        typeof value === 'string' || typeof value === 'number'
+        typeof value === "string" || typeof value === "number"
           ? value.toString()
-          : '';
+          : "";
     }
   }
 
@@ -168,7 +168,7 @@ export class PanelValueSliderField extends ValuePanelField<number> {
   }
 
   attachEvents() {
-    document.getElementById(this.id)?.addEventListener('input', (event) => {
+    document.getElementById(this.id)?.addEventListener("input", (event) => {
       const input = event.target as HTMLInputElement;
       const value = parseInt(input.value);
       this.value = value;
@@ -199,22 +199,22 @@ export class PanelValueToggleField extends ValuePanelField<boolean> {
       <div>
         <label for="${this.id}">${this.label}</label>
         <button id="${this.id}" class="toggle-button ${
-      this.value ? 'on' : 'off'
+      this.value ? "on" : "off"
     }">
-          ${this.value ? 'On' : 'Off'}
+          ${this.value ? "On" : "Off"}
         </button>
       </div>
     `;
   }
 
   attachEvents() {
-    document.getElementById(this.id)!.addEventListener('click', () => {
+    document.getElementById(this.id)!.addEventListener("click", () => {
       this.value = !this.value;
       if (this.onUpdate) this.onUpdate(this.value);
       const button = document.getElementById(this.id) as HTMLButtonElement;
-      button.classList.toggle('on', this.value);
-      button.classList.toggle('off', !this.value);
-      button.innerHTML = this.value ? 'On' : 'Off';
+      button.classList.toggle("on", this.value);
+      button.classList.toggle("off", !this.value);
+      button.innerHTML = this.value ? "On" : "Off";
     });
   }
 }
@@ -241,9 +241,9 @@ export class PanelValueScientificField extends ValuePanelField<number> {
   }
 
   getHTML() {
-    let [decimal, exponent] = this.value.toExponential().split('e');
+    let [decimal, exponent] = this.value.toExponential().split("e");
     if (parseInt(exponent) === 0) {
-      exponent = '0';
+      exponent = "0";
     }
 
     return `
@@ -252,7 +252,7 @@ export class PanelValueScientificField extends ValuePanelField<number> {
         <div class="scientific-input">
           <input type="number" id="${this.id}-decimal" value="${decimal}">
           ×10<sup><input type="number" id="${this.id}-exponent" value="${
-      !exponent ? '0' : exponent
+      !exponent ? "0" : exponent
     }"></sup>
         </div>
       </div>
@@ -267,8 +267,8 @@ export class PanelValueScientificField extends ValuePanelField<number> {
       `${this.id}-exponent`
     ) as HTMLInputElement;
 
-    decimalInput?.addEventListener('input', () => this.updateValue());
-    exponentInput?.addEventListener('input', () => this.updateValue());
+    decimalInput?.addEventListener("input", () => this.updateValue());
+    exponentInput?.addEventListener("input", () => this.updateValue());
   }
 
   private updateValue() {
@@ -286,11 +286,11 @@ export class PanelValueScientificField extends ValuePanelField<number> {
       isNaN(exponent) ||
       (!this.allowZero && decimal === 0)
     ) {
-      decimalInput.classList.add('invalid-input');
-      exponentInput.classList.add('invalid-input');
+      decimalInput.classList.add("invalid-input");
+      exponentInput.classList.add("invalid-input");
     } else {
-      decimalInput.classList.remove('invalid-input');
-      exponentInput.classList.remove('invalid-input');
+      decimalInput.classList.remove("invalid-input");
+      exponentInput.classList.remove("invalid-input");
       const newValue = decimal * Math.pow(10, exponent);
       this.value = newValue;
       this.onUpdate(newValue);
@@ -299,9 +299,9 @@ export class PanelValueScientificField extends ValuePanelField<number> {
 
   setValue(value: number): void {
     this.value = value;
-    let [decimal, exponent] = value.toExponential().split('e');
+    let [decimal, exponent] = value.toExponential().split("e");
     if (parseInt(exponent) === 0) {
-      exponent = '0';
+      exponent = "0";
     }
 
     const decimalInput = document.getElementById(
@@ -341,7 +341,7 @@ export class PanelButtonField extends PanelField {
   }
 
   attachEvents() {
-    document.getElementById(this.id)?.addEventListener('click', this.onClick);
+    document.getElementById(this.id)?.addEventListener("click", this.onClick);
   }
 }
 
@@ -353,11 +353,11 @@ class PanelManager {
     this.panels = [];
     this.container = document.getElementById(containerId) as HTMLElement;
 
-    sandbox.on('entityAdded', this.onEntityAdded.bind(this));
-    sandbox.on('entityRemoved', this.onEntityRemoved.bind(this));
-    sandbox.on('entityUpdated', this.onEntityUpdated.bind(this));
-    sandbox.on('fieldAdded', this.onFieldAdded.bind(this));
-    sandbox.on('fieldRemoved', this.onFieldRemoved.bind(this));
+    sandbox.on("entityAdded", this.onEntityAdded.bind(this));
+    sandbox.on("entityRemoved", this.onEntityRemoved.bind(this));
+    sandbox.on("entityUpdated", this.onEntityUpdated.bind(this));
+    sandbox.on("fieldAdded", this.onFieldAdded.bind(this));
+    sandbox.on("fieldRemoved", this.onFieldRemoved.bind(this));
   }
 
   addPanel(panel: Panel) {
@@ -392,11 +392,11 @@ class PanelManager {
 
   onEntityAdded(entity: PhysicalEntity) {
     if (entity instanceof Charge) {
-      const chargePanel = new Panel(`charge-${entity.uuid}`, 'Charge', [
+      const chargePanel = new Panel(`charge-${entity.uuid}`, "Charge", [
         new PanelValueScientificField(
           `charge-${entity.uuid}-value`,
-          'Charge',
-          'C',
+          "Charge",
+          "C",
           entity.value,
           (value) => {
             entity.setCharge(value);
@@ -406,8 +406,8 @@ class PanelManager {
         ),
         new PanelValueScientificField(
           `mass-${entity.uuid}`,
-          'Mass',
-          'kg',
+          "Mass",
+          "kg",
           entity.mass,
           (value) => {
             entity.mass = value;
@@ -417,8 +417,8 @@ class PanelManager {
         ),
         new PanelValueScientificField(
           `velocity-${entity.uuid}`,
-          'Velocity',
-          'm/s',
+          "Velocity",
+          "m/s",
           entity.velocity.length(),
           (value) => {
             if (entity.velocity.length() === 0) {
@@ -433,7 +433,7 @@ class PanelManager {
         ),
         new PanelValueToggleField(
           `show-velocity-${entity.uuid}`,
-          'Show Velocity',
+          "Show Velocity",
           entity.showVelocity,
           (value) => {
             entity.setShowVelocity(value);
@@ -441,7 +441,7 @@ class PanelManager {
         ),
         new PanelValueToggleField(
           `show-acceleration-${entity.uuid}`,
-          'Show Acceleration',
+          "Show Acceleration",
           entity.showAcceleration,
           (value) => {
             entity.setShowAcceleration(value, sandbox);
@@ -483,12 +483,12 @@ class PanelManager {
     if (field instanceof MagneticField) {
       const magneticFieldPanel = new Panel(
         `magnetic-field-${field.uuid}`,
-        'Magnetic Field',
+        "Magnetic Field",
         [
           new PanelValueScientificField(
             `strength-${field.uuid}`,
-            'Strength',
-            'T',
+            "Strength",
+            "T",
             field.value.length(),
             (value) => {
               field.value.setLength(value);
@@ -498,8 +498,8 @@ class PanelManager {
           ),
           new PanelButtonField(
             `rotate-${field.uuid}`,
-            'Rotate Field',
-            'Rotate',
+            "Rotate Field",
+            "Rotate",
             () => {
               selectManager.deselect();
               selectManager.selectField(field);
@@ -511,12 +511,12 @@ class PanelManager {
     } else if (field instanceof ElectricField) {
       const electricFieldPanel = new Panel(
         `electric-field-${field.uuid}`,
-        'Electric Field',
+        "Electric Field",
         [
           new PanelValueScientificField(
             `strength-${field.uuid}`,
-            'Strength',
-            'N/C',
+            "Strength",
+            "N/C",
             field.value.length(),
             (value) => {
               field.value.setLength(value);
@@ -526,8 +526,8 @@ class PanelManager {
           ),
           new PanelButtonField(
             `rotate-${field.uuid}`,
-            'Rotate Field',
-            'Rotate',
+            "Rotate Field",
+            "Rotate",
             () => {
               selectManager.deselect();
               selectManager.selectField(field);
@@ -561,44 +561,44 @@ function rotateCameraToSideView() {
 }
 
 document
-  .getElementById('top-face')
-  ?.addEventListener('click', rotateCameraToTopView);
+  .getElementById("top-face")
+  ?.addEventListener("click", rotateCameraToTopView);
 document
-  .getElementById('front-face')
-  ?.addEventListener('click', rotateCameraToFrontView);
+  .getElementById("front-face")
+  ?.addEventListener("click", rotateCameraToFrontView);
 document
-  .getElementById('side-face')
-  ?.addEventListener('click', rotateCameraToSideView);
+  .getElementById("side-face")
+  ?.addEventListener("click", rotateCameraToSideView);
 
-document.getElementById('play-pause')?.addEventListener('click', () => {
-  const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
+document.getElementById("play-pause")?.addEventListener("click", () => {
+  const icon = document.getElementById("play-pause-icon") as HTMLImageElement;
   if (sandbox.status === SandboxStatus.PLAYING) {
     sandbox.pause();
-    icon.src = 'play.svg';
+    icon.src = "play.svg";
   } else {
     sandbox.play();
-    icon.src = 'pause.svg';
+    icon.src = "pause.svg";
   }
 });
 
-document.getElementById('reset')?.addEventListener('click', () => {
+document.getElementById("reset")?.addEventListener("click", () => {
   sandbox.reset();
-  const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
-  icon.src = '/play.svg';
+  const icon = document.getElementById("play-pause-icon") as HTMLImageElement;
+  icon.src = "/play.svg";
 });
 
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-export const panelManager = new PanelManager('panels-container', sandbox);
+export const panelManager = new PanelManager("panels-container", sandbox);
 
-const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
+const sandboxPanel = new Panel("sandbox", "Sandbox Settings", [
   new PanelValueSliderField(
-    'time-unit',
-    'Time Unit',
+    "time-unit",
+    "Time Unit",
     -10,
     10,
     0,
@@ -608,8 +608,8 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
     (value) => `10<sup>${value}</sup> s`
   ),
   new PanelValueSliderField(
-    'distance-unit',
-    'Distance Unit',
+    "distance-unit",
+    "Distance Unit",
     -10,
     10,
     0,
@@ -620,8 +620,8 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
       `i&#770; = 10<sup>${value}</sup> m; j&#770; = 10<sup>${value}</sup> m; k&#770; = 10<sup>${value}</sup> m`
   ),
   new PanelValueToggleField(
-    'ignore-gravity',
-    'Ignore Gravity',
+    "ignore-gravity",
+    "Ignore Gravity",
     true,
     (value) => {
       sandbox.context.ignoreGravity = value;
@@ -631,18 +631,18 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
 
 panelManager.addPanel(sandboxPanel);
 
-const moveButton = document.getElementById('move')!;
-const rotateButton = document.getElementById('rotate')!;
-const chargeButton = document.getElementById('charge')!;
-const electricField = document.getElementById('electric-field')!;
-const magneticField = document.getElementById('magnetic-field')!;
+const moveButton = document.getElementById("move")!;
+const rotateButton = document.getElementById("rotate")!;
+const chargeButton = document.getElementById("charge")!;
+const electricField = document.getElementById("electric-field")!;
+const magneticField = document.getElementById("magnetic-field")!;
 
 class SelectManager {
   private sandbox: Sandbox;
   private selectedEntity: PhysicalEntity | Field | null;
   private transformControls: TransformControls;
   private scene: THREE.Scene;
-  private mode: 'translate' | 'rotate' | null;
+  private mode: "translate" | "rotate" | null;
   private rotationObject: THREE.Object3D | null;
 
   constructor(
@@ -657,11 +657,11 @@ class SelectManager {
     this.mode = null;
     this.rotationObject = null;
 
-    moveButton.addEventListener('click', () => this.updateMode('translate'));
-    rotateButton.addEventListener('click', () => this.updateMode('rotate'));
+    moveButton.addEventListener("click", () => this.updateMode("translate"));
+    rotateButton.addEventListener("click", () => this.updateMode("rotate"));
 
     this.transformControls.addEventListener(
-      'change',
+      "change",
       this.onTransformChange.bind(this)
     );
 
@@ -705,7 +705,7 @@ class SelectManager {
       this.selectedEntity = entity;
       this.transformControls.attach(entity.object);
       this.scene.add(this.transformControls.getHelper());
-      this.updateMode('translate');
+      this.updateMode("translate");
       return true;
     } else if (entity === this.selectedEntity) {
       return true;
@@ -723,7 +723,7 @@ class SelectManager {
       this.scene.add(this.rotationObject);
       this.transformControls.attach(this.rotationObject);
       this.scene.add(this.transformControls.getHelper());
-      this.updateMode('rotate');
+      this.updateMode("rotate");
       return true;
     }
     return false;
@@ -743,7 +743,7 @@ class SelectManager {
     this.updateButtons();
   }
 
-  updateMode(mode: 'translate' | 'rotate' | null) {
+  updateMode(mode: "translate" | "rotate" | null) {
     if (mode) {
       if (mode === this.mode) {
         mode = null;
@@ -752,7 +752,7 @@ class SelectManager {
       }
       this.transformControls.setMode(mode);
 
-      if (mode === 'rotate') {
+      if (mode === "rotate") {
         if (this.selectedEntity instanceof Charge) {
           this.rotationObject = new THREE.Object3D();
           this.rotationObject.position.copy(
@@ -778,51 +778,51 @@ class SelectManager {
 
   private updateButton(
     button: HTMLElement,
-    mode: 'disabled' | 'enabled' | 'selected' | 'loading'
+    mode: "disabled" | "enabled" | "selected" | "loading"
   ) {
     button.classList.remove(
-      'button-disabled',
-      'button-enabled',
-      'button-selected',
-      'button-loading'
+      "button-disabled",
+      "button-enabled",
+      "button-selected",
+      "button-loading"
     );
     button.classList.add(`button-${mode}`);
   }
 
   updateButtons() {
     if (this.selectedEntity instanceof Field) {
-      this.updateButton(moveButton, 'disabled');
-      this.updateButton(rotateButton, 'enabled');
+      this.updateButton(moveButton, "disabled");
+      this.updateButton(rotateButton, "enabled");
     } else if (this.selectedEntity instanceof Charge) {
       if (this.mode) {
-        if (this.mode === 'translate') {
-          this.updateButton(moveButton, 'selected');
+        if (this.mode === "translate") {
+          this.updateButton(moveButton, "selected");
           if (this.selectedEntity.velocity.length() !== 0) {
-            this.updateButton(rotateButton, 'enabled');
+            this.updateButton(rotateButton, "enabled");
           } else {
-            this.updateButton(rotateButton, 'disabled');
+            this.updateButton(rotateButton, "disabled");
           }
-        } else if (this.mode === 'rotate') {
-          this.updateButton(rotateButton, 'selected');
-          this.updateButton(moveButton, 'enabled');
+        } else if (this.mode === "rotate") {
+          this.updateButton(rotateButton, "selected");
+          this.updateButton(moveButton, "enabled");
         }
       } else {
-        this.updateButton(moveButton, 'enabled');
+        this.updateButton(moveButton, "enabled");
         if (this.selectedEntity.velocity.length() !== 0) {
-          this.updateButton(rotateButton, 'enabled');
+          this.updateButton(rotateButton, "enabled");
         } else {
-          this.updateButton(rotateButton, 'disabled');
+          this.updateButton(rotateButton, "disabled");
         }
       }
     } else {
-      this.updateButton(moveButton, 'disabled');
-      this.updateButton(rotateButton, 'disabled');
+      this.updateButton(moveButton, "disabled");
+      this.updateButton(rotateButton, "disabled");
     }
 
     if (protonModel && electronModel) {
-      this.updateButton(chargeButton, 'enabled');
+      this.updateButton(chargeButton, "enabled");
     } else {
-      this.updateButton(chargeButton, 'loading');
+      this.updateButton(chargeButton, "loading");
     }
   }
 
@@ -831,7 +831,7 @@ class SelectManager {
   }
 }
 
-chargeButton.addEventListener('click', () => {
+chargeButton.addEventListener("click", () => {
   selectManager.deselect();
 
   if (protonModel && electronModel) {
@@ -841,12 +841,12 @@ chargeButton.addEventListener('click', () => {
   }
 });
 
-electricField.addEventListener('click', () => {
+electricField.addEventListener("click", () => {
   selectManager.deselect();
   sandbox.addField(new ElectricField(new THREE.Vector3(0, 1, 0)));
 });
 
-magneticField.addEventListener('click', () => {
+magneticField.addEventListener("click", () => {
   selectManager.deselect();
   sandbox.addField(new MagneticField(new THREE.Vector3(0, 1, 0)));
 });

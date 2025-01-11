@@ -136,8 +136,8 @@ body {
   margin-bottom: 5px;
 }
 
-.panel-content input[type='number'],
-.panel-content input[type='range'] {
+.panel-content input[type="number"],
+.panel-content input[type="range"] {
   width: 100%;
   display: inline-block;
 }
@@ -190,11 +190,11 @@ body {
   align-items: baseline;
 }
 
-.scientific-input input[type='number'] {
+.scientific-input input[type="number"] {
   width: 60px;
 }
 
-.scientific-input sup input[type='number'] {
+.scientific-input sup input[type="number"] {
   width: 40px;
   font-size: 0.8em;
   vertical-align: super;

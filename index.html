@@ -1,70 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>veld</title>
+    <link rel="icon" href="/veld.svg" type="image/svg+xml" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>veld</title>
-  <link rel="icon" href="/veld.svg" type="image/svg+xml" />
-</head>
+  <body>
+    <img id="logo" src="/veld.svg" alt="Veld Logo" draggable="false" />
+    <div id="cube-controls" class="ui">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xml:space="preserve"
+        width="64"
+        height="64"
+        viewBox="0 0 58 58"
+      >
+        <path id="top-face" d="M3 13 28 0l27 13-26 13z" style="fill: #259f00" />
+        <path id="side-face" d="M29 58 3 45V13l26 13z" style="fill: #c63434" />
+        <path
+          id="front-face"
+          d="m29 58 26-13V13L29 26z"
+          style="fill: #274dad"
+        />
+      </svg>
+    </div>
+    <div id="toolbar" class="ui">
+      <div class="button-container">
+        <div class="button" id="move">
+          <img src="/move.svg" />
+        </div>
+        <div class="tooltip">Move</div>
+      </div>
+      <div class="button-container">
+        <div class="button" id="rotate">
+          <img src="/rotate.svg" />
+        </div>
+        <div class="tooltip">Rotate</div>
+      </div>
+      <div class="button-container">
+        <div class="button" id="charge">
+          <img src="/charge.svg" />
+          <img class="loading-spinner" src="/loading.svg" />
+        </div>
+        <div class="tooltip">Add charge</div>
+      </div>
+      <div class="button-container">
+        <div class="button" id="electric-field">
+          <img src="/electric-field.svg" />
+        </div>
+        <div class="tooltip">Set electric field</div>
+      </div>
+      <div class="button-container">
+        <div class="button" id="magnetic-field">
+          <img src="/magnetic-field.svg" />
+        </div>
+        <div class="tooltip">Set magnetic field</div>
+      </div>
+      <div class="button-container">
+        <div class="button" id="play-pause">
+          <img id="play-pause-icon" src="/play.svg" />
+        </div>
+        <div class="tooltip">Play/Pause</div>
+      </div>
+      <div class="button-container">
+        <div class="button" id="reset">
+          <img src="/stop.svg" />
+        </div>
+        <div class="tooltip">Reset</div>
+      </div>
+    </div>
 
-<body>
-  <img id="logo" src="/veld.svg" alt="Veld Logo" draggable="false">
-  <div id="cube-controls" class="ui">
-    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="64" height="64" viewBox="0 0 58 58">
-      <path id="top-face" d="M3 13 28 0l27 13-26 13z" style="fill:#259F00" />
-      <path id="side-face" d="M29 58 3 45V13l26 13z" style="fill:#C63434" />
-      <path id="front-face" d="m29 58 26-13V13L29 26z" style="fill:#274DAD" />
-    </svg>
-  </div>
-  <div id="toolbar" class="ui">
-    <div class="button-container">
-      <div class="button" id="move">
-        <img src="/move.svg">
-      </div>
-      <div class="tooltip">Move</div>
-    </div>
-    <div class="button-container">
-      <div class="button" id="rotate">
-        <img src="/rotate.svg">
-      </div>
-      <div class="tooltip">Rotate</div>
-    </div>
-    <div class="button-container">
-      <div class="button" id="charge">
-        <img src="/charge.svg">
-        <img class="loading-spinner" src="/loading.svg">
-      </div>
-      <div class="tooltip">Add charge</div>
-    </div>
-    <div class="button-container">
-      <div class="button" id="electric-field">
-        <img src="/electric-field.svg">
-      </div>
-      <div class="tooltip">Set electric field</div>
-    </div>
-    <div class="button-container">
-      <div class="button" id="magnetic-field">
-        <img src="/magnetic-field.svg">
-      </div>
-      <div class="tooltip">Set magnetic field</div>
-    </div>
-    <div class="button-container">
-      <div class="button" id="play-pause">
-        <img id="play-pause-icon" src="/play.svg">
-      </div>
-      <div class="tooltip">Play/Pause</div>
-    </div>
-    <div class="button-container">
-      <div class="button" id="reset">
-        <img src="/stop.svg">
-      </div>
-      <div class="tooltip">Reset</div>
-    </div>
-  </div>
-
-  <div id="panels-container" class="ui"></div>
-  <script type="module" src="/src/ui.ts"></script>
-</body>
-
+    <div id="panels-container" class="ui"></div>
+    <script type="module" src="/src/ui.ts"></script>
+  </body>
 </html>

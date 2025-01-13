@@ -98,6 +98,15 @@ export class SelectManager {
       this.rotationObject.position.copy(orbitControls.target);
       this.rotationObject.lookAt(field.value);
       this.scene.add(this.rotationObject);
+
+      const arrowHelper = new THREE.ArrowHelper(
+        new THREE.Vector3(0, 0, 1),
+        new THREE.Vector3(0, 0, 0),
+        5,
+        0xffff00
+      );
+      this.rotationObject.add(arrowHelper);
+
       this.transformControls.attach(this.rotationObject);
       this.scene.add(this.transformControls.getHelper());
       this.updateMode('rotate');

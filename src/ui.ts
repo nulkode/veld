@@ -59,7 +59,7 @@ document.getElementById('play-pause')?.addEventListener('click', () => {
 document.getElementById('reset')?.addEventListener('click', () => {
   sandbox.reset();
   const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
-  icon.src = '/play.svg';
+  icon.src = 'icons/play.svg';
 });
 
 window.addEventListener('resize', () => {

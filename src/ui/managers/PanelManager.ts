@@ -9,11 +9,11 @@ import {
 } from '../../sandbox';
 import { selectManager } from '../../ui';
 import { Panel } from '../components/Panel';
-import { PanelButtonField } from '../fields/Button';
-import { ValuePanelField } from '../fields/PanelField';
-import { PanelValueColorField } from '../fields/ValueColor';
-import { PanelValueScientificField } from '../fields/ValueScientific';
-import { PanelValueToggleField } from '../fields/ValueToggle';
+import { PanelButtonField } from '../components/fields/Button';
+import { ValuePanelField } from '../components/fields/PanelField';
+import { PanelValueColorField } from '../components/fields/ValueColor';
+import { PanelValueScientificField } from '../components/fields/ValueScientific';
+import { PanelValueToggleField } from '../components/fields/ValueToggle';
 import * as THREE from 'three';
 
 export class PanelManager {

@@ -17,8 +17,8 @@ import {
 } from './sandbox';
 import { PanelManager } from './ui/managers/PanelManager';
 import { Panel } from './ui/components/Panel';
-import { PanelValueSliderField } from './ui/fields/ValueSlider';
-import { PanelValueToggleField } from './ui/fields/ValueToggle';
+import { PanelValueSliderField } from './ui/components/fields/ValueSlider';
+import { PanelValueToggleField } from './ui/components/fields/ValueToggle';
 import { SelectManager } from './ui/managers/SelectManager';
 
 function rotateCameraToTopView() {

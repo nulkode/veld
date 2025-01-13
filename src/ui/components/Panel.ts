@@ -1,4 +1,4 @@
-import { PanelField } from '../fields/PanelField';
+import { PanelField } from './fields/PanelField';
 
 export class Panel {
   id: string;

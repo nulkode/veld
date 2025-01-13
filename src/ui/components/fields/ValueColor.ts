@@ -1,4 +1,5 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
+import '@/styles/panels/fields/value-color.css';
 
 export class PanelValueColorField extends ValuePanelField<number> {
   onUpdate: (value: number) => void;

@@ -1,4 +1,5 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
+import '@/styles/panels/fields/button.css';
 
 export class PanelValueToggleField extends ValuePanelField<boolean> {
   constructor(

@@ -20,6 +20,8 @@ import { Panel } from '@/ui/components/Panel';
 import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
 import { SelectManager } from '@/ui/managers/SelectManager';
+import '@/styles/global.css';
+import '@/styles/overlay.css';
 
 function rotateCameraToTopView() {
   rotateCameraToPosition(0, 1, 0);

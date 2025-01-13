@@ -1,4 +1,5 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
+import '@/styles/panels/fields/value-scientific.css';
 
 export class PanelValueScientificField extends ValuePanelField<number> {
   unit: string;

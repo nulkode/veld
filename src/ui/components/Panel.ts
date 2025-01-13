@@ -1,5 +1,6 @@
 import { Component } from '@/ui/components/Component';
 import { PanelField } from '@/ui/components/fields/PanelField';
+import '@/styles/panels/fields/fields.css';
 
 export class Panel extends Component {
   id: string;

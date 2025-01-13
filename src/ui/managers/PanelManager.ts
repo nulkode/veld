@@ -15,6 +15,7 @@ import { PanelValueColorField } from '@/ui/components/fields/ValueColor';
 import { PanelValueScientificField } from '@/ui/components/fields/ValueScientific';
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
 import * as THREE from 'three';
+import '@/styles/panels/panels.css';
 
 export class PanelManager {
   panels: Panel[];

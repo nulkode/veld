@@ -1,4 +1,5 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
+import '@/styles/panels/fields/value-slider.css';
 
 export class PanelValueSliderField extends ValuePanelField<number> {
   min: number;

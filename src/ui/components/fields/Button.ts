@@ -1,4 +1,5 @@
 import { PanelField } from '@/ui/components/fields/PanelField';
+import '@/styles/panels/fields/button.css';
 
 export class PanelButtonField extends PanelField {
   buttonText: string;

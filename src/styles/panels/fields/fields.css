@@ -1,0 +1,36 @@
+.invalid-input {
+  background-color: red;
+}
+
+.panel-content input[type='number'],
+.panel-content input[type='range'] {
+  width: 100%;
+  display: inline-block;
+}
+
+.panel-content span {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='password'] {
+  width: 100%;
+  padding: 4px;
+  margin: 4px 0;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type='text']:focus,
+input[type='number']:focus,
+input[type='email']:focus,
+input[type='password']:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}

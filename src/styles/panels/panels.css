@@ -1,0 +1,43 @@
+#panels-container {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  max-width: 400px;
+  overflow-y: auto;
+  height: auto;
+}
+
+.panel {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: max-height 0.2s;
+  width: 300px;
+}
+
+.panel-header {
+  background-color: #f0f0f0;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.panel-content {
+  padding: 10px;
+}
+
+.panel-content div {
+  margin-bottom: 10px;
+}
+
+.panel-content label {
+  display: block;
+  margin-bottom: 5px;
+}

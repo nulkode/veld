@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { selectManager } from './ui';
-import { EventEmitter } from './utils';
+import { selectManager } from '@/ui';
+import { EventEmitter } from '@/ui/managers/EventManager';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
 
@@ -10,12 +10,12 @@ export let electronModel: THREE.Object3D | null = null;
 
 const loader = new GLTFLoader();
 
-loader.load('./proton.glb', (gltf) => {
+loader.load('./models/proton.glb', (gltf) => {
   protonModel = gltf.scene.children[0];
   selectManager.onChargeLoad();
 });
 
-loader.load('./electron.glb', (gltf) => {
+loader.load('./models/electron.glb', (gltf) => {
   electronModel = gltf.scene.children[0];
   selectManager.onChargeLoad();
 });
@@ -33,6 +33,11 @@ export abstract class PhysicalEntity {
     _fields: Field[],
     ..._charges: Charge[]
   ): THREE.Vector3;
+
+  abstract toJSON(): any;
+  static fromJSON(_data: any): PhysicalEntity {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export class Charge extends PhysicalEntity {
@@ -80,6 +85,8 @@ export class Charge extends PhysicalEntity {
     } else if (charge > 0 && this.value <= 0) {
       this.value = charge;
       this.replace3DObject(protonModel.clone());
+    } else {
+      this.value = charge;
     }
 
     // TODO: scale it based on the charge
@@ -117,35 +124,11 @@ export class Charge extends PhysicalEntity {
     }
   }
 
-  setShowAcceleration(show: boolean, sandbox: Sandbox) {
+  setShowAcceleration(show: boolean) {
     this.showAcceleration = show;
-    if (show && !this.accelerationArrow) {
-      const acceleration = this.calculateAcceleration(sandbox);
-      if (acceleration.length() === 0) return;
-      this.accelerationArrow = new THREE.ArrowHelper(
-        acceleration.clone().normalize(),
-        new THREE.Vector3(0, 0, 0),
-        4,
-        0x00ff00,
-        0.5, // headLength
-        0.3 // headWidth
-      );
-      this.object.add(this.accelerationArrow);
-    } else if (!show && this.accelerationArrow) {
+    if (!show && this.accelerationArrow) {
       this.object.remove(this.accelerationArrow);
       this.accelerationArrow = null;
-    } else if (show && this.accelerationArrow) {
-      const acceleration = this.calculateAcceleration(sandbox);
-      if (acceleration.length() === 0) return;
-      if (this.accelerationArrow) this.object.remove(this.accelerationArrow);
-      this.accelerationArrow = new THREE.ArrowHelper(
-        acceleration.clone().normalize(),
-        new THREE.Vector3(0, 0, 0),
-        4,
-        0x00ff00,
-        0.5, // headLength
-        0.3 // headWidth
-      );
     }
   }
 
@@ -207,6 +190,26 @@ export class Charge extends PhysicalEntity {
 
     return force;
   }
+
+  toJSON() {
+    return {
+      uuid: this.uuid,
+      value: this.value,
+      velocity: this.velocity.toArray(),
+      mass: this.mass,
+      position: this.object.position.toArray(),
+    };
+  }
+
+  static fromJSON(data: any) {
+    const charge = new Charge(
+      data.value,
+      new THREE.Vector3().fromArray(data.velocity),
+      new THREE.Vector3().fromArray(data.position),
+      data.mass
+    );
+    return charge;
+  }
 }
 
 export abstract class Field {
@@ -214,15 +217,26 @@ export abstract class Field {
   value: THREE.Vector3;
   visible: boolean = true;
   variation: THREE.Vector3;
+  arrowColor: number = 0x0000ff;
 
-  constructor(field: THREE.Vector3, show: boolean = true) {
+  constructor(
+    field: THREE.Vector3,
+    show: boolean = true,
+    variation?: THREE.Vector3,
+    arrowColor?: number
+  ) {
     this.value = field;
     this.visible = show;
-    this.variation = new THREE.Vector3(
-      Math.random() * 3,
-      Math.random() * 3,
-      Math.random() * 3
-    );
+    this.variation =
+      variation ??
+      new THREE.Vector3(
+        Math.random() * 3,
+        Math.random() * 3,
+        Math.random() * 3
+      );
+    if (arrowColor) {
+      this.arrowColor = arrowColor;
+    }
   }
 
   changeField(newField: THREE.Vector3) {
@@ -230,21 +244,56 @@ export abstract class Field {
   }
 
   abstract calculateForce(charge: Charge): THREE.Vector3;
+
+  abstract toJSON(): any;
+  static fromJSON(_data: any): Field {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export class ElectricField extends Field {
-  constructor(field: THREE.Vector3) {
-    super(field);
-  }
+  constructor(
+    field: THREE.Vector3,
+    show: boolean = true,
+    variation?: THREE.Vector3,
+    arrowColor?: number
+  ) {
+    super(field, show, variation, arrowColor);
+  };
 
   calculateForce(charge: Charge): THREE.Vector3 {
     return this.value.clone().multiplyScalar(charge.value);
   }
+
+  toJSON() {
+    return {
+      type: 'ElectricField',
+      uuid: this.uuid,
+      value: this.value.toArray(),
+      variation: this.variation.toArray(),
+      arrowColor: this.arrowColor,
+      show: this.visible,
+    };
+  }
+
+  static fromJSON(data: any) {
+    return new ElectricField(
+      new THREE.Vector3().fromArray(data.value),
+      data.show,
+      new THREE.Vector3().fromArray(data.variation),
+      data.arrowColor
+    );
+  }
 }
 
 export class MagneticField extends Field {
-  constructor(field: THREE.Vector3) {
-    super(field);
+  constructor(
+    field: THREE.Vector3,
+    show: boolean = true,
+    variation?: THREE.Vector3,
+    arrowColor?: number
+  ) {
+    super(field, show, variation, arrowColor);
   }
 
   calculateForce(charge: Charge): THREE.Vector3 {
@@ -252,6 +301,26 @@ export class MagneticField extends Field {
       .clone()
       .cross(charge.velocity)
       .multiplyScalar(charge.value);
+  }
+
+  toJSON() {
+    return {
+      type: 'MagneticField',
+      uuid: this.uuid,
+      value: this.value.toArray(),
+      variation: this.variation.toArray(),
+      arrowColor: this.arrowColor,
+      show: this.visible,
+    };
+  }
+
+  static fromJSON(data: any) {
+    return new MagneticField(
+      new THREE.Vector3().fromArray(data.value),
+      data.show,
+      new THREE.Vector3().fromArray(data.variation),
+      data.arrowColor
+    );
   }
 }
 
@@ -282,6 +351,11 @@ export class Sandbox extends EventEmitter {
     distanceUnit: 1,
     ignoreGravity: true,
   };
+  initialState: {
+    entities: any[];
+    fields: any[];
+    sandboxContext: SandboxContext;
+  };
 
   private fieldsObjects: THREE.Object3D[];
 
@@ -292,6 +366,11 @@ export class Sandbox extends EventEmitter {
     this.fields = [];
     this.status = SandboxStatus.PAUSED;
     this.fieldsObjects = [];
+    this.initialState = {
+      entities: [],
+      fields: [],
+      sandboxContext: this.context,
+    };
   }
 
   appendEntity(entity: PhysicalEntity) {
@@ -343,7 +422,7 @@ export class Sandbox extends EventEmitter {
             if (dist < minDistance || dist > maxDistance) continue;
 
             this.fieldsObjects.push(
-              new THREE.ArrowHelper(direction, point, 5, 0x0000ff)
+              new THREE.ArrowHelper(direction, point, 5, field.arrowColor)
             );
           }
         }
@@ -367,6 +446,13 @@ export class Sandbox extends EventEmitter {
 
   play() {
     selectManager.deselect();
+
+    this.initialState = {
+      entities: this.entities.map((e) => e.toJSON()),
+      fields: this.fields.map((f) => f.toJSON()),
+      sandboxContext: this.context,
+    };
+
     this.status = SandboxStatus.PLAYING;
   }
 
@@ -376,8 +462,41 @@ export class Sandbox extends EventEmitter {
   }
 
   reset() {
-    throw new Error('Method not implemented.');
-    // TODO: reset all entities to their initial positions
+    selectManager.deselect();
+    this.status = SandboxStatus.PAUSED;
+
+    for (const entity of this.entities) {
+      this.deleteEntity(entity);
+    }
+    const entities = this.initialState.entities.map((data: any) =>
+      Charge.fromJSON(data)
+    );
+
+    for (const entity of entities) {
+      this.appendEntity(entity);
+    }
+
+    for (const field of this.fields) {
+      this.deleteField(field);
+    }
+
+    const fields = this.initialState.fields.map((data: any) => {
+      if (data.type === 'ElectricField') {
+        return ElectricField.fromJSON(data);
+      } else if (data.type === 'MagneticField') {
+        return MagneticField.fromJSON(data);
+      } else {
+        throw new Error('Invalid field type');
+      }
+    });
+
+    for (const field of fields) {
+      this.addField(field);
+    }
+
+    this.context = this.initialState.sandboxContext;
+
+    this.emit('reset');
   }
 
   deleteEntity(entity: PhysicalEntity) {
@@ -426,7 +545,7 @@ export class Sandbox extends EventEmitter {
     this.emit('fieldAdded', field);
   }
 
-  removeField(field: Field) {
+  deleteField(field: Field) {
     this.fields = this.fields.filter((f) => f !== field);
     this.emit('fieldRemoved', field);
   }

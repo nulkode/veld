@@ -9,13 +9,17 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/three": "^0.172.0",
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "dependencies": {
-    "@types/three": "^0.172.0",
     "gsap": "^3.12.5",
     "three": "^0.172.0"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }

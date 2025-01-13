@@ -85,6 +85,7 @@ export class PanelManager {
             entity.mass = value;
           },
           undefined,
+          false,
           false
         ),
         new PanelValueScientificField(
@@ -101,7 +102,10 @@ export class PanelManager {
                   sandbox.context.timeUnit
               );
             }
-          }
+          },
+          undefined,
+          true,
+          false
         ),
         new PanelValueToggleField(
           `show-velocity-${entity.uuid}`,
@@ -185,6 +189,7 @@ export class PanelManager {
               field.value.setLength(value);
             },
             undefined,
+            false,
             false
           ),
           colorField,
@@ -206,6 +211,7 @@ export class PanelManager {
               field.value.setLength(value);
             },
             undefined,
+            false,
             false
           ),
           colorField,

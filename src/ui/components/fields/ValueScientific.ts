@@ -5,6 +5,7 @@ export class PanelValueScientificField extends ValuePanelField<number> {
   unit: string;
   onUpdate: (value: number) => void;
   allowZero: boolean;
+  allowNegative: boolean;
 
   constructor(
     id: string,
@@ -13,12 +14,14 @@ export class PanelValueScientificField extends ValuePanelField<number> {
     value: number,
     onUpdate: (value: number) => void,
     labelGenerator?: (value: number) => string,
-    allowZero: boolean = true
+    allowZero: boolean = true,
+    allowNegative: boolean = true
   ) {
     super(id, label, value, labelGenerator);
     this.unit = unit;
     this.onUpdate = onUpdate;
     this.allowZero = allowZero;
+    this.allowNegative = allowNegative;
     onUpdate(value);
   }
 
@@ -66,7 +69,8 @@ export class PanelValueScientificField extends ValuePanelField<number> {
     if (
       isNaN(decimal) ||
       isNaN(exponent) ||
-      (!this.allowZero && decimal === 0)
+      (!this.allowZero && decimal === 0) ||
+      (!this.allowNegative && decimal < 0)
     ) {
       decimalInput.classList.add('invalid-input');
       exponentInput.classList.add('invalid-input');

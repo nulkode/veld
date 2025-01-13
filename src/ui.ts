@@ -144,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tooltip.innerText = tooltipText;
 
       const updateTooltipPosition = (event: MouseEvent) => {
-        console.log(event);
         const cursorX = event.clientX;
         const cursorY = event.clientY;
         tooltip.style.left = `${cursorX + 20}px`;

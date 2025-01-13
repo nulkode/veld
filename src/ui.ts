@@ -130,6 +130,46 @@ magneticField.addEventListener('click', () => {
   sandbox.addField(new MagneticField(new THREE.Vector3(0, 1, 0)));
 });
 
+const tooltip = document.createElement('div');
+tooltip.className = 'tooltip';
+document.body.appendChild(tooltip);
+
+document.addEventListener('DOMContentLoaded', () => {
+  const tooltipElements = document.querySelectorAll('[data-tooltip]');
+
+  tooltipElements.forEach((el) => {
+    el.addEventListener('mouseenter', (event) => {
+      const tooltipText = el.getAttribute('data-tooltip')!;
+      tooltip.classList.add('tooltip-visible');
+      tooltip.innerText = tooltipText;
+
+      const updateTooltipPosition = (event: MouseEvent) => {
+        console.log(event);
+        const cursorX = event.clientX;
+        const cursorY = event.clientY;
+        tooltip.style.left = `${cursorX + 20}px`;
+        tooltip.style.top = `${cursorY + 20}px`;
+      };
+
+      updateTooltipPosition(event as MouseEvent);
+
+      el.addEventListener('mousemove', updateTooltipPosition as EventListener);
+
+      el.addEventListener(
+        'mouseleave',
+        () => {
+          tooltip.classList.remove('tooltip-visible');
+          el.removeEventListener(
+            'mousemove',
+            updateTooltipPosition as EventListener
+          );
+        },
+        { once: true }
+      );
+    });
+  });
+});
+
 export const selectManager = new SelectManager(
   sandbox,
   transformControls,

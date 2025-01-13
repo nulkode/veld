@@ -271,6 +271,7 @@ export class ElectricField extends Field {
       uuid: this.uuid,
       value: this.value.toArray(),
       variation: this.variation.toArray(),
+      arrowColor: this.arrowColor,
     };
   }
 
@@ -278,7 +279,8 @@ export class ElectricField extends Field {
     return new ElectricField(
       new THREE.Vector3().fromArray(data.value),
       true,
-      new THREE.Vector3().fromArray(data.variation)
+      new THREE.Vector3().fromArray(data.variation),
+      data.arrowColor
     );
   }
 }
@@ -306,6 +308,7 @@ export class MagneticField extends Field {
       uuid: this.uuid,
       value: this.value.toArray(),
       variation: this.variation.toArray(),
+      arrowColor: this.arrowColor,
     };
   }
 
@@ -313,7 +316,8 @@ export class MagneticField extends Field {
     return new MagneticField(
       new THREE.Vector3().fromArray(data.value),
       true,
-      new THREE.Vector3().fromArray(data.variation)
+      new THREE.Vector3().fromArray(data.variation),
+      data.arrowColor
     );
   }
 }

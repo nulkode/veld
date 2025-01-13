@@ -1,4 +1,4 @@
-import { sandbox } from '../../renderer';
+import { sandbox } from '@/renderer';
 import {
   Sandbox,
   PhysicalEntity,
@@ -6,14 +6,14 @@ import {
   Field,
   MagneticField,
   ElectricField,
-} from '../../sandbox';
-import { selectManager } from '../../ui';
-import { Panel } from '../components/Panel';
-import { PanelButtonField } from '../components/fields/Button';
-import { ValuePanelField } from '../components/fields/PanelField';
-import { PanelValueColorField } from '../components/fields/ValueColor';
-import { PanelValueScientificField } from '../components/fields/ValueScientific';
-import { PanelValueToggleField } from '../components/fields/ValueToggle';
+} from '@/sandbox';
+import { selectManager } from '@/ui';
+import { Panel } from '@/ui/components/Panel';
+import { PanelButtonField } from '@/ui/components/fields/Button';
+import { ValuePanelField } from '@/ui/components/fields/PanelField';
+import { PanelValueColorField } from '@/ui/components/fields/ValueColor';
+import { PanelValueScientificField } from '@/ui/components/fields/ValueScientific';
+import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
 import * as THREE from 'three';
 
 export class PanelManager {

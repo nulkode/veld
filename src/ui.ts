@@ -6,7 +6,7 @@ import {
   rotateCameraToPosition,
   transformControls,
   orbitControls,
-} from './renderer';
+} from '@/renderer';
 import {
   SandboxStatus,
   protonModel,
@@ -14,12 +14,12 @@ import {
   Charge,
   MagneticField,
   ElectricField,
-} from './sandbox';
-import { PanelManager } from './ui/managers/PanelManager';
-import { Panel } from './ui/components/Panel';
-import { PanelValueSliderField } from './ui/components/fields/ValueSlider';
-import { PanelValueToggleField } from './ui/components/fields/ValueToggle';
-import { SelectManager } from './ui/managers/SelectManager';
+} from '@/sandbox';
+import { PanelManager } from '@/ui/managers/PanelManager';
+import { Panel } from '@/ui/components/Panel';
+import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
+import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
+import { SelectManager } from '@/ui/managers/SelectManager';
 
 function rotateCameraToTopView() {
   rotateCameraToPosition(0, 1, 0);

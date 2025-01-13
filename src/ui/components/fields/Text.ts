@@ -1,4 +1,4 @@
-import { PanelField } from './PanelField';
+import { PanelField } from '@/ui/components/fields/PanelField';
 
 export class PanelTextField extends PanelField {
   content: string;

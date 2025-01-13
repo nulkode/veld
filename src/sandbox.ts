@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { selectManager } from './ui';
-import { EventEmitter } from './ui/managers/EventManager';
+import { selectManager } from '@/ui';
+import { EventEmitter } from '@/ui/managers/EventManager';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
 

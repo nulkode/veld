@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import gsap from 'gsap';
-import './style.css';
-import { Sandbox } from './sandbox';
-import { selectManager } from './ui';
+import '@/style.css';
+import { Sandbox } from '@/sandbox';
+import { selectManager } from '@/ui';
 
 let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;

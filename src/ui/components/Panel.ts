@@ -1,5 +1,5 @@
-import { Component } from './Component';
-import { PanelField } from './fields/PanelField';
+import { Component } from '@/ui/components/Component';
+import { PanelField } from '@/ui/components/fields/PanelField';
 
 export class Panel extends Component {
   id: string;

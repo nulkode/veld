@@ -1,4 +1,4 @@
-import { Component } from "../Component";
+import { Component } from "@/ui/components/Component";
 
 export abstract class PanelField extends Component {
   id: string;

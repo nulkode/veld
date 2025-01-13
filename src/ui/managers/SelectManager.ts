@@ -1,5 +1,5 @@
 import { TransformControls } from 'three/examples/jsm/Addons.js';
-import { orbitControls } from '../../renderer';
+import { orbitControls } from '@/renderer';
 import {
   Sandbox,
   PhysicalEntity,
@@ -7,7 +7,7 @@ import {
   Charge,
   protonModel,
   electronModel,
-} from '../../sandbox';
+} from '@/sandbox';
 import * as THREE from 'three';
 
 const moveButton = document.getElementById('move')!;

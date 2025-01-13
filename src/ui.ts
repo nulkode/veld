@@ -49,10 +49,10 @@ document.getElementById('play-pause')?.addEventListener('click', () => {
   const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
   if (sandbox.status === SandboxStatus.PLAYING) {
     sandbox.pause();
-    icon.src = 'play.svg';
+    icon.src = 'icons/play.svg';
   } else {
     sandbox.play();
-    icon.src = 'pause.svg';
+    icon.src = 'icons/pause.svg';
   }
 });
 

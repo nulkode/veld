@@ -10,12 +10,12 @@ export let electronModel: THREE.Object3D | null = null;
 
 const loader = new GLTFLoader();
 
-loader.load('./proton.glb', (gltf) => {
+loader.load('./models/proton.glb', (gltf) => {
   protonModel = gltf.scene.children[0];
   selectManager.onChargeLoad();
 });
 
-loader.load('./electron.glb', (gltf) => {
+loader.load('./models/electron.glb', (gltf) => {
   electronModel = gltf.scene.children[0];
   selectManager.onChargeLoad();
 });

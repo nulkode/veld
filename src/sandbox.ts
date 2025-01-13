@@ -272,13 +272,14 @@ export class ElectricField extends Field {
       value: this.value.toArray(),
       variation: this.variation.toArray(),
       arrowColor: this.arrowColor,
+      show: this.visible,
     };
   }
 
   static fromJSON(data: any) {
     return new ElectricField(
       new THREE.Vector3().fromArray(data.value),
-      true,
+      data.show,
       new THREE.Vector3().fromArray(data.variation),
       data.arrowColor
     );
@@ -309,13 +310,14 @@ export class MagneticField extends Field {
       value: this.value.toArray(),
       variation: this.variation.toArray(),
       arrowColor: this.arrowColor,
+      show: this.visible,
     };
   }
 
   static fromJSON(data: any) {
     return new MagneticField(
       new THREE.Vector3().fromArray(data.value),
-      true,
+      data.show,
       new THREE.Vector3().fromArray(data.variation),
       data.arrowColor
     );

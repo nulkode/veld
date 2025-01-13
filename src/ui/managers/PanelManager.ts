@@ -175,6 +175,15 @@ export class PanelManager {
       }
     );
 
+    const toggleVisibilityField = new PanelValueToggleField(
+      `show-${field.uuid}`,
+      'Show Field',
+      field.visible,
+      (value) => {
+        field.visible = value;
+      }
+    );
+
     if (field instanceof MagneticField) {
       const magneticFieldPanel = new Panel(
         `magnetic-field-${field.uuid}`,
@@ -193,6 +202,7 @@ export class PanelManager {
             false
           ),
           colorField,
+          toggleVisibilityField,
           rotateField,
         ]
       );
@@ -215,6 +225,7 @@ export class PanelManager {
             false
           ),
           colorField,
+          toggleVisibilityField,
           rotateField,
         ]
       );

@@ -1,8 +1,11 @@
-export abstract class PanelField {
+import { Component } from "../Component";
+
+export abstract class PanelField extends Component {
   id: string;
   label: string;
 
   constructor(id: string, label: string) {
+    super();
     this.id = id;
     this.label = label;
   }

@@ -1,12 +1,14 @@
+import { Component } from './Component';
 import { PanelField } from './fields/PanelField';
 
-export class Panel {
+export class Panel extends Component {
   id: string;
   title: string;
   fields: PanelField[];
   minimized: boolean;
 
   constructor(id: string, title: string, fields: PanelField[]) {
+    super();
     this.id = id;
     this.title = title;
     this.fields = fields;

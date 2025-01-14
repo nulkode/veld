@@ -239,45 +239,40 @@ export abstract class Field {
     this.value = newField;
   }
 
+  // TODO: Research on how to optimize this
   updateVisuals(cameraPosition: THREE.Vector3) {
     this.scene.remove(...this.visuals);
     this.visuals = [];
-
-    // TODO: make these configurable
+  
     const distance = 30;
     const maxDistance = 100;
     const minDistance = 10;
     const maxPointsPerAxis = Math.floor(maxDistance / distance);
-
+  
     if (!this.visible) return;
-
+  
     const direction = this.value.clone().normalize();
-
-    const startingPoint = new THREE.Vector3(
-      Math.floor(cameraPosition.x / distance) * distance + this.variation.x,
-      Math.floor(cameraPosition.y / distance) * distance + this.variation.y,
-      Math.floor(cameraPosition.z / distance) * distance + this.variation.z
-    );
-
+  
+    const baseX = Math.floor(cameraPosition.x / distance) * distance + this.variation.x;
+    const baseY = Math.floor(cameraPosition.y / distance) * distance + this.variation.y;
+    const baseZ = Math.floor(cameraPosition.z / distance) * distance + this.variation.z;
+  
     for (let x = -maxPointsPerAxis; x < maxPointsPerAxis; x++) {
+      const pointX = baseX + x * distance;
       for (let y = -maxPointsPerAxis; y < maxPointsPerAxis; y++) {
+        const pointY = baseY + y * distance;
         for (let z = -maxPointsPerAxis; z < maxPointsPerAxis; z++) {
-          const point = new THREE.Vector3(
-            startingPoint.x + x * distance,
-            startingPoint.y + y * distance,
-            startingPoint.z + z * distance
-          );
-
-          if (point.distanceTo(cameraPosition) > maxDistance) continue;
-          if (point.distanceTo(cameraPosition) < minDistance) continue;
-
-          this.visuals.push(
-            new THREE.ArrowHelper(direction, point, 5, this.arrowColor)
-          );
+          const pointZ = baseZ + z * distance;
+          const point = new THREE.Vector3(pointX, pointY, pointZ);
+  
+          const distanceToCamera = point.distanceTo(cameraPosition);
+          if (distanceToCamera > maxDistance || distanceToCamera < minDistance) continue;
+  
+          this.visuals.push(new THREE.ArrowHelper(direction, point, 5, this.arrowColor));
         }
       }
     }
-
+  
     this.scene.add(...this.visuals);
   }
 

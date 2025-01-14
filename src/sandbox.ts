@@ -259,7 +259,7 @@ export class ElectricField extends Field {
     arrowColor?: number
   ) {
     super(field, show, variation, arrowColor);
-  };
+  }
 
   calculateForce(charge: Charge): THREE.Vector3 {
     return this.value.clone().multiplyScalar(charge.value);
@@ -390,36 +390,33 @@ export class Sandbox extends EventEmitter {
     this.scene.remove(...this.fieldsObjects);
     this.fieldsObjects = [];
 
-    const divisions = 15;
-    const size = 300;
-    const distance = size / divisions;
-    const maxDistance = 50;
+    const distance = 30;
+    const maxDistance = 100;
     const minDistance = 10;
+    const maxPointsPerAxis = Math.floor(maxDistance / distance);
 
     for (const field of this.fields) {
       if (!field.visible) continue;
 
       const direction = field.value.clone().normalize();
 
-      for (let i = 0; i < divisions; i++) {
-        const x = -size / 2 + i * distance;
-        const dx = Math.abs(cameraPosition.x - x);
-        if (dx > maxDistance) {
-          continue;
-        }
-        for (let j = 0; j < divisions; j++) {
-          const y = -size / 2 + j * distance;
-          const dy = Math.abs(cameraPosition.y - y);
-          if (dy > maxDistance) {
-            continue;
-          }
-          for (let k = 0; k < divisions; k++) {
-            const x = -size / 2 + i * distance;
-            const z = -size / 2 + k * distance;
-            const point = new THREE.Vector3(x, y, z).add(field.variation);
+      const startingPoint = new THREE.Vector3(
+        Math.floor(cameraPosition.x / distance) * distance + field.variation.x,
+        Math.floor(cameraPosition.y / distance) * distance + field.variation.y,
+        Math.floor(cameraPosition.z / distance) * distance + field.variation.z
+      );
 
-            const dist = cameraPosition.distanceTo(point);
-            if (dist < minDistance || dist > maxDistance) continue;
+      for (let x = -maxPointsPerAxis; x < maxPointsPerAxis; x++) {
+        for (let y = -maxPointsPerAxis; y < maxPointsPerAxis; y++) {
+          for (let z = -maxPointsPerAxis; z < maxPointsPerAxis; z++) {
+            const point = new THREE.Vector3(
+              startingPoint.x + x * distance,
+              startingPoint.y + y * distance,
+              startingPoint.z + z * distance
+            );
+
+            if (point.distanceTo(cameraPosition) > maxDistance) continue;
+            if (point.distanceTo(cameraPosition) < minDistance) continue;
 
             this.fieldsObjects.push(
               new THREE.ArrowHelper(direction, point, 5, field.arrowColor)

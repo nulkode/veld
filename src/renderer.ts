@@ -39,8 +39,8 @@ function init() {
   const light = new THREE.AmbientLight(0xffffff, 1);
   scene.add(light);
 
-  const size = 300;
-  const divisions = 50;
+  const size = 3000;
+  const divisions = 160;
   const gridHelper = new THREE.GridHelper(size, divisions);
   gridHelper.material.color.setHex(0x404040);
   gridHelper.material.opacity = 0.6;
@@ -49,7 +49,7 @@ function init() {
   const grid = gridHelper.clone();
   scene.add(grid);
 
-  camera.position.set(3, 3, 3);
+  camera.position.set(20, 20, 20);
   camera.lookAt(0, 0, 0);
 
   sandbox.updateFieldsObjects(camera.position);

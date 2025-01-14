@@ -10,9 +10,10 @@ let renderer: THREE.WebGLRenderer;
 let orbitControls: OrbitControls;
 let transformControls: TransformControls;
 let sandbox: Sandbox;
+let scene: THREE.Scene;
 
 function init() {
-  const scene = new THREE.Scene();
+  scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -34,7 +35,7 @@ function init() {
   });
 
   sandbox = new Sandbox(scene);
-  sandbox.updateFieldsObjects(camera.position);
+  sandbox.updateVisuals(camera.position);
 
   const light = new THREE.AmbientLight(0xffffff, 1);
   scene.add(light);
@@ -52,7 +53,7 @@ function init() {
   camera.position.set(20, 20, 20);
   camera.lookAt(0, 0, 0);
 
-  sandbox.updateFieldsObjects(camera.position);
+  sandbox.updateVisuals(camera.position);
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -86,7 +87,7 @@ function init() {
 
     orbitControls.update();
     renderer.render(scene, camera);
-    sandbox.updateFieldsObjects(camera.position);
+    sandbox.updateVisuals(camera.position);
     sandbox.update(deltaTime);
   }
 
@@ -125,5 +126,6 @@ export {
   sandbox,
   transformControls,
   orbitControls,
+  scene,
   rotateCameraToPosition,
 };

@@ -6,6 +6,7 @@ import {
   rotateCameraToPosition,
   transformControls,
   orbitControls,
+  scene,
 } from '@/renderer';
 import {
   SandboxStatus,
@@ -122,12 +123,12 @@ chargeButton.addEventListener('click', () => {
 
 electricField.addEventListener('click', () => {
   selectManager.deselect();
-  sandbox.addField(new ElectricField(new THREE.Vector3(0, 1, 0)));
+  sandbox.addField(new ElectricField(scene, new THREE.Vector3(0, 1, 0)));
 });
 
 magneticField.addEventListener('click', () => {
   selectManager.deselect();
-  sandbox.addField(new MagneticField(new THREE.Vector3(0, 1, 0)));
+  sandbox.addField(new MagneticField(scene, new THREE.Vector3(0, 1, 0)));
 });
 
 const tooltip = document.createElement('div');

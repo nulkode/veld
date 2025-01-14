@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { selectManager } from '@/ui';
 import { EventEmitter } from '@/ui/managers/EventManager';
+import { camera } from './renderer';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
 
@@ -34,6 +35,8 @@ export abstract class PhysicalEntity {
     ..._charges: Charge[]
   ): THREE.Vector3;
 
+  abstract updateVisuals(sandbox: Sandbox): void;
+  abstract deleteVisuals(): void;
   abstract toJSON(): any;
   static fromJSON(_data: any): PhysicalEntity {
     throw new Error('Method not implemented.');
@@ -45,9 +48,8 @@ export class Charge extends PhysicalEntity {
   velocity: THREE.Vector3;
   mass: number = 1; // kg
   showVelocity: boolean = false;
-  velocityArrow: THREE.ArrowHelper | null = null;
   showAcceleration: boolean = false;
-  accelerationArrow: THREE.ArrowHelper | null = null;
+  visuals: THREE.Object3D[] = [];
 
   constructor(
     charge: number,
@@ -94,42 +96,49 @@ export class Charge extends PhysicalEntity {
 
   setShowVelocity(show: boolean) {
     this.showVelocity = show;
-    if (show && !this.velocityArrow) {
-      this.velocityArrow = new THREE.ArrowHelper(
-        this.velocity.clone().normalize(),
-        this.object.position,
-        5,
-        0xff0000
-      );
-      this.object.add(this.velocityArrow);
-    } else if (!show && this.velocityArrow) {
-      this.object.remove(this.velocityArrow);
-      this.velocityArrow = null;
-    } else if (show && this.velocityArrow) {
-      this.velocityArrow.setDirection(this.velocity.clone().normalize());
-      this.velocityArrow.setLength(this.velocity.length());
-    }
   }
 
-  updateVelocityArrow() {
-    if (this.velocityArrow) this.object.remove(this.velocityArrow);
+  setShowAcceleration(show: boolean) {
+    this.showAcceleration = show;
+  }
+
+  updateVisuals(sandbox: Sandbox) {
+    if (this.visuals.length !== 0) {
+      this.object.remove(...this.visuals);
+      this.visuals = [];
+    }
+
     if (this.showVelocity && this.velocity.length() > 0) {
-      this.velocityArrow = new THREE.ArrowHelper(
+      const velocityArrow = new THREE.ArrowHelper(
         this.velocity.clone().normalize(),
         new THREE.Vector3(0, 0, 0),
         5,
         0xff0000
       );
-      this.object.add(this.velocityArrow);
+      this.visuals.push(velocityArrow);
     }
+
+    if (this.showAcceleration) {
+      const acceleration = this.calculateAcceleration(sandbox);
+      if (acceleration.length() === 0) return;
+      const accelerationArrow = new THREE.ArrowHelper(
+        acceleration.clone().normalize(),
+        new THREE.Vector3(0, 0, 0),
+        4,
+        0x00ff00,
+        0.5,
+        0.3
+      );
+      this.visuals.push(accelerationArrow);
+    }
+
+    if (this.visuals.length === 0) return;
+    this.object.add(...this.visuals);
   }
 
-  setShowAcceleration(show: boolean) {
-    this.showAcceleration = show;
-    if (!show && this.accelerationArrow) {
-      this.object.remove(this.accelerationArrow);
-      this.accelerationArrow = null;
-    }
+  deleteVisuals() {
+    this.object.remove(...this.visuals);
+    this.visuals = [];
   }
 
   calculateAcceleration(sandbox: Sandbox): THREE.Vector3 {
@@ -138,23 +147,6 @@ export class Charge extends PhysicalEntity {
       sandbox.fields,
       ...sandbox.entities.filter((e) => e instanceof Charge)
     ).divideScalar(this.mass);
-  }
-
-  updateAccelerationArrow(sandbox: Sandbox) {
-    if (this.accelerationArrow) this.object.remove(this.accelerationArrow);
-    if (this.showAcceleration) {
-      const acceleration = this.calculateAcceleration(sandbox);
-      if (acceleration.length() === 0) return;
-      this.accelerationArrow = new THREE.ArrowHelper(
-        acceleration.clone().normalize(),
-        new THREE.Vector3(0, 0, 0),
-        4,
-        0x00ff00,
-        0.5, // headLength
-        0.3 // headWidth
-      );
-      this.object.add(this.accelerationArrow);
-    }
   }
 
   calculateForce(
@@ -218,13 +210,17 @@ export abstract class Field {
   visible: boolean = true;
   variation: THREE.Vector3;
   arrowColor: number = 0x0000ff;
+  protected scene: THREE.Scene;
+  protected visuals: THREE.ArrowHelper[] = [];
 
   constructor(
+    scene: THREE.Scene,
     field: THREE.Vector3,
     show: boolean = true,
     variation?: THREE.Vector3,
     arrowColor?: number
   ) {
+    this.scene = scene;
     this.value = field;
     this.visible = show;
     this.variation =
@@ -243,22 +239,70 @@ export abstract class Field {
     this.value = newField;
   }
 
+  updateVisuals(cameraPosition: THREE.Vector3) {
+    this.scene.remove(...this.visuals);
+    this.visuals = [];
+
+    // TODO: make these configurable
+    const distance = 30;
+    const maxDistance = 100;
+    const minDistance = 10;
+    const maxPointsPerAxis = Math.floor(maxDistance / distance);
+
+    if (!this.visible) return;
+
+    const direction = this.value.clone().normalize();
+
+    const startingPoint = new THREE.Vector3(
+      Math.floor(cameraPosition.x / distance) * distance + this.variation.x,
+      Math.floor(cameraPosition.y / distance) * distance + this.variation.y,
+      Math.floor(cameraPosition.z / distance) * distance + this.variation.z
+    );
+
+    for (let x = -maxPointsPerAxis; x < maxPointsPerAxis; x++) {
+      for (let y = -maxPointsPerAxis; y < maxPointsPerAxis; y++) {
+        for (let z = -maxPointsPerAxis; z < maxPointsPerAxis; z++) {
+          const point = new THREE.Vector3(
+            startingPoint.x + x * distance,
+            startingPoint.y + y * distance,
+            startingPoint.z + z * distance
+          );
+
+          if (point.distanceTo(cameraPosition) > maxDistance) continue;
+          if (point.distanceTo(cameraPosition) < minDistance) continue;
+
+          this.visuals.push(
+            new THREE.ArrowHelper(direction, point, 5, this.arrowColor)
+          );
+        }
+      }
+    }
+
+    this.scene.add(...this.visuals);
+  }
+
+  deleteVisuals() {
+    this.scene.remove(...this.visuals);
+    this.visuals = [];
+  }
+
   abstract calculateForce(charge: Charge): THREE.Vector3;
 
   abstract toJSON(): any;
-  static fromJSON(_data: any): Field {
+  static fromJSON(_scene: THREE.Scene, _data: any): Field {
     throw new Error('Method not implemented.');
   }
 }
 
 export class ElectricField extends Field {
   constructor(
+    scene: THREE.Scene,
     field: THREE.Vector3,
     show: boolean = true,
     variation?: THREE.Vector3,
     arrowColor?: number
   ) {
-    super(field, show, variation, arrowColor);
+    super(scene, field, show, variation, arrowColor);
   }
 
   calculateForce(charge: Charge): THREE.Vector3 {
@@ -276,8 +320,9 @@ export class ElectricField extends Field {
     };
   }
 
-  static fromJSON(data: any) {
+  static fromJSON(scene: THREE.Scene, data: any) {
     return new ElectricField(
+      scene,
       new THREE.Vector3().fromArray(data.value),
       data.show,
       new THREE.Vector3().fromArray(data.variation),
@@ -288,12 +333,13 @@ export class ElectricField extends Field {
 
 export class MagneticField extends Field {
   constructor(
+    scene: THREE.Scene,
     field: THREE.Vector3,
     show: boolean = true,
     variation?: THREE.Vector3,
     arrowColor?: number
   ) {
-    super(field, show, variation, arrowColor);
+    super(scene, field, show, variation, arrowColor);
   }
 
   calculateForce(charge: Charge): THREE.Vector3 {
@@ -314,8 +360,9 @@ export class MagneticField extends Field {
     };
   }
 
-  static fromJSON(data: any) {
+  static fromJSON(scene: THREE.Scene, data: any) {
     return new MagneticField(
+      scene,
       new THREE.Vector3().fromArray(data.value),
       data.show,
       new THREE.Vector3().fromArray(data.variation),
@@ -357,15 +404,12 @@ export class Sandbox extends EventEmitter {
     sandboxContext: SandboxContext;
   };
 
-  private fieldsObjects: THREE.Object3D[];
-
   constructor(scene: THREE.Scene) {
     super();
     this.scene = scene;
     this.entities = [];
     this.fields = [];
     this.status = SandboxStatus.PAUSED;
-    this.fieldsObjects = [];
     this.initialState = {
       entities: [],
       fields: [],
@@ -386,58 +430,13 @@ export class Sandbox extends EventEmitter {
     this.context.distanceUnit = unit;
   }
 
-  updateFieldsObjects(cameraPosition: THREE.Vector3) {
-    this.scene.remove(...this.fieldsObjects);
-    this.fieldsObjects = [];
-
-    const distance = 30;
-    const maxDistance = 100;
-    const minDistance = 10;
-    const maxPointsPerAxis = Math.floor(maxDistance / distance);
-
+  updateVisuals(cameraPosition: THREE.Vector3) {
     for (const field of this.fields) {
-      if (!field.visible) continue;
-
-      const direction = field.value.clone().normalize();
-
-      const startingPoint = new THREE.Vector3(
-        Math.floor(cameraPosition.x / distance) * distance + field.variation.x,
-        Math.floor(cameraPosition.y / distance) * distance + field.variation.y,
-        Math.floor(cameraPosition.z / distance) * distance + field.variation.z
-      );
-
-      for (let x = -maxPointsPerAxis; x < maxPointsPerAxis; x++) {
-        for (let y = -maxPointsPerAxis; y < maxPointsPerAxis; y++) {
-          for (let z = -maxPointsPerAxis; z < maxPointsPerAxis; z++) {
-            const point = new THREE.Vector3(
-              startingPoint.x + x * distance,
-              startingPoint.y + y * distance,
-              startingPoint.z + z * distance
-            );
-
-            if (point.distanceTo(cameraPosition) > maxDistance) continue;
-            if (point.distanceTo(cameraPosition) < minDistance) continue;
-
-            this.fieldsObjects.push(
-              new THREE.ArrowHelper(direction, point, 5, field.arrowColor)
-            );
-          }
-        }
-      }
+      field.updateVisuals(cameraPosition);
     }
 
     for (const entity of this.entities) {
-      if (
-        entity instanceof Charge &&
-        entity.showVelocity &&
-        entity.velocityArrow
-      ) {
-        entity.updateVelocityArrow();
-      }
-    }
-
-    if (this.fieldsObjects.length !== 0) {
-      this.scene.add(...this.fieldsObjects);
+      entity.updateVisuals(this);
     }
   }
 
@@ -479,9 +478,9 @@ export class Sandbox extends EventEmitter {
 
     const fields = this.initialState.fields.map((data: any) => {
       if (data.type === 'ElectricField') {
-        return ElectricField.fromJSON(data);
+        return ElectricField.fromJSON(this.scene, data);
       } else if (data.type === 'MagneticField') {
-        return MagneticField.fromJSON(data);
+        return MagneticField.fromJSON(this.scene, data);
       } else {
         throw new Error('Invalid field type');
       }
@@ -497,6 +496,7 @@ export class Sandbox extends EventEmitter {
   }
 
   deleteEntity(entity: PhysicalEntity) {
+    entity.deleteVisuals();
     this.entities = this.entities.filter((e) => e !== entity);
     this.scene.remove(entity.object);
     this.emit('entityRemoved', entity);
@@ -529,12 +529,10 @@ export class Sandbox extends EventEmitter {
         if (entity.object.position.length() > 1e5) {
           this.deleteEntity(entity);
         }
-
-        // Update arrows
-        entity.updateVelocityArrow();
-        entity.updateAccelerationArrow(this);
       }
     }
+
+    this.updateVisuals(camera.position);
   }
 
   addField(field: Field) {
@@ -543,6 +541,7 @@ export class Sandbox extends EventEmitter {
   }
 
   deleteField(field: Field) {
+    field.deleteVisuals();
     this.fields = this.fields.filter((f) => f !== field);
     this.emit('fieldRemoved', field);
   }

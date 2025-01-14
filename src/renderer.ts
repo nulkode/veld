@@ -14,6 +14,7 @@ let scene: THREE.Scene;
 
 function init() {
   scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0xd0d0d0, 100, 500);
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -50,7 +51,7 @@ function init() {
   const grid = gridHelper.clone();
   scene.add(grid);
 
-  camera.position.set(20, 20, 20);
+  camera.position.set(40, 40, 40);
   camera.lookAt(0, 0, 0);
 
   sandbox.updateVisuals(camera.position);

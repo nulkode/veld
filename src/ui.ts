@@ -23,6 +23,7 @@ import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
 import { SelectManager } from '@/ui/managers/SelectManager';
 import '@/styles/global.css';
 import '@/styles/overlay.css';
+import { DebugPanel } from '@/ui/components/DebugPanel';
 
 function rotateCameraToTopView() {
   rotateCameraToPosition(0, 1, 0);
@@ -168,6 +169,19 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     });
   });
+});
+
+let clicks = 0;
+const debugPanel = new DebugPanel(scene);
+
+document.getElementById('logo')?.addEventListener('click', () => {
+  clicks += 1;
+  if (clicks > 3) {
+    document.body.insertAdjacentHTML('beforeend', debugPanel.getHTML());
+    debugPanel.attachEvents();
+    debugPanel.show();
+    clicks = 0;
+  }
 });
 
 export const selectManager = new SelectManager(

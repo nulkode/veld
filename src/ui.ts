@@ -9,7 +9,6 @@ import {
   scene,
 } from '@/renderer';
 import {
-  SandboxStatus,
   protonModel,
   electronModel,
   Charge,
@@ -24,45 +23,22 @@ import { SelectManager } from '@/ui/managers/SelectManager';
 import '@/styles/global.css';
 import '@/styles/overlay.css';
 import { DebugPanel } from '@/ui/components/DebugPanel';
+import { Toolbar } from '@/ui/components/overlay/Toolbar';
 
-function rotateCameraToTopView() {
-  rotateCameraToPosition(0, 1, 0);
-}
-
-function rotateCameraToFrontView() {
-  rotateCameraToPosition(0, 0, 1);
-}
-
-function rotateCameraToSideView() {
-  rotateCameraToPosition(1, 0, 0);
-}
 
 document
   .getElementById('top-face')
-  ?.addEventListener('click', rotateCameraToTopView);
+  ?.addEventListener('click', () => rotateCameraToPosition(0, 1, 0));
 document
   .getElementById('front-face')
-  ?.addEventListener('click', rotateCameraToFrontView);
+  ?.addEventListener('click', () => rotateCameraToPosition(0, 0, 1));
 document
   .getElementById('side-face')
-  ?.addEventListener('click', rotateCameraToSideView);
+  ?.addEventListener('click', () => rotateCameraToPosition(1, 0, 0));
 
-document.getElementById('play-pause')?.addEventListener('click', () => {
-  const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
-  if (sandbox.status === SandboxStatus.PLAYING) {
-    sandbox.pause();
-    icon.src = 'icons/play.svg';
-  } else {
-    sandbox.play();
-    icon.src = 'icons/pause.svg';
-  }
-});
-
-document.getElementById('reset')?.addEventListener('click', () => {
-  sandbox.reset();
-  const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
-  icon.src = 'icons/play.svg';
-});
+const toolbar = new Toolbar();
+document.body.insertAdjacentHTML('beforeend', toolbar.getHTML());
+toolbar.attachEvents();
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;

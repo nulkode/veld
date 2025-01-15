@@ -126,7 +126,7 @@ class Toolbar extends Component {
 
   private updateButton(
     button: ToolbarButton,
-    mode: 'disabled' | 'enabled' | 'selected' | 'loading'
+    mode: 'disabled' | 'enabled' | 'selected'
   ) {
     const buttonElement = this.buttons[button]!;
     buttonElement.classList.remove(

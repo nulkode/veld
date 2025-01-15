@@ -28,6 +28,7 @@ assetsManager.on('loadingStateChanged', () => {
     !assetsManager.loadingState.models
   ) {
     document.getElementById('loading-screen')!.style.opacity = '0';
+    selectManager.deselect();
   }
 
   document.getElementById('loading-state-text')!.innerText =

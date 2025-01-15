@@ -42,6 +42,7 @@
   pointer-events: none;
   transition: opacity 0.3s;
   opacity: 0;
+  z-index: 1000;
 }
 
 .tooltip-visible {

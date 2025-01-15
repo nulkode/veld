@@ -52,6 +52,8 @@ export class SelectManager extends EventEmitter {
   }
 
   private selectObject(intersect: THREE.Intersection) {
+    this.deselect();
+
     const entity = sandbox.entities.find(
       (entity) => entity.object === intersect.object
     );

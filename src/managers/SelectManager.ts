@@ -5,8 +5,8 @@ import { ToolbarButton } from '@/ui/components/overlay/Toolbar';
 import { EventEmitter } from '@/managers/EventManager';
 
 export class SelectManager extends EventEmitter {
+  mode: 'translate' | 'rotate' | null;
   private selectedEntity: PhysicalEntity | Field | null;
-  private mode: 'translate' | 'rotate' | null;
   private rotationObject: THREE.Object3D | null;
 
   constructor() {
@@ -144,7 +144,7 @@ export class SelectManager extends EventEmitter {
     if (this.selectedEntity instanceof Field) {
       this.emit('updateButtons', {
         [ToolbarButton.MOVE]: 'disabled',
-        [ToolbarButton.ROTATE]: 'enabled'
+        [ToolbarButton.ROTATE]: this.mode === 'rotate' ? 'selected' : 'enabled'
       });
     } else if (this.selectedEntity instanceof Charge) {
       if (this.mode) {

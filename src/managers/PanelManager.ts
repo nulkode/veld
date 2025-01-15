@@ -95,11 +95,18 @@ export class PanelManager {
           (value) => {
             if (entity.velocity.length() === 0) {
               entity.velocity = new THREE.Vector3(0, value, 0);
+              selectManager.updateButtons();
             } else {
               entity.velocity.setLength(
                 (value * sandbox.context.distanceUnit) /
-                  sandbox.context.timeUnit
+                sandbox.context.timeUnit
               );
+              if (entity.velocity.length() === 0) {
+                selectManager.updateButtons();
+                if (selectManager.mode === 'rotate') {
+                  selectManager.deselect();
+                }
+              }
             }
           },
           undefined,

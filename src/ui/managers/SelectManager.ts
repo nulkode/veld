@@ -6,7 +6,7 @@ import {
   Field,
   Charge,
   protonModel,
-  electronModel,
+  electronModel
 } from '@/sandbox';
 import * as THREE from 'three';
 

@@ -38,7 +38,9 @@ class Toolbar extends Component {
 
   attachEvents() {
     document.getElementById('play-pause')?.addEventListener('click', () => {
-      const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
+      const icon = document.getElementById(
+        'play-pause-icon'
+      ) as HTMLImageElement;
       if (sandbox.status === SandboxStatus.PLAYING) {
         sandbox.pause();
         icon.src = 'icons/play.svg';
@@ -50,7 +52,9 @@ class Toolbar extends Component {
 
     document.getElementById('reset')?.addEventListener('click', () => {
       sandbox.reset();
-      const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
+      const icon = document.getElementById(
+        'play-pause-icon'
+      ) as HTMLImageElement;
       icon.src = 'icons/play.svg';
     });
   }

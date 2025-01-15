@@ -17,7 +17,9 @@ input[type='range']::-webkit-slider-thumb {
   background: #007bff;
   border-radius: 50%;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 input[type='range']::-webkit-slider-thumb:hover {
@@ -34,7 +36,9 @@ input[type='range']::-moz-range-thumb {
   background: #007bff;
   border-radius: 50%;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 input[type='range']::-moz-range-thumb:hover {

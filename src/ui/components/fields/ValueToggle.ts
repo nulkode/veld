@@ -19,8 +19,8 @@ export class PanelValueToggleField extends ValuePanelField<boolean> {
         <div>
           <label for="${this.id}">${this.label}</label>
           <button id="${this.id}" class="toggle-button ${
-      this.value ? 'on' : 'off'
-    }">
+            this.value ? 'on' : 'off'
+          }">
             ${this.value ? 'On' : 'Off'}
           </button>
         </div>

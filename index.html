@@ -1,26 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>veld</title>
+    <link rel="icon" href="/icons/veld.svg" type="image/svg+xml" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>veld</title>
-  <link rel="icon" href="/icons/veld.svg" type="image/svg+xml" />
-</head>
+  <body>
+    <img id="logo" src="/icons/veld.svg" alt="Veld Logo" />
+    <div id="cube-controls" class="ui">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xml:space="preserve"
+        width="64"
+        height="64"
+        viewBox="0 0 58 58"
+      >
+        <path id="top-face" d="M3 13 28 0l27 13-26 13z" style="fill: #259f00" />
+        <path id="side-face" d="M29 58 3 45V13l26 13z" style="fill: #c63434" />
+        <path
+          id="front-face"
+          d="m29 58 26-13V13L29 26z"
+          style="fill: #274dad"
+        />
+      </svg>
+    </div>
 
-<body>
-  <img id="logo" src="/icons/veld.svg" alt="Veld Logo" />
-  <div id="cube-controls" class="ui">
-    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="64" height="64" viewBox="0 0 58 58">
-      <path id="top-face" d="M3 13 28 0l27 13-26 13z" style="fill: #259f00" />
-      <path id="side-face" d="M29 58 3 45V13l26 13z" style="fill: #c63434" />
-      <path id="front-face" d="m29 58 26-13V13L29 26z" style="fill: #274dad" />
-    </svg>
-  </div>
-
-
-  <div id="panels-container" class="ui"></div>
-  <script type="module" src="/src/ui.ts"></script>
-</body>
-
+    <div id="panels-container" class="ui"></div>
+    <script type="module" src="/src/ui.ts"></script>
+  </body>
 </html>

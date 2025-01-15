@@ -115,7 +115,7 @@ function rotateCameraToPosition(
     onUpdate: () => {
       camera.lookAt(orbitControls.target);
       orbitControls.update();
-    },
+    }
   });
 }
 
@@ -128,5 +128,5 @@ export {
   transformControls,
   orbitControls,
   scene,
-  rotateCameraToPosition,
+  rotateCameraToPosition
 };

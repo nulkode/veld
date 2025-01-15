@@ -6,14 +6,14 @@ import {
   rotateCameraToPosition,
   transformControls,
   orbitControls,
-  scene,
+  scene
 } from '@/renderer';
 import {
   protonModel,
   electronModel,
   Charge,
   MagneticField,
-  ElectricField,
+  ElectricField
 } from '@/sandbox';
 import { PanelManager } from '@/ui/managers/PanelManager';
 import { Panel } from '@/ui/components/Panel';
@@ -24,7 +24,6 @@ import '@/styles/global.css';
 import '@/styles/overlay.css';
 import { DebugPanel } from '@/ui/components/DebugPanel';
 import { Toolbar } from '@/ui/components/overlay/Toolbar';
-
 
 document
   .getElementById('top-face')
@@ -79,7 +78,7 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
     (value) => {
       sandbox.context.ignoreGravity = value;
     }
-  ),
+  )
 ]);
 
 panelManager.addPanel(sandboxPanel);

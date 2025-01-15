@@ -5,7 +5,7 @@ import {
   Charge,
   Field,
   MagneticField,
-  ElectricField,
+  ElectricField
 } from '@/sandbox';
 import { selectManager } from '@/ui';
 import { Panel } from '@/ui/components/Panel';
@@ -122,7 +122,7 @@ export class PanelManager {
           (value) => {
             entity.setShowAcceleration(value);
           }
-        ),
+        )
       ]);
       this.addPanel(chargePanel);
     }
@@ -203,7 +203,7 @@ export class PanelManager {
           ),
           colorField,
           toggleVisibilityField,
-          rotateField,
+          rotateField
         ]
       );
       this.addPanel(magneticFieldPanel);
@@ -226,7 +226,7 @@ export class PanelManager {
           ),
           colorField,
           toggleVisibilityField,
-          rotateField,
+          rotateField
         ]
       );
       this.addPanel(electricFieldPanel);

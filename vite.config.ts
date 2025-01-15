@@ -9,17 +9,17 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          three: ['three'],
-        },
+          three: ['three']
+        }
       },
       plugins: [
         terser({
           compress: {
             drop_console: true,
-            drop_debugger: true,
-          },
-        }),
-      ],
-    },
-  },
+            drop_debugger: true
+          }
+        })
+      ]
+    }
+  }
 });

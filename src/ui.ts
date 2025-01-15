@@ -5,15 +5,34 @@ import {
   rotateCameraToPosition,
   scene
 } from '@/renderer';
-import { PanelManager } from '@/ui/managers/PanelManager';
+import { PanelManager } from '@/managers/PanelManager';
 import { Panel } from '@/ui/components/Panel';
 import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
-import { SelectManager } from '@/ui/managers/SelectManager';
+import { SelectManager } from '@/managers/SelectManager';
 import '@/styles/global.css';
 import '@/styles/overlay.css';
 import { DebugPanel } from '@/ui/components/DebugPanel';
 import { Toolbar } from '@/ui/components/overlay/Toolbar';
+import { AssetsManager } from './managers/AssetsManager';
+
+export const assetsManager = new AssetsManager();
+
+export const panelManager = new PanelManager('panels-container');
+
+export const selectManager = new SelectManager();
+
+assetsManager.on('loadingStateChanged', () => {
+  if (
+    !assetsManager.loadingState.scripts &&
+    !assetsManager.loadingState.models
+  ) {
+    document.getElementById('loading-screen')!.style.opacity = '0';
+  }
+
+  document.getElementById('loading-state-text')!.innerText =
+    assetsManager.getLoadingString();
+});
 
 document
   .getElementById('top-face')
@@ -30,10 +49,6 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-export const panelManager = new PanelManager('panels-container');
-
-export const selectManager = new SelectManager();
 
 const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
   new PanelValueSliderField(

@@ -1,12 +1,5 @@
 import { Component } from '@/ui/components/Component';
-import {
-  Charge,
-  ElectricField,
-  electronModel,
-  MagneticField,
-  protonModel,
-  SandboxStatus
-} from '@/sandbox';
+import { Charge, ElectricField, MagneticField, SandboxStatus } from '@/sandbox';
 import { orbitControls, sandbox, scene } from '@/renderer';
 import { selectManager } from '@/ui';
 import * as THREE from 'three';
@@ -43,7 +36,6 @@ class Toolbar extends Component {
         </div>
         <div class="button" id="charge" data-tooltip="Add charge">
           <img src="icons/charge.svg" />
-          <img class="loading-spinner" src="icons/loading.svg" />
         </div>
         <div class="button" id="electric-field" data-tooltip="Set electric field">
           <img src="icons/electric-field.svg" />
@@ -104,11 +96,9 @@ class Toolbar extends Component {
     this.buttons[ToolbarButton.CHARGE]!.addEventListener('click', () => {
       selectManager.deselect();
 
-      if (protonModel && electronModel) {
-        sandbox.appendEntity(
-          new Charge(-1, new THREE.Vector3(0, 0, 0), orbitControls.target)
-        );
-      }
+      sandbox.appendEntity(
+        new Charge(-1, new THREE.Vector3(0, 0, 0), orbitControls.target)
+      );
     });
 
     this.buttons[ToolbarButton.ELECTRIC_FIELD]!.addEventListener(
@@ -142,8 +132,7 @@ class Toolbar extends Component {
     buttonElement.classList.remove(
       'button-disabled',
       'button-enabled',
-      'button-selected',
-      'button-loading'
+      'button-selected'
     );
     buttonElement.classList.add(`button-${mode}`);
   }

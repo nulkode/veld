@@ -1,22 +1,15 @@
 import { orbitControls, sandbox, scene, transformControls } from '@/renderer';
-import {
-  PhysicalEntity,
-  Field,
-  Charge,
-  protonModel,
-  electronModel
-} from '@/sandbox';
+import { PhysicalEntity, Field, Charge } from '@/sandbox';
 import * as THREE from 'three';
 import { ToolbarButton } from '@/ui/components/overlay/Toolbar';
-import { EventEmitter } from '@/ui/managers/EventManager';
+import { EventEmitter } from '@/managers/EventManager';
 
 export class SelectManager extends EventEmitter {
   private selectedEntity: PhysicalEntity | Field | null;
   private mode: 'translate' | 'rotate' | null;
   private rotationObject: THREE.Object3D | null;
 
-  constructor(
-  ) {
+  constructor() {
     super();
     this.selectedEntity = null;
     this.mode = null;
@@ -158,7 +151,10 @@ export class SelectManager extends EventEmitter {
         if (this.mode === 'translate') {
           this.emit('updateButtons', {
             [ToolbarButton.MOVE]: 'selected',
-            [ToolbarButton.ROTATE]: this.selectedEntity.velocity.length() !== 0 ? 'enabled' : 'disabled'
+            [ToolbarButton.ROTATE]:
+              this.selectedEntity.velocity.length() !== 0
+                ? 'enabled'
+                : 'disabled'
           });
         } else if (this.mode === 'rotate') {
           this.emit('updateButtons', {
@@ -169,23 +165,14 @@ export class SelectManager extends EventEmitter {
       } else {
         this.emit('updateButtons', {
           [ToolbarButton.MOVE]: 'enabled',
-          [ToolbarButton.ROTATE]: this.selectedEntity.velocity.length() !== 0 ? 'enabled' : 'disabled'
+          [ToolbarButton.ROTATE]:
+            this.selectedEntity.velocity.length() !== 0 ? 'enabled' : 'disabled'
         });
       }
     } else {
       this.emit('updateButtons', {
         [ToolbarButton.MOVE]: 'disabled',
         [ToolbarButton.ROTATE]: 'disabled'
-      });
-    }
-
-    if (protonModel && electronModel) {
-      this.emit('updateButtons', {
-        [ToolbarButton.CHARGE]: 'enabled'
-      });
-    } else {
-      this.emit('updateButtons', {
-        [ToolbarButton.CHARGE]: 'loading'
       });
     }
   }

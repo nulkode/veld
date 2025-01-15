@@ -8,6 +8,19 @@
   </head>
 
   <body>
+    <div id="loading-screen">
+      <img src="/icons/veld.svg" alt="veld logo" id="loading-screen__logo" />
+      <img
+        src="/icons/loading.svg"
+        alt="loading spinner"
+        id="loading-screen__spinner"
+      />
+      <p id="loading-state-text">Loading...</p>
+      <footer id="footer">
+        <p>&copy; 2025 Veld by nulkode. Licensed under MIT.</p>
+      </footer>
+    </div>
+
     <img id="logo" src="/icons/veld.svg" alt="Veld Logo" />
     <div id="cube-controls" class="ui">
       <svg
@@ -29,5 +42,11 @@
 
     <div id="panels-container" class="ui"></div>
     <script type="module" src="/src/ui.ts"></script>
+    <script>
+      document.getElementById('footer').innerHTML =
+        '&copy; ' +
+        new Date().getFullYear() +
+        ' Veld by nulkode. Licensed under MIT.';
+    </script>
   </body>
 </html>

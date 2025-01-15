@@ -1,25 +1,9 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { selectManager } from '@/ui';
-import { EventEmitter } from '@/ui/managers/EventManager';
+import { assetsManager, selectManager } from '@/ui';
+import { EventEmitter } from '@/managers/EventManager';
 import { camera } from '@/renderer';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
-
-export let protonModel: THREE.Object3D | null = null;
-export let electronModel: THREE.Object3D | null = null;
-
-const loader = new GLTFLoader();
-
-loader.load('./models/proton.glb', (gltf) => {
-  protonModel = gltf.scene.children[0];
-  selectManager.onChargeLoad();
-});
-
-loader.load('./models/electron.glb', (gltf) => {
-  electronModel = gltf.scene.children[0];
-  selectManager.onChargeLoad();
-});
 
 export abstract class PhysicalEntity {
   readonly uuid = THREE.MathUtils.generateUUID();
@@ -57,10 +41,13 @@ export class Charge extends PhysicalEntity {
     position: THREE.Vector3,
     mass: number = 1
   ) {
-    if (!protonModel || !electronModel) {
+    if (!assetsManager.models.proton || !assetsManager.models.electron) {
       throw new Error('Models not loaded');
     }
-    const object = charge < 0 ? electronModel.clone() : protonModel.clone();
+    const object =
+      charge < 0
+        ? assetsManager.models.electron.clone()
+        : assetsManager.models.proton.clone();
     object.position.copy(position);
 
     super(object);
@@ -78,15 +65,15 @@ export class Charge extends PhysicalEntity {
   }
 
   setCharge(charge: number) {
-    if (!protonModel || !electronModel) {
+    if (!assetsManager.models.proton || !assetsManager.models.electron) {
       throw new Error('Models not loaded');
     }
     if (charge < 0 && this.value >= 0) {
       this.value = charge;
-      this.replace3DObject(electronModel.clone());
+      this.replace3DObject(assetsManager.models.electron.clone());
     } else if (charge > 0 && this.value <= 0) {
       this.value = charge;
-      this.replace3DObject(protonModel.clone());
+      this.replace3DObject(assetsManager.models.proton.clone());
     } else {
       this.value = charge;
     }

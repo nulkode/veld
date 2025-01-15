@@ -43,14 +43,6 @@
   background-color: #a0ff7b !important;
 }
 
-.button-loading .loading-spinner {
-  display: block;
-}
-
-.button-loading img {
-  display: none;
-}
-
 .loading-spinner {
   display: none;
   width: 24px;
@@ -60,9 +52,4 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-}
-
-.button-loading {
-  pointer-events: none;
-  opacity: 0.5;
 }

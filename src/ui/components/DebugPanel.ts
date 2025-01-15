@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component } from '@/ui/components/Component';
 import { Scene } from 'three';
 
 export class DebugPanel extends Component {

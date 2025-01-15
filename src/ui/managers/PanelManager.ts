@@ -1,6 +1,5 @@
 import { sandbox } from '@/renderer';
 import {
-  Sandbox,
   PhysicalEntity,
   Charge,
   Field,
@@ -21,7 +20,7 @@ export class PanelManager {
   panels: Panel[];
   container: HTMLElement;
 
-  constructor(containerId: string, sandbox: Sandbox) {
+  constructor(containerId: string) {
     this.panels = [];
     this.container = document.getElementById(containerId) as HTMLElement;
 

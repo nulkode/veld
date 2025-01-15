@@ -1,7 +1,5 @@
-import { TransformControls } from 'three/examples/jsm/Addons.js';
-import { orbitControls } from '@/renderer';
+import { orbitControls, sandbox, scene, transformControls } from '@/renderer';
 import {
-  Sandbox,
   PhysicalEntity,
   Field,
   Charge,
@@ -9,35 +7,22 @@ import {
   electronModel
 } from '@/sandbox';
 import * as THREE from 'three';
+import { ToolbarButton } from '@/ui/components/overlay/Toolbar';
+import { EventEmitter } from '@/ui/managers/EventManager';
 
-const moveButton = document.getElementById('move')!;
-const rotateButton = document.getElementById('rotate')!;
-const chargeButton = document.getElementById('charge')!;
-
-export class SelectManager {
-  private sandbox: Sandbox;
+export class SelectManager extends EventEmitter {
   private selectedEntity: PhysicalEntity | Field | null;
-  private transformControls: TransformControls;
-  private scene: THREE.Scene;
   private mode: 'translate' | 'rotate' | null;
   private rotationObject: THREE.Object3D | null;
 
   constructor(
-    sandbox: Sandbox,
-    transformControls: TransformControls,
-    scene: THREE.Scene
   ) {
-    this.sandbox = sandbox;
-    this.transformControls = transformControls;
-    this.scene = scene;
+    super();
     this.selectedEntity = null;
     this.mode = null;
     this.rotationObject = null;
 
-    moveButton.addEventListener('click', () => this.updateMode('translate'));
-    rotateButton.addEventListener('click', () => this.updateMode('rotate'));
-
-    this.transformControls.addEventListener(
+    transformControls.addEventListener(
       'change',
       this.onTransformChange.bind(this)
     );
@@ -74,14 +59,14 @@ export class SelectManager {
   }
 
   private selectObject(intersect: THREE.Intersection) {
-    const entity = this.sandbox.entities.find(
+    const entity = sandbox.entities.find(
       (entity) => entity.object === intersect.object
     );
 
     if (entity && entity !== this.selectedEntity) {
       this.selectedEntity = entity;
-      this.transformControls.attach(entity.object);
-      this.scene.add(this.transformControls.getHelper());
+      transformControls.attach(entity.object);
+      scene.add(transformControls.getHelper());
       this.updateMode('translate');
       return true;
     } else if (entity === this.selectedEntity) {
@@ -97,7 +82,7 @@ export class SelectManager {
       this.rotationObject = new THREE.Object3D();
       this.rotationObject.position.copy(orbitControls.target);
       this.rotationObject.lookAt(field.value);
-      this.scene.add(this.rotationObject);
+      scene.add(this.rotationObject);
 
       const arrowHelper = new THREE.ArrowHelper(
         new THREE.Vector3(0, 0, 1),
@@ -107,8 +92,8 @@ export class SelectManager {
       );
       this.rotationObject.add(arrowHelper);
 
-      this.transformControls.attach(this.rotationObject);
-      this.scene.add(this.transformControls.getHelper());
+      transformControls.attach(this.rotationObject);
+      scene.add(transformControls.getHelper());
       this.updateMode('rotate');
       return true;
     }
@@ -117,10 +102,10 @@ export class SelectManager {
 
   deselect() {
     if (this.selectedEntity) {
-      this.transformControls.detach();
-      this.scene.remove(this.transformControls.getHelper());
+      transformControls.detach();
+      scene.remove(transformControls.getHelper());
       if (this.rotationObject) {
-        this.scene.remove(this.rotationObject);
+        scene.remove(this.rotationObject);
         this.rotationObject = null;
       }
     }
@@ -136,7 +121,7 @@ export class SelectManager {
         this.deselect();
         return;
       }
-      this.transformControls.setMode(mode);
+      transformControls.setMode(mode);
 
       if (mode === 'rotate') {
         if (this.selectedEntity instanceof Charge) {
@@ -150,8 +135,8 @@ export class SelectManager {
               .normalize()
               .add(this.selectedEntity.object.position)
           );
-          this.scene.add(this.rotationObject);
-          this.transformControls.attach(this.rotationObject);
+          scene.add(this.rotationObject);
+          transformControls.attach(this.rotationObject);
         }
       }
     } else {
@@ -162,53 +147,46 @@ export class SelectManager {
     this.updateButtons();
   }
 
-  private updateButton(
-    button: HTMLElement,
-    mode: 'disabled' | 'enabled' | 'selected' | 'loading'
-  ) {
-    button.classList.remove(
-      'button-disabled',
-      'button-enabled',
-      'button-selected',
-      'button-loading'
-    );
-    button.classList.add(`button-${mode}`);
-  }
-
   updateButtons() {
     if (this.selectedEntity instanceof Field) {
-      this.updateButton(moveButton, 'disabled');
-      this.updateButton(rotateButton, 'enabled');
+      this.emit('updateButtons', {
+        [ToolbarButton.MOVE]: 'disabled',
+        [ToolbarButton.ROTATE]: 'enabled'
+      });
     } else if (this.selectedEntity instanceof Charge) {
       if (this.mode) {
         if (this.mode === 'translate') {
-          this.updateButton(moveButton, 'selected');
-          if (this.selectedEntity.velocity.length() !== 0) {
-            this.updateButton(rotateButton, 'enabled');
-          } else {
-            this.updateButton(rotateButton, 'disabled');
-          }
+          this.emit('updateButtons', {
+            [ToolbarButton.MOVE]: 'selected',
+            [ToolbarButton.ROTATE]: this.selectedEntity.velocity.length() !== 0 ? 'enabled' : 'disabled'
+          });
         } else if (this.mode === 'rotate') {
-          this.updateButton(rotateButton, 'selected');
-          this.updateButton(moveButton, 'enabled');
+          this.emit('updateButtons', {
+            [ToolbarButton.ROTATE]: 'selected',
+            [ToolbarButton.MOVE]: 'enabled'
+          });
         }
       } else {
-        this.updateButton(moveButton, 'enabled');
-        if (this.selectedEntity.velocity.length() !== 0) {
-          this.updateButton(rotateButton, 'enabled');
-        } else {
-          this.updateButton(rotateButton, 'disabled');
-        }
+        this.emit('updateButtons', {
+          [ToolbarButton.MOVE]: 'enabled',
+          [ToolbarButton.ROTATE]: this.selectedEntity.velocity.length() !== 0 ? 'enabled' : 'disabled'
+        });
       }
     } else {
-      this.updateButton(moveButton, 'disabled');
-      this.updateButton(rotateButton, 'disabled');
+      this.emit('updateButtons', {
+        [ToolbarButton.MOVE]: 'disabled',
+        [ToolbarButton.ROTATE]: 'disabled'
+      });
     }
 
     if (protonModel && electronModel) {
-      this.updateButton(chargeButton, 'enabled');
+      this.emit('updateButtons', {
+        [ToolbarButton.CHARGE]: 'enabled'
+      });
     } else {
-      this.updateButton(chargeButton, 'loading');
+      this.emit('updateButtons', {
+        [ToolbarButton.CHARGE]: 'loading'
+      });
     }
   }
 

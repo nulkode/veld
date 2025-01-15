@@ -1,20 +1,10 @@
-import * as THREE from 'three';
 import {
   camera,
   renderer,
   sandbox,
   rotateCameraToPosition,
-  transformControls,
-  orbitControls,
   scene
 } from '@/renderer';
-import {
-  protonModel,
-  electronModel,
-  Charge,
-  MagneticField,
-  ElectricField
-} from '@/sandbox';
 import { PanelManager } from '@/ui/managers/PanelManager';
 import { Panel } from '@/ui/components/Panel';
 import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
@@ -35,17 +25,15 @@ document
   .getElementById('side-face')
   ?.addEventListener('click', () => rotateCameraToPosition(1, 0, 0));
 
-const toolbar = new Toolbar();
-document.body.insertAdjacentHTML('beforeend', toolbar.getHTML());
-toolbar.attachEvents();
-
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-export const panelManager = new PanelManager('panels-container', sandbox);
+export const panelManager = new PanelManager('panels-container');
+
+export const selectManager = new SelectManager();
 
 const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
   new PanelValueSliderField(
@@ -82,30 +70,6 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
 ]);
 
 panelManager.addPanel(sandboxPanel);
-
-const chargeButton = document.getElementById('charge')!;
-const electricField = document.getElementById('electric-field')!;
-const magneticField = document.getElementById('magnetic-field')!;
-
-chargeButton.addEventListener('click', () => {
-  selectManager.deselect();
-
-  if (protonModel && electronModel) {
-    sandbox.appendEntity(
-      new Charge(-1, new THREE.Vector3(0, 0, 0), orbitControls.target)
-    );
-  }
-});
-
-electricField.addEventListener('click', () => {
-  selectManager.deselect();
-  sandbox.addField(new ElectricField(scene, new THREE.Vector3(0, 1, 0)));
-});
-
-magneticField.addEventListener('click', () => {
-  selectManager.deselect();
-  sandbox.addField(new MagneticField(scene, new THREE.Vector3(0, 1, 0)));
-});
 
 const tooltip = document.createElement('div');
 tooltip.className = 'tooltip';
@@ -146,6 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+const toolbar = new Toolbar();
+document.body.insertAdjacentHTML('beforeend', toolbar.getHTML());
+toolbar.attachEvents();
+
 let clicks = 0;
 const debugPanel = new DebugPanel(scene);
 
@@ -158,9 +126,3 @@ document.getElementById('logo')?.addEventListener('click', () => {
     clicks = 0;
   }
 });
-
-export const selectManager = new SelectManager(
-  sandbox,
-  transformControls,
-  sandbox.scene
-);

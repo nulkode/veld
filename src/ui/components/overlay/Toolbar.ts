@@ -1,11 +1,35 @@
-import { Component } from '../Component';
-import { SandboxStatus } from '@/sandbox';
-import { sandbox } from '@/renderer';
+import { Component } from '@/ui/components/Component';
+import {
+  Charge,
+  ElectricField,
+  electronModel,
+  MagneticField,
+  protonModel,
+  SandboxStatus
+} from '@/sandbox';
+import { orbitControls, sandbox, scene } from '@/renderer';
+import { selectManager } from '@/ui';
+import * as THREE from 'three';
 import '@/styles/overlay/Toolbar.css';
 
+export enum ToolbarButton {
+  MOVE = 'move',
+  ROTATE = 'rotate',
+  CHARGE = 'charge',
+  ELECTRIC_FIELD = 'electric-field',
+  MAGNETIC_FIELD = 'magnetic-field',
+  PLAY_PAUSE = 'play-pause',
+  RESET = 'reset'
+}
+
 class Toolbar extends Component {
+  buttons: {
+    [key in ToolbarButton]?: HTMLElement;
+  };
+
   constructor() {
     super();
+    this.buttons = {};
   }
 
   getHTML() {
@@ -37,7 +61,26 @@ class Toolbar extends Component {
   }
 
   attachEvents() {
-    document.getElementById('play-pause')?.addEventListener('click', () => {
+    this.buttons = {
+      [ToolbarButton.MOVE]: document.getElementById('move')!,
+      [ToolbarButton.ROTATE]: document.getElementById('rotate')!,
+      [ToolbarButton.CHARGE]: document.getElementById('charge')!,
+      [ToolbarButton.ELECTRIC_FIELD]:
+        document.getElementById('electric-field')!,
+      [ToolbarButton.MAGNETIC_FIELD]:
+        document.getElementById('magnetic-field')!,
+      [ToolbarButton.PLAY_PAUSE]: document.getElementById('play-pause')!,
+      [ToolbarButton.RESET]: document.getElementById('reset')!
+    };
+
+    this.buttons[ToolbarButton.MOVE]!.addEventListener('click', () =>
+      selectManager.updateMode('translate')
+    );
+    this.buttons[ToolbarButton.ROTATE]!.addEventListener('click', () =>
+      selectManager.updateMode('rotate')
+    );
+
+    this.buttons[ToolbarButton.PLAY_PAUSE]!.addEventListener('click', () => {
       const icon = document.getElementById(
         'play-pause-icon'
       ) as HTMLImageElement;
@@ -50,13 +93,59 @@ class Toolbar extends Component {
       }
     });
 
-    document.getElementById('reset')?.addEventListener('click', () => {
+    this.buttons[ToolbarButton.RESET]!.addEventListener('click', () => {
       sandbox.reset();
       const icon = document.getElementById(
         'play-pause-icon'
       ) as HTMLImageElement;
       icon.src = 'icons/play.svg';
     });
+
+    this.buttons[ToolbarButton.CHARGE]!.addEventListener('click', () => {
+      selectManager.deselect();
+
+      if (protonModel && electronModel) {
+        sandbox.appendEntity(
+          new Charge(-1, new THREE.Vector3(0, 0, 0), orbitControls.target)
+        );
+      }
+    });
+
+    this.buttons[ToolbarButton.ELECTRIC_FIELD]!.addEventListener(
+      'click',
+      () => {
+        selectManager.deselect();
+        sandbox.addField(new ElectricField(scene, new THREE.Vector3(0, 1, 0)));
+      }
+    );
+
+    this.buttons[ToolbarButton.MAGNETIC_FIELD]!.addEventListener(
+      'click',
+      () => {
+        selectManager.deselect();
+        sandbox.addField(new MagneticField(scene, new THREE.Vector3(0, 1, 0)));
+      }
+    );
+
+    selectManager.on('updateButtons', (buttons) => {
+      for (const button in buttons) {
+        this.updateButton(button as ToolbarButton, buttons[button]);
+      }
+    });
+  }
+
+  private updateButton(
+    button: ToolbarButton,
+    mode: 'disabled' | 'enabled' | 'selected' | 'loading'
+  ) {
+    const buttonElement = this.buttons[button]!;
+    buttonElement.classList.remove(
+      'button-disabled',
+      'button-enabled',
+      'button-selected',
+      'button-loading'
+    );
+    buttonElement.classList.add(`button-${mode}`);
   }
 }
 

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { selectManager } from '@/ui';
 import { EventEmitter } from '@/ui/managers/EventManager';
-import { camera } from './renderer';
+import { camera } from '@/renderer';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
 

@@ -74,7 +74,7 @@ export class SelectManager extends EventEmitter {
       this.selectedEntity = field;
       this.rotationObject = new THREE.Object3D();
       this.rotationObject.position.copy(orbitControls.target);
-      this.rotationObject.lookAt(field.value);
+      this.rotationObject.lookAt(field.value.clone().add(orbitControls.target));
       scene.add(this.rotationObject);
 
       const arrowHelper = new THREE.ArrowHelper(
@@ -175,9 +175,5 @@ export class SelectManager extends EventEmitter {
         [ToolbarButton.ROTATE]: 'disabled'
       });
     }
-  }
-
-  onChargeLoad() {
-    this.updateButtons();
   }
 }

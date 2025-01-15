@@ -14,7 +14,7 @@ import '@/styles/global.css';
 import '@/styles/overlay.css';
 import { DebugPanel } from '@/ui/components/DebugPanel';
 import { Toolbar } from '@/ui/components/overlay/Toolbar';
-import { AssetsManager } from './managers/AssetsManager';
+import { AssetsManager } from '@/managers/AssetsManager';
 
 export const assetsManager = new AssetsManager();
 

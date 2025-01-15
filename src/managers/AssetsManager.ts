@@ -22,8 +22,7 @@ export class AssetsManager extends EventEmitter {
 
     loader.load('./models/proton.glb', (gltf) => {
       this.models.proton = gltf.scene.children[0];
-      this.emit('modelLoaded', 'proton');
-      this.emit('loadingStateChanged');
+      this.checkModelsLoaded();
     });
 
     loader.load('./models/electron.glb', (gltf) => {

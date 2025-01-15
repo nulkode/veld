@@ -1,4 +1,9 @@
 .value-toggle-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.value-toggle-label {
+    margin: 0 !important;
 }

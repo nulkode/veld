@@ -10,14 +10,16 @@ let renderer: THREE.WebGLRenderer;
 let orbitControls: OrbitControls;
 let transformControls: TransformControls;
 let sandbox: Sandbox;
+let scene: THREE.Scene;
 
 function init() {
-  const scene = new THREE.Scene();
+  scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0xd0d0d0, 100, 500);
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    500
   );
   renderer = new THREE.WebGLRenderer({ antialias: true });
 
@@ -34,13 +36,13 @@ function init() {
   });
 
   sandbox = new Sandbox(scene);
-  sandbox.updateFieldsObjects(camera.position);
+  sandbox.updateVisuals(camera.position);
 
   const light = new THREE.AmbientLight(0xffffff, 1);
   scene.add(light);
 
-  const size = 300;
-  const divisions = 50;
+  const size = 3000;
+  const divisions = 160;
   const gridHelper = new THREE.GridHelper(size, divisions);
   gridHelper.material.color.setHex(0x404040);
   gridHelper.material.opacity = 0.6;
@@ -49,10 +51,10 @@ function init() {
   const grid = gridHelper.clone();
   scene.add(grid);
 
-  camera.position.set(3, 3, 3);
+  camera.position.set(40, 40, 40);
   camera.lookAt(0, 0, 0);
 
-  sandbox.updateFieldsObjects(camera.position);
+  sandbox.updateVisuals(camera.position);
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -86,7 +88,7 @@ function init() {
 
     orbitControls.update();
     renderer.render(scene, camera);
-    sandbox.updateFieldsObjects(camera.position);
+    sandbox.updateVisuals(camera.position);
     sandbox.update(deltaTime);
   }
 
@@ -113,7 +115,7 @@ function rotateCameraToPosition(
     onUpdate: () => {
       camera.lookAt(orbitControls.target);
       orbitControls.update();
-    },
+    }
   });
 }
 
@@ -125,5 +127,6 @@ export {
   sandbox,
   transformControls,
   orbitControls,
-  rotateCameraToPosition,
+  scene,
+  rotateCameraToPosition
 };

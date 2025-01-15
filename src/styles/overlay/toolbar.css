@@ -1,0 +1,55 @@
+#toolbar {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#toolbar .button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 6%;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+#toolbar .button:hover {
+  background-color: #f0f0f0;
+}
+
+#toolbar .button img {
+  width: 48px;
+  height: 48px;
+}
+
+.button-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.button-enabled {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.button-selected {
+  background-color: #a0ff7b !important;
+}
+
+.loading-spinner {
+  display: none;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}

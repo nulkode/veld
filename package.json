@@ -20,6 +20,9 @@
     "three": "^0.172.0"
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "semi": true,
+    "tabWidth": 2,
+    "trailingComma": "none"
   }
 }

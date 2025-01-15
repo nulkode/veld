@@ -16,13 +16,7 @@ export class PanelValueColorField extends ValuePanelField<number> {
     super(id, label, value, labelGenerator);
     this.onUpdate = onUpdate;
     this.predefinedColors = predefinedColors ?? [
-      0x000000,
-      0xff0000,
-      0x00ff00,
-      0x0000ff,
-      0xffff00,
-      0xff00ff,
-      0x00ffff,
+      0x000000, 0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff
     ];
     onUpdate(value);
   }

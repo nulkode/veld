@@ -1,22 +1,24 @@
 button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  button:active {
-    transform: scale(0.9);
-  }
-  
-  button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:active {
+  transform: scale(0.9);
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

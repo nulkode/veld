@@ -1,74 +1,55 @@
-import * as THREE from 'three';
 import {
   camera,
   renderer,
   sandbox,
   rotateCameraToPosition,
-  transformControls,
-  orbitControls,
+  scene
 } from '@/renderer';
-import {
-  SandboxStatus,
-  protonModel,
-  electronModel,
-  Charge,
-  MagneticField,
-  ElectricField,
-} from '@/sandbox';
-import { PanelManager } from '@/ui/managers/PanelManager';
+import { PanelManager } from '@/managers/PanelManager';
 import { Panel } from '@/ui/components/Panel';
 import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
-import { SelectManager } from '@/ui/managers/SelectManager';
+import { SelectManager } from '@/managers/SelectManager';
 import '@/styles/global.css';
 import '@/styles/overlay.css';
+import { DebugPanel } from '@/ui/components/DebugPanel';
+import { Toolbar } from '@/ui/components/overlay/Toolbar';
+import { AssetsManager } from './managers/AssetsManager';
 
-function rotateCameraToTopView() {
-  rotateCameraToPosition(0, 1, 0);
-}
+export const assetsManager = new AssetsManager();
 
-function rotateCameraToFrontView() {
-  rotateCameraToPosition(0, 0, 1);
-}
+export const panelManager = new PanelManager('panels-container');
 
-function rotateCameraToSideView() {
-  rotateCameraToPosition(1, 0, 0);
-}
+export const selectManager = new SelectManager();
+
+assetsManager.on('loadingStateChanged', () => {
+  if (
+    !assetsManager.loadingState.scripts &&
+    !assetsManager.loadingState.models
+  ) {
+    document.getElementById('loading-screen')!.style.opacity = '0';
+    selectManager.deselect();
+  }
+
+  document.getElementById('loading-state-text')!.innerText =
+    assetsManager.getLoadingString();
+});
 
 document
   .getElementById('top-face')
-  ?.addEventListener('click', rotateCameraToTopView);
+  ?.addEventListener('click', () => rotateCameraToPosition(0, 1, 0));
 document
   .getElementById('front-face')
-  ?.addEventListener('click', rotateCameraToFrontView);
+  ?.addEventListener('click', () => rotateCameraToPosition(0, 0, 1));
 document
   .getElementById('side-face')
-  ?.addEventListener('click', rotateCameraToSideView);
-
-document.getElementById('play-pause')?.addEventListener('click', () => {
-  const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
-  if (sandbox.status === SandboxStatus.PLAYING) {
-    sandbox.pause();
-    icon.src = 'icons/play.svg';
-  } else {
-    sandbox.play();
-    icon.src = 'icons/pause.svg';
-  }
-});
-
-document.getElementById('reset')?.addEventListener('click', () => {
-  sandbox.reset();
-  const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
-  icon.src = 'icons/play.svg';
-});
+  ?.addEventListener('click', () => rotateCameraToPosition(1, 0, 0));
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-export const panelManager = new PanelManager('panels-container', sandbox);
 
 const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
   new PanelValueSliderField(
@@ -101,34 +82,10 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
     (value) => {
       sandbox.context.ignoreGravity = value;
     }
-  ),
+  )
 ]);
 
 panelManager.addPanel(sandboxPanel);
-
-const chargeButton = document.getElementById('charge')!;
-const electricField = document.getElementById('electric-field')!;
-const magneticField = document.getElementById('magnetic-field')!;
-
-chargeButton.addEventListener('click', () => {
-  selectManager.deselect();
-
-  if (protonModel && electronModel) {
-    sandbox.appendEntity(
-      new Charge(-1, new THREE.Vector3(0, 0, 0), orbitControls.target)
-    );
-  }
-});
-
-electricField.addEventListener('click', () => {
-  selectManager.deselect();
-  sandbox.addField(new ElectricField(new THREE.Vector3(0, 1, 0)));
-});
-
-magneticField.addEventListener('click', () => {
-  selectManager.deselect();
-  sandbox.addField(new MagneticField(new THREE.Vector3(0, 1, 0)));
-});
 
 const tooltip = document.createElement('div');
 tooltip.className = 'tooltip';
@@ -169,8 +126,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-export const selectManager = new SelectManager(
-  sandbox,
-  transformControls,
-  sandbox.scene
-);
+const toolbar = new Toolbar();
+document.body.insertAdjacentHTML('beforeend', toolbar.getHTML());
+toolbar.attachEvents();
+
+let clicks = 0;
+const debugPanel = new DebugPanel(scene);
+
+document.getElementById('logo')?.addEventListener('click', () => {
+  clicks += 1;
+  if (clicks > 3) {
+    document.body.insertAdjacentHTML('beforeend', debugPanel.getHTML());
+    debugPanel.attachEvents();
+    debugPanel.show();
+    clicks = 0;
+  }
+});

@@ -1,11 +1,10 @@
 import { sandbox } from '@/renderer';
 import {
-  Sandbox,
   PhysicalEntity,
   Charge,
   Field,
   MagneticField,
-  ElectricField,
+  ElectricField
 } from '@/sandbox';
 import { selectManager } from '@/ui';
 import { Panel } from '@/ui/components/Panel';
@@ -21,7 +20,7 @@ export class PanelManager {
   panels: Panel[];
   container: HTMLElement;
 
-  constructor(containerId: string, sandbox: Sandbox) {
+  constructor(containerId: string) {
     this.panels = [];
     this.container = document.getElementById(containerId) as HTMLElement;
 
@@ -96,11 +95,18 @@ export class PanelManager {
           (value) => {
             if (entity.velocity.length() === 0) {
               entity.velocity = new THREE.Vector3(0, value, 0);
+              selectManager.updateButtons();
             } else {
               entity.velocity.setLength(
                 (value * sandbox.context.distanceUnit) /
-                  sandbox.context.timeUnit
+                sandbox.context.timeUnit
               );
+              if (entity.velocity.length() === 0) {
+                selectManager.updateButtons();
+                if (selectManager.mode === 'rotate') {
+                  selectManager.deselect();
+                }
+              }
             }
           },
           undefined,
@@ -122,7 +128,7 @@ export class PanelManager {
           (value) => {
             entity.setShowAcceleration(value);
           }
-        ),
+        )
       ]);
       this.addPanel(chargePanel);
     }
@@ -203,7 +209,7 @@ export class PanelManager {
           ),
           colorField,
           toggleVisibilityField,
-          rotateField,
+          rotateField
         ]
       );
       this.addPanel(magneticFieldPanel);
@@ -226,7 +232,7 @@ export class PanelManager {
           ),
           colorField,
           toggleVisibilityField,
-          rotateField,
+          rotateField
         ]
       );
       this.addPanel(electricFieldPanel);

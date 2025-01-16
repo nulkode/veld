@@ -129,7 +129,7 @@ export class Charge extends PhysicalEntity {
     for (const charge of charges) {
       if (charge === this) continue;
 
-      const distance = this.object.position.distanceTo(charge.object.position);
+      const distance = this.object.position.distanceTo(charge.object.position) / context.distanceUnit;
       const direction = charge.object.position
         .clone()
         .sub(this.object.position)

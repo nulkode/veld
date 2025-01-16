@@ -162,7 +162,7 @@ export class PanelManager {
   onFieldAdded(field: Field) {
     const rotateField = new PanelButtonField(
       `rotate-${field.uuid}`,
-      'Rotate Field',
+      '',
       'Rotate',
       () => {
         selectManager.deselect();

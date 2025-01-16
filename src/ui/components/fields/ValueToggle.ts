@@ -1,6 +1,7 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import '@/styles/panels/fields/button.css';
 import '@/styles/panels/fields/value-toggle.css';
+import { t } from '@/ui';
 
 export class PanelValueToggleField extends ValuePanelField<boolean> {
   constructor(
@@ -18,7 +19,7 @@ export class PanelValueToggleField extends ValuePanelField<boolean> {
   getHTML() {
     return `
         <div class="value-toggle-container">
-          <label for="${this.id}" class="value-toggle-label">${this.label}</label>
+          <label for="${this.id}" class="value-toggle-label">${t(this.label) ?? this.label}</label>
           <button id="${this.id}" class="toggle-button ${
             this.value ? 'on' : 'off'
           }">

@@ -1,5 +1,6 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import '@/styles/panels/fields/value-slider.css';
+import { t } from '@/ui';
 
 export class PanelValueSliderField extends ValuePanelField<number> {
   min: number;
@@ -27,7 +28,7 @@ export class PanelValueSliderField extends ValuePanelField<number> {
     const label = this.getLabel(this.value);
     return `
         <div>
-          <label for="${this.id}">${this.label}: <span id="${this.id}-value">${label}</span></label>
+          <label for="${this.id}">${t(this.label) ?? this.label}: <span id="${this.id}-value">${label}</span></label>
           <input type="range" id="${this.id}" min="${this.min}" max="${this.max}" value="${this.value}">
         </div>
       `;

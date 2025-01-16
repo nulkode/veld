@@ -1,6 +1,7 @@
 import { Component } from '@/ui/components/Component';
 import { PanelField } from '@/ui/components/fields/PanelField';
 import '@/styles/panels/fields/fields.css';
+import { t } from '@/ui';
 
 export class PanelButton {
   id: string;
@@ -58,7 +59,7 @@ export class Panel extends Component {
     return `
         <div class="panel ui" id="${this.id}">
           <div class="panel-header" id="${this.id}-header">
-            <span>${this.title}</span>
+            <span>${t(this.title) ?? this.title}</span>
             <div class="panel-buttons">
               ${this.buttons
                 .filter((button) => button.beforeMinimize)

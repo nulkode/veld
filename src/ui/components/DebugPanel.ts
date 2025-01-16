@@ -1,5 +1,6 @@
 import { Component } from '@/ui/components/Component';
 import { Scene } from 'three';
+import { t } from '@/ui';
 
 export class DebugPanel extends Component {
   private element: HTMLElement | null = null;
@@ -19,12 +20,12 @@ export class DebugPanel extends Component {
 
   getHTML(): string {
     return `
-            <div id="debug-panel">
-                Objects: <span id="object-count">0</span><br>
-                FPS: <span id="fps-counter">0</span><br>
-                Status: <span id="performance-status">---</span>
-            </div>
-        `;
+      <div id="debug-panel">
+        ${t('debugPanel.objects')}: <span id="object-count">0</span><br>
+        ${t('debugPanel.fps')}: <span id="fps-counter">0</span><br>
+        ${t('debugPanel.status')}: <span id="performance-status">---</span>
+      </div>
+    `;
   }
 
   attachEvents(): void {
@@ -41,13 +42,13 @@ export class DebugPanel extends Component {
     const performance = avgFps / this.TARGET_FPS;
 
     if (performance > 0.9) {
-      statusElement.textContent = 'Good';
+      statusElement.textContent = t('debugPanel.good');
       statusElement.className = 'status-good';
     } else if (performance > 0.6) {
-      statusElement.textContent = 'Elevated';
+      statusElement.textContent = t('debugPanel.elevated');
       statusElement.className = 'status-warning';
     } else {
-      statusElement.textContent = 'Critical';
+      statusElement.textContent = t('debugPanel.critical');
       statusElement.className = 'status-critical';
     }
   }
@@ -72,7 +73,6 @@ export class DebugPanel extends Component {
         objectCount.textContent = this.scene.children.length.toString();
       if (fpsCounter) fpsCounter.textContent = this.fps.toString();
 
-      // Update FPS history
       this.fpsHistory.push(this.fps);
       if (this.fpsHistory.length > this.HISTORY_SIZE) {
         this.fpsHistory.shift();

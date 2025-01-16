@@ -5,6 +5,7 @@ import { selectManager } from '@/ui';
 import '@/styles/overlay/Toolbar.css';
 
 export enum ToolbarButton {
+  NEW = 'new',
   MOVE = 'move',
   ROTATE = 'rotate',
   CHARGE = 'charge',
@@ -27,6 +28,9 @@ class Toolbar extends Component {
   getHTML() {
     return `
       <div id="toolbar" class="ui">
+        <div class="button" id="new" data-tooltip="New sandbox">
+          <img src="icons/new.svg" />
+        </div>
         <div class="button" id="move" data-tooltip="Move">
           <img src="icons/move.svg" />
         </div>
@@ -53,6 +57,7 @@ class Toolbar extends Component {
 
   attachEvents() {
     this.buttons = {
+      [ToolbarButton.NEW]: document.getElementById('new')!,
       [ToolbarButton.MOVE]: document.getElementById('move')!,
       [ToolbarButton.ROTATE]: document.getElementById('rotate')!,
       [ToolbarButton.CHARGE]: document.getElementById('charge')!,
@@ -63,6 +68,10 @@ class Toolbar extends Component {
       [ToolbarButton.PLAY_PAUSE]: document.getElementById('play-pause')!,
       [ToolbarButton.RESET]: document.getElementById('reset')!
     };
+
+    this.buttons[ToolbarButton.NEW]!.addEventListener('click', () => {
+      sandbox.new();
+    });
 
     this.buttons[ToolbarButton.MOVE]!.addEventListener('click', () =>
       selectManager.updateMode('translate')

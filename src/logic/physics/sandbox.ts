@@ -196,4 +196,23 @@ export class Sandbox extends EventEmitter {
   addMagneticField() {
     this.addField(new MagneticField(this.scene, new THREE.Vector3(0, 1, 0)));
   }
+
+  new() {
+    for (const entity of this.entities) {
+      this.deleteEntity(entity);
+    }
+
+    for (const field of this.fields) {
+      this.deleteField(field);
+    }
+
+    this.status = SandboxStatus.PAUSED;
+    this.initialState = {
+      entities: [],
+      fields: [],
+      sandboxContext: this.context
+    };
+
+    this.emit('reset');
+  }
 }

@@ -32,8 +32,8 @@ export class PanelManager {
   addPanel(panel: Panel) {
     this.panels.push(panel);
     this.container.innerHTML = this.panels.map((p) => p.getHTML()).join('');
-    for (const field of panel.fields) {
-      field.attachEvents();
+    for (const panel of this.panels) {
+      panel.attachEvents();
     }
   }
 

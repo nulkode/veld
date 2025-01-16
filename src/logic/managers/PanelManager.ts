@@ -5,7 +5,7 @@ import { ElectricField } from '@/logic/physics/fields/ElectricField';
 import { MagneticField } from '@/logic/physics/fields/MagneticField';
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import { selectManager } from '@/ui';
-import { Panel } from '@/ui/components/Panel';
+import { Panel, PanelButton } from '@/ui/components/Panel';
 import { PanelButtonField } from '@/ui/components/fields/Button';
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import { PanelValueColorField } from '@/ui/components/fields/ValueColor';
@@ -127,6 +127,10 @@ export class PanelManager {
             entity.setShowAcceleration(value);
           }
         )
+      ], [
+        new PanelButton('delete', 'X', () => {
+          sandbox.deleteEntity(entity);
+        }, 0xC63434, false)
       ]);
       this.addPanel(chargePanel);
     }
@@ -188,6 +192,10 @@ export class PanelManager {
       }
     );
 
+    const deleteButton = new PanelButton('delete', 'X', () => {
+      sandbox.deleteField(field);
+    }, 0xC63434, false);
+
     if (field instanceof MagneticField) {
       const magneticFieldPanel = new Panel(
         `magnetic-field-${field.uuid}`,
@@ -208,7 +216,8 @@ export class PanelManager {
           colorField,
           toggleVisibilityField,
           rotateField
-        ]
+        ],
+        [deleteButton]
       );
       this.addPanel(magneticFieldPanel);
     } else if (field instanceof ElectricField) {
@@ -231,7 +240,8 @@ export class PanelManager {
           colorField,
           toggleVisibilityField,
           rotateField
-        ]
+        ],
+        [deleteButton]
       );
       this.addPanel(electricFieldPanel);
     }

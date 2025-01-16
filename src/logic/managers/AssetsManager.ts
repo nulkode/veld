@@ -1,4 +1,5 @@
 import { EventEmitter } from '@/logic/managers/EventManager';
+import { t } from '@/ui';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
@@ -46,15 +47,15 @@ export class AssetsManager extends EventEmitter {
 
   getLoadingString() {
     if (this.loadingState.scripts) {
-      return 'Loading scripts...';
+      return t('loadingScreen.loadingScripts');
     }
 
     if (this.loadingState.models) {
-      return `Loading models... (${
+      return `${t('loadingScreen.loadingModels')} (${
         Object.values(this.models).filter((model) => model !== null).length
       }/${Object.keys(this.models).length})`;
     }
 
-    return 'Loading...';
+    return t('loadingScreen.loading');
   }
 }

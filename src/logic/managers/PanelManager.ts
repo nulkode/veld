@@ -13,6 +13,7 @@ import { PanelValueScientificField } from '@/ui/components/fields/ValueScientifi
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
 import * as THREE from 'three';
 import '@/styles/panels/panels.css';
+import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
 
 export class PanelManager {
   panels: Panel[];
@@ -22,11 +23,50 @@ export class PanelManager {
     this.panels = [];
     this.container = document.getElementById(containerId) as HTMLElement;
 
+    this.createSandboxPanel();
+
     sandbox.on('entityAdded', this.onEntityAdded.bind(this));
     sandbox.on('entityRemoved', this.onEntityRemoved.bind(this));
     sandbox.on('entityUpdated', this.onEntityUpdated.bind(this));
     sandbox.on('fieldAdded', this.onFieldAdded.bind(this));
     sandbox.on('fieldRemoved', this.onFieldRemoved.bind(this));
+  }
+
+  createSandboxPanel() {
+    const sandboxPanel = new Panel('sandbox', 'panels.sandbox.title', [
+      new PanelValueSliderField(
+        'time-unit',
+        'panels.sandbox.timeUnit',
+        -10,
+        10,
+        0,
+        (value) => {
+          sandbox.context.timeUnit = 1 / Math.pow(10, value);
+        },
+        (value) => `1 s → 10<sup>${value}</sup> s`
+      ),
+      new PanelValueSliderField(
+        'distance-unit',
+        'panels.sandbox.distanceUnit',
+        -10,
+        10,
+        0,
+        (value) => {
+          sandbox.setDistanceUnit(1 / Math.pow(10, value));
+        },
+        (value) =>
+          `i&#770; = 10<sup>${value}</sup> m; j&#770; = 10<sup>${value}</sup> m; k&#770; = 10<sup>${value}</sup> m`
+      ),
+      new PanelValueToggleField(
+        'ignore-gravity',
+        'panels.sandbox.ignoreGravity',
+        true,
+        (value) => {
+          sandbox.context.ignoreGravity = value;
+        }
+      )
+    ]);
+    this.addPanel(sandboxPanel);
   }
 
   addPanel(panel: Panel) {
@@ -63,11 +103,11 @@ export class PanelManager {
     if (entity instanceof Charge) {
       const chargePanel = new Panel(
         `charge-${entity.uuid}`,
-        'Charge',
+        'panels.charge.title',
         [
           new PanelValueScientificField(
             `charge-${entity.uuid}-value`,
-            'Charge',
+            'panels.charge.charge',
             'C',
             entity.value,
             (value) => {
@@ -78,7 +118,7 @@ export class PanelManager {
           ),
           new PanelValueScientificField(
             `mass-${entity.uuid}`,
-            'Mass',
+            'panels.charge.mass',
             'kg',
             entity.mass,
             (value) => {
@@ -90,7 +130,7 @@ export class PanelManager {
           ),
           new PanelValueScientificField(
             `velocity-${entity.uuid}`,
-            'Velocity',
+            'panels.charge.velocity',
             'm/s',
             entity.velocity.length(),
             (value) => {
@@ -113,7 +153,7 @@ export class PanelManager {
           ),
           new PanelValueToggleField(
             `show-velocity-${entity.uuid}`,
-            'Show Velocity',
+            'panels.charge.showVelocity',
             entity.showVelocity,
             (value) => {
               entity.setShowVelocity(value);
@@ -121,7 +161,7 @@ export class PanelManager {
           ),
           new PanelValueToggleField(
             `show-acceleration-${entity.uuid}`,
-            'Show Acceleration',
+            'panels.charge.showAcceleration',
             entity.showAcceleration,
             (value) => {
               entity.setShowAcceleration(value);
@@ -163,9 +203,7 @@ export class PanelManager {
           selectManager.updateButtons();
         }
 
-        velocityPanel.setValue(
-          entity.velocity.length(),
-        );
+        velocityPanel.setValue(entity.velocity.length());
       }
     }
   }
@@ -174,7 +212,7 @@ export class PanelManager {
     const rotateField = new PanelButtonField(
       `rotate-${field.uuid}`,
       '',
-      'Rotate',
+      'panels.magneticField.rotate',
       () => {
         selectManager.deselect();
         selectManager.selectField(field);
@@ -183,7 +221,7 @@ export class PanelManager {
 
     const colorField = new PanelValueColorField(
       `color-${field.uuid}`,
-      'Color',
+      'panels.magneticField.color',
       field.arrowColor,
       (value) => {
         field.arrowColor = value;
@@ -192,7 +230,7 @@ export class PanelManager {
 
     const toggleVisibilityField = new PanelValueToggleField(
       `show-${field.uuid}`,
-      'Show Field',
+      'panels.magneticField.showField',
       field.visible,
       (value) => {
         field.visible = value;
@@ -212,11 +250,11 @@ export class PanelManager {
     if (field instanceof MagneticField) {
       const magneticFieldPanel = new Panel(
         `magnetic-field-${field.uuid}`,
-        'Magnetic Field',
+        'panels.magneticField.title',
         [
           new PanelValueScientificField(
             `strength-${field.uuid}`,
-            'Strength',
+            'panels.magneticField.strength',
             'T',
             field.value.length(),
             (value) => {
@@ -236,11 +274,11 @@ export class PanelManager {
     } else if (field instanceof ElectricField) {
       const electricFieldPanel = new Panel(
         `electric-field-${field.uuid}`,
-        'Electric Field',
+        'panels.electricField.title',
         [
           new PanelValueScientificField(
             `strength-${field.uuid}`,
-            'Strength',
+            'panels.electricField.strength',
             'N/C',
             field.value.length(),
             (value) => {
@@ -265,6 +303,13 @@ export class PanelManager {
       this.removePanel(`magnetic-field-${field.uuid}`);
     } else if (field instanceof ElectricField) {
       this.removePanel(`electric-field-${field.uuid}`);
+    }
+  }
+
+  refresh() {
+    this.container.innerHTML = this.panels.map((p) => p.getHTML()).join('');
+    for (const panel of this.panels) {
+      panel.attachEvents();
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Component } from '@/ui/components/Component';
 import { SandboxStatus } from '@/logic/physics/sandbox';
 import { orbitControls, sandbox } from '@/renderer';
-import { selectManager } from '@/ui';
+import { selectManager, t } from '@/ui';
 import '@/styles/overlay/Toolbar.css';
 
 export enum ToolbarButton {
@@ -28,28 +28,28 @@ class Toolbar extends Component {
   getHTML() {
     return `
       <div id="toolbar" class="ui">
-        <div class="button" id="new" data-tooltip="New sandbox">
+        <div class="button" id="new" data-tooltip="${t('toolbar.new')}">
           <img src="icons/new.svg" />
         </div>
-        <div class="button" id="move" data-tooltip="Move">
+        <div class="button" id="move" data-tooltip="${t('toolbar.move')}">
           <img src="icons/move.svg" />
         </div>
-        <div class="button" id="rotate" data-tooltip="Rotate">
+        <div class="button" id="rotate" data-tooltip="${t('toolbar.rotate')}">
           <img src="icons/rotate.svg" />
         </div>
-        <div class="button" id="charge" data-tooltip="Add charge">
+        <div class="button" id="charge" data-tooltip="${t('toolbar.charge')}">
           <img src="icons/charge.svg" />
         </div>
-        <div class="button" id="electric-field" data-tooltip="Set electric field">
+        <div class="button" id="electric-field" data-tooltip="${t('toolbar.electric-field')}">
           <img src="icons/electric-field.svg" />
         </div>
-        <div class="button" id="magnetic-field" data-tooltip="Set magnetic field">
+        <div class="button" id="magnetic-field" data-tooltip="${t('toolbar.magnetic-field')}">
           <img src="icons/magnetic-field.svg" />
         </div>
-        <div class="button" id="play-pause" data-tooltip="Play/Pause">
+        <div class="button" id="play-pause" data-tooltip="${t('toolbar.play-pause')}">
           <img id="play-pause-icon" src="icons/play.svg" />
         </div>
-        <div class="button" id="reset" data-tooltip="Reset sandbox">
+        <div class="button" id="reset" data-tooltip="${t('toolbar.reset')}">
           <img src="icons/stop.svg" />
         </div>
       </div>`;

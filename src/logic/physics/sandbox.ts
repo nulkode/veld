@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import { selectManager } from '@/ui';
 import { EventEmitter } from '@/logic/managers/EventManager';
 import { camera } from '@/renderer';
-import { PhysicalEntity } from './entities/PhysicalEntity';
 import { Field } from '@/logic/physics/fields/Field';
 import { Charge } from '@/logic/physics/entities/Charge';
 import { ElectricField } from '@/logic/physics/fields/ElectricField';
 import { MagneticField } from '@/logic/physics/fields/MagneticField';
+import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 
 export enum SandboxStatus {
   PLAYING,

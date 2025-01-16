@@ -71,6 +71,10 @@ class Toolbar extends Component {
 
     this.buttons[ToolbarButton.NEW]!.addEventListener('click', () => {
       sandbox.new();
+      const icon = document.getElementById(
+        'play-pause-icon'
+      ) as HTMLImageElement;
+      icon.src = 'icons/play.svg';
     });
 
     this.buttons[ToolbarButton.MOVE]!.addEventListener('click', () =>

@@ -140,7 +140,7 @@ export class Sandbox extends EventEmitter {
   }
 
   update(deltaTime: number) {
-    const sandboxDelta = deltaTime;
+    const sandboxDelta = deltaTime / this.context.timeUnit;
 
     for (const entity of this.entities) {
       if (entity instanceof Charge) {
@@ -152,9 +152,7 @@ export class Sandbox extends EventEmitter {
         );
         const acceleration = forces
           .clone()
-          .divideScalar(entity.mass)
-          .divideScalar(this.context.timeUnit ** 2)
-          .multiplyScalar(this.context.distanceUnit);
+          .divideScalar(entity.mass);
 
         if (this.status === SandboxStatus.PLAYING) {
           entity.velocity.add(
@@ -163,7 +161,6 @@ export class Sandbox extends EventEmitter {
           entity.object.position.add(
             entity.velocity
               .clone()
-              .divideScalar(this.context.timeUnit)
               .multiplyScalar(sandboxDelta)
               .multiplyScalar(this.context.distanceUnit)
           );
@@ -212,7 +209,6 @@ export class Sandbox extends EventEmitter {
       this.deleteField(field);
     }
 
-    this.status = SandboxStatus.PAUSED;
     this.initialState = {
       entities: [],
       fields: [],

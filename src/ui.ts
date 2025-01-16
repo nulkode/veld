@@ -1,20 +1,14 @@
-import {
-  camera,
-  renderer,
-  sandbox,
-  rotateCameraToPosition,
-  scene
-} from '@/renderer';
-import { PanelManager } from '@/managers/PanelManager';
+import { camera, gizmo, renderer, sandbox, scene } from '@/renderer';
+import { PanelManager } from '@/logic/managers/PanelManager';
 import { Panel } from '@/ui/components/Panel';
 import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
-import { SelectManager } from '@/managers/SelectManager';
+import { SelectManager } from '@/logic/managers/SelectManager';
 import '@/styles/global.css';
 import '@/styles/overlay.css';
 import { DebugPanel } from '@/ui/components/DebugPanel';
 import { Toolbar } from '@/ui/components/overlay/Toolbar';
-import { AssetsManager } from '@/managers/AssetsManager';
+import { AssetsManager } from '@/logic/managers/AssetsManager';
 
 export const assetsManager = new AssetsManager();
 
@@ -35,20 +29,11 @@ assetsManager.on('loadingStateChanged', () => {
     assetsManager.getLoadingString();
 });
 
-document
-  .getElementById('top-face')
-  ?.addEventListener('click', () => rotateCameraToPosition(0, 1, 0));
-document
-  .getElementById('front-face')
-  ?.addEventListener('click', () => rotateCameraToPosition(0, 0, 1));
-document
-  .getElementById('side-face')
-  ?.addEventListener('click', () => rotateCameraToPosition(1, 0, 0));
-
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  gizmo.update();
 });
 
 const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
@@ -59,9 +44,9 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
     10,
     0,
     (value) => {
-      sandbox.context.timeUnit = Math.pow(10, value);
+      sandbox.context.timeUnit = 1 / Math.pow(10, value);
     },
-    (value) => `10<sup>${value}</sup> s`
+    (value) => `1 s → 10<sup>${value}</sup> s`
   ),
   new PanelValueSliderField(
     'distance-unit',
@@ -70,7 +55,7 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
     10,
     0,
     (value) => {
-      sandbox.context.distanceUnit = Math.pow(10, value);
+      sandbox.setDistanceUnit(1 / Math.pow(10, value));
     },
     (value) =>
       `i&#770; = 10<sup>${value}</sup> m; j&#770; = 10<sup>${value}</sup> m; k&#770; = 10<sup>${value}</sup> m`

@@ -1,11 +1,11 @@
 import { Component } from '@/ui/components/Component';
-import { Charge, ElectricField, MagneticField, SandboxStatus } from '@/sandbox';
-import { orbitControls, sandbox, scene } from '@/renderer';
+import { SandboxStatus } from '@/logic/physics/sandbox';
+import { orbitControls, sandbox } from '@/renderer';
 import { selectManager } from '@/ui';
-import * as THREE from 'three';
 import '@/styles/overlay/Toolbar.css';
 
 export enum ToolbarButton {
+  NEW = 'new',
   MOVE = 'move',
   ROTATE = 'rotate',
   CHARGE = 'charge',
@@ -28,6 +28,9 @@ class Toolbar extends Component {
   getHTML() {
     return `
       <div id="toolbar" class="ui">
+        <div class="button" id="new" data-tooltip="New sandbox">
+          <img src="icons/new.svg" />
+        </div>
         <div class="button" id="move" data-tooltip="Move">
           <img src="icons/move.svg" />
         </div>
@@ -54,6 +57,7 @@ class Toolbar extends Component {
 
   attachEvents() {
     this.buttons = {
+      [ToolbarButton.NEW]: document.getElementById('new')!,
       [ToolbarButton.MOVE]: document.getElementById('move')!,
       [ToolbarButton.ROTATE]: document.getElementById('rotate')!,
       [ToolbarButton.CHARGE]: document.getElementById('charge')!,
@@ -64,6 +68,14 @@ class Toolbar extends Component {
       [ToolbarButton.PLAY_PAUSE]: document.getElementById('play-pause')!,
       [ToolbarButton.RESET]: document.getElementById('reset')!
     };
+
+    this.buttons[ToolbarButton.NEW]!.addEventListener('click', () => {
+      sandbox.new();
+      const icon = document.getElementById(
+        'play-pause-icon'
+      ) as HTMLImageElement;
+      icon.src = 'icons/play.svg';
+    });
 
     this.buttons[ToolbarButton.MOVE]!.addEventListener('click', () =>
       selectManager.updateMode('translate')
@@ -95,17 +107,14 @@ class Toolbar extends Component {
 
     this.buttons[ToolbarButton.CHARGE]!.addEventListener('click', () => {
       selectManager.deselect();
-
-      sandbox.appendEntity(
-        new Charge(-1, new THREE.Vector3(0, 0, 0), orbitControls.target)
-      );
+      sandbox.addCharge(orbitControls.target.clone());
     });
 
     this.buttons[ToolbarButton.ELECTRIC_FIELD]!.addEventListener(
       'click',
       () => {
         selectManager.deselect();
-        sandbox.addField(new ElectricField(scene, new THREE.Vector3(0, 1, 0)));
+        sandbox.addElectricField();
       }
     );
 
@@ -113,7 +122,7 @@ class Toolbar extends Component {
       'click',
       () => {
         selectManager.deselect();
-        sandbox.addField(new MagneticField(scene, new THREE.Vector3(0, 1, 0)));
+        sandbox.addMagneticField();
       }
     );
 

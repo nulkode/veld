@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import gsap from 'gsap';
-import { Sandbox } from '@/sandbox';
+import { Sandbox } from '@/logic/physics/sandbox';
 import { selectManager } from '@/ui';
+import { ViewportGizmo } from 'three-viewport-gizmo';
 
 let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;
@@ -11,6 +11,7 @@ let orbitControls: OrbitControls;
 let transformControls: TransformControls;
 let sandbox: Sandbox;
 let scene: THREE.Scene;
+let gizmo: ViewportGizmo;
 
 function init() {
   scene = new THREE.Scene();
@@ -34,6 +35,9 @@ function init() {
   transformControls.addEventListener('dragging-changed', function (event) {
     orbitControls.enabled = !event.value;
   });
+
+  gizmo = new ViewportGizmo(camera, renderer);
+  gizmo.attachControls(orbitControls);
 
   sandbox = new Sandbox(scene);
   sandbox.updateVisuals(camera.position);
@@ -88,35 +92,11 @@ function init() {
 
     orbitControls.update();
     renderer.render(scene, camera);
-    sandbox.updateVisuals(camera.position);
+    gizmo.render();
     sandbox.update(deltaTime);
   }
 
   animate(0);
-}
-
-function rotateCameraToPosition(
-  targetX: number,
-  targetY: number,
-  targetZ: number
-) {
-  const distance = camera.position.distanceTo(orbitControls.target);
-  const direction = new THREE.Vector3(targetX, targetY, targetZ).normalize();
-  const newPosition = direction
-    .multiplyScalar(distance)
-    .add(orbitControls.target);
-
-  gsap.to(camera.position, {
-    x: newPosition.x,
-    y: newPosition.y,
-    z: newPosition.z,
-    duration: 0.5,
-    ease: 'power2.inOut',
-    onUpdate: () => {
-      camera.lookAt(orbitControls.target);
-      orbitControls.update();
-    }
-  });
 }
 
 init();
@@ -127,6 +107,6 @@ export {
   sandbox,
   transformControls,
   orbitControls,
-  scene,
-  rotateCameraToPosition
+  gizmo,
+  scene
 };

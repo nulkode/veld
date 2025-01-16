@@ -17,7 +17,9 @@
   background-color: #fff;
   border-radius: 6%;
   cursor: pointer;
-  transition: background-color 0.2s, opacity 0.2s;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
 }
 
 #toolbar .button:hover {

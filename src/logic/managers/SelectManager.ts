@@ -1,8 +1,10 @@
 import { orbitControls, sandbox, scene, transformControls } from '@/renderer';
-import { PhysicalEntity, Field, Charge } from '@/sandbox';
+import { Charge } from '@/logic/physics/entities/Charge';
+import { Field } from '@/logic/physics/fields/Field';
+import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import * as THREE from 'three';
 import { ToolbarButton } from '@/ui/components/overlay/Toolbar';
-import { EventEmitter } from '@/managers/EventManager';
+import { EventEmitter } from '@/logic/managers/EventManager';
 
 export class SelectManager extends EventEmitter {
   mode: 'translate' | 'rotate' | null;
@@ -52,8 +54,6 @@ export class SelectManager extends EventEmitter {
   }
 
   private selectObject(intersect: THREE.Intersection) {
-    this.deselect();
-
     const entity = sandbox.entities.find(
       (entity) => entity.object === intersect.object
     );

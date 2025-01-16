@@ -1,13 +1,11 @@
 import { sandbox } from '@/renderer';
-import {
-  PhysicalEntity,
-  Charge,
-  Field,
-  MagneticField,
-  ElectricField
-} from '@/sandbox';
+import { Charge } from '@/logic/physics/entities/Charge';
+import { Field } from '@/logic/physics/fields/Field';
+import { ElectricField } from '@/logic/physics/fields/ElectricField';
+import { MagneticField } from '@/logic/physics/fields/MagneticField';
+import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import { selectManager } from '@/ui';
-import { Panel } from '@/ui/components/Panel';
+import { Panel, PanelButton } from '@/ui/components/Panel';
 import { PanelButtonField } from '@/ui/components/fields/Button';
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import { PanelValueColorField } from '@/ui/components/fields/ValueColor';
@@ -33,7 +31,7 @@ export class PanelManager {
 
   addPanel(panel: Panel) {
     this.panels.push(panel);
-    this.container.innerHTML += panel.getHTML();
+    this.container.innerHTML = this.panels.map((p) => p.getHTML()).join('');
     for (const panel of this.panels) {
       panel.attachEvents();
     }
@@ -63,73 +61,85 @@ export class PanelManager {
 
   onEntityAdded(entity: PhysicalEntity) {
     if (entity instanceof Charge) {
-      const chargePanel = new Panel(`charge-${entity.uuid}`, 'Charge', [
-        new PanelValueScientificField(
-          `charge-${entity.uuid}-value`,
-          'Charge',
-          'C',
-          entity.value,
-          (value) => {
-            entity.setCharge(value);
-          },
-          undefined,
-          false
-        ),
-        new PanelValueScientificField(
-          `mass-${entity.uuid}`,
-          'Mass',
-          'kg',
-          entity.mass,
-          (value) => {
-            entity.mass = value;
-          },
-          undefined,
-          false,
-          false
-        ),
-        new PanelValueScientificField(
-          `velocity-${entity.uuid}`,
-          'Velocity',
-          'm/s',
-          entity.velocity.length(),
-          (value) => {
-            if (entity.velocity.length() === 0) {
-              entity.velocity = new THREE.Vector3(0, value, 0);
-              selectManager.updateButtons();
-            } else {
-              entity.velocity.setLength(
-                (value * sandbox.context.distanceUnit) /
-                sandbox.context.timeUnit
-              );
+      const chargePanel = new Panel(
+        `charge-${entity.uuid}`,
+        'Charge',
+        [
+          new PanelValueScientificField(
+            `charge-${entity.uuid}-value`,
+            'Charge',
+            'C',
+            entity.value,
+            (value) => {
+              entity.setCharge(value);
+            },
+            undefined,
+            false
+          ),
+          new PanelValueScientificField(
+            `mass-${entity.uuid}`,
+            'Mass',
+            'kg',
+            entity.mass,
+            (value) => {
+              entity.mass = value;
+            },
+            undefined,
+            false,
+            false
+          ),
+          new PanelValueScientificField(
+            `velocity-${entity.uuid}`,
+            'Velocity',
+            'm/s',
+            entity.velocity.length(),
+            (value) => {
               if (entity.velocity.length() === 0) {
+                entity.velocity = new THREE.Vector3(0, value, 0);
                 selectManager.updateButtons();
-                if (selectManager.mode === 'rotate') {
-                  selectManager.deselect();
+              } else {
+                entity.velocity.setLength(value);
+                if (entity.velocity.length() === 0) {
+                  selectManager.updateButtons();
+                  if (selectManager.mode === 'rotate') {
+                    selectManager.deselect();
+                  }
                 }
               }
+            },
+            undefined,
+            true,
+            false
+          ),
+          new PanelValueToggleField(
+            `show-velocity-${entity.uuid}`,
+            'Show Velocity',
+            entity.showVelocity,
+            (value) => {
+              entity.setShowVelocity(value);
             }
-          },
-          undefined,
-          true,
-          false
-        ),
-        new PanelValueToggleField(
-          `show-velocity-${entity.uuid}`,
-          'Show Velocity',
-          entity.showVelocity,
-          (value) => {
-            entity.setShowVelocity(value);
-          }
-        ),
-        new PanelValueToggleField(
-          `show-acceleration-${entity.uuid}`,
-          'Show Acceleration',
-          entity.showAcceleration,
-          (value) => {
-            entity.setShowAcceleration(value);
-          }
-        )
-      ]);
+          ),
+          new PanelValueToggleField(
+            `show-acceleration-${entity.uuid}`,
+            'Show Acceleration',
+            entity.showAcceleration,
+            (value) => {
+              entity.setShowAcceleration(value);
+            }
+          )
+        ],
+        [
+          new PanelButton(
+            'delete',
+            'X',
+            () => {
+              sandbox.deleteEntity(entity);
+            },
+            0xc63434,
+            false
+          )
+        ]
+      );
       this.addPanel(chargePanel);
     }
   }
@@ -140,7 +150,7 @@ export class PanelManager {
 
   onEntityUpdated(entity: PhysicalEntity) {
     if (entity instanceof Charge) {
-      if (entity.velocity.length() === 0) {
+      if (entity.velocity.length() === 0 && selectManager.mode === 'rotate') {
         selectManager.updateButtons();
       }
 
@@ -154,8 +164,7 @@ export class PanelManager {
         }
 
         velocityPanel.setValue(
-          (entity.velocity.length() * sandbox.context.timeUnit) /
-            sandbox.context.distanceUnit
+          entity.velocity.length(),
         );
       }
     }
@@ -164,7 +173,7 @@ export class PanelManager {
   onFieldAdded(field: Field) {
     const rotateField = new PanelButtonField(
       `rotate-${field.uuid}`,
-      'Rotate Field',
+      '',
       'Rotate',
       () => {
         selectManager.deselect();
@@ -190,6 +199,16 @@ export class PanelManager {
       }
     );
 
+    const deleteButton = new PanelButton(
+      'delete',
+      'X',
+      () => {
+        sandbox.deleteField(field);
+      },
+      0xc63434,
+      false
+    );
+
     if (field instanceof MagneticField) {
       const magneticFieldPanel = new Panel(
         `magnetic-field-${field.uuid}`,
@@ -210,7 +229,8 @@ export class PanelManager {
           colorField,
           toggleVisibilityField,
           rotateField
-        ]
+        ],
+        [deleteButton]
       );
       this.addPanel(magneticFieldPanel);
     } else if (field instanceof ElectricField) {
@@ -233,7 +253,8 @@ export class PanelManager {
           colorField,
           toggleVisibilityField,
           rotateField
-        ]
+        ],
+        [deleteButton]
       );
       this.addPanel(electricFieldPanel);
     }

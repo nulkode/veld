@@ -1,3 +1,4 @@
+import { t } from '@/ui';
 import { PanelField } from '@/ui/components/fields/PanelField';
 
 export class PanelTextField extends PanelField {
@@ -9,7 +10,7 @@ export class PanelTextField extends PanelField {
   }
 
   getHTML() {
-    return `<div><label>${this.label}</label><p>${this.content}</p></div>`;
+    return `<div><label>${t(this.label) ?? this.label}</label><p>${t(this.content) ?? this.content}</p></div>`;
   }
 
   attachEvents() {}

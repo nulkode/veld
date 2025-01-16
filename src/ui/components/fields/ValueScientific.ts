@@ -1,5 +1,6 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import '@/styles/panels/fields/value-scientific.css';
+import { t } from '@/ui';
 
 export class PanelValueScientificField extends ValuePanelField<number> {
   unit: string;
@@ -33,7 +34,7 @@ export class PanelValueScientificField extends ValuePanelField<number> {
 
     return `
         <div>
-          <label for="${this.id}">${this.label} (${this.unit})</label>
+          <label for="${this.id}">${t(this.label) ?? this.label} (${this.unit})</label>
           <div class="scientific-input">
             <input type="number" id="${this.id}-decimal" value="${decimal}">
             ×10<sup><input type="number" id="${this.id}-exponent" value="${

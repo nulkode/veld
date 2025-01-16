@@ -1,0 +1,62 @@
+{
+    "panels": {
+        "sandbox": {
+            "title": "Configuración del Escenario",
+            "timeUnit": "Unidad de Tiempo",
+            "distanceUnit": "Unidad de Distancia",
+            "ignoreGravity": "Ignorar Gravedad"
+        },
+        "charge": {
+            "title": "Carga",
+            "charge": "Carga",
+            "mass": "Masa",
+            "velocity": "Velocidad",
+            "showVelocity": "Mostrar Velocidad",
+            "showAcceleration": "Mostrar Aceleración"
+        },
+        "magneticField": {
+            "title": "Campo Magnético",
+            "strength": "Intensidad",
+            "color": "Color",
+            "showField": "Mostrar Campo",
+            "rotate": "Rotar"
+        },
+        "electricField": {
+            "title": "Campo Eléctrico",
+            "strength": "Intensidad",
+            "color": "Color",
+            "showField": "Mostrar Campo",
+            "rotate": "Rotar"
+        }
+    },
+    "loadingScreen": {
+        "loadingScripts": "Cargando lógica...",
+        "loadingModels": "Cargando modelos...",
+        "loading": "Cargando..."
+    },
+    "toolbar": {
+        "new": "Nuevo sandbox",
+        "move": "Mover",
+        "rotate": "Rotar",
+        "charge": "Añadir carga",
+        "electric-field": "Establecer campo eléctrico",
+        "magnetic-field": "Establecer campo magnético",
+        "play-pause": "Reproducir/Pausar",
+        "reset": "Reiniciar sandbox"
+    },
+    "debugPanel": {
+        "objects": "Objetos",
+        "fps": "FPS",
+        "status": "Estado",
+        "good": "Bueno",
+        "elevated": "Elevado",
+        "critical": "Crítico"
+    },
+    "settings": {
+        "language": {
+            "label": "Idioma",
+            "en": "Inglés",
+            "es": "Español"
+        }
+    }
+}

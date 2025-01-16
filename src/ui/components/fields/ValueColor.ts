@@ -1,5 +1,6 @@
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import '@/styles/panels/fields/value-color.css';
+import { t } from '@/ui';
 
 export class PanelValueColorField extends ValuePanelField<number> {
   onUpdate: (value: number) => void;
@@ -32,7 +33,7 @@ export class PanelValueColorField extends ValuePanelField<number> {
 
     return `
       <div>
-        <label for="${this.id}">${this.label}</label>
+        <label for="${this.id}">${t(this.label) ?? this.label}</label>
         <div id="${this.id}-color-options" class="color-options">
           ${colorOptions}
         </div>

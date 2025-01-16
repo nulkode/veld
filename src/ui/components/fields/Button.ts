@@ -1,5 +1,6 @@
 import { PanelField } from '@/ui/components/fields/PanelField';
 import '@/styles/panels/fields/button.css';
+import { t } from '@/ui';
 
 export class PanelButtonField extends PanelField {
   buttonText: string;
@@ -19,8 +20,8 @@ export class PanelButtonField extends PanelField {
   getHTML() {
     return `
         <div>
-          ${this.label === '' ? '' : `<label for="${this.id}">${this.label}</label>`}
-          <button id="${this.id}">${this.buttonText}</button>
+          ${this.label === '' ? '' : `<label for="${this.id}">${t(this.label) ?? this.label}</label>`}
+          <button id="${this.id}">${t(this.buttonText) ?? this.buttonText}</button>
         </div>
       `;
   }

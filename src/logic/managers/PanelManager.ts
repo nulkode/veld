@@ -138,7 +138,7 @@ export class PanelManager {
 
   onEntityUpdated(entity: PhysicalEntity) {
     if (entity instanceof Charge) {
-      if (entity.velocity.length() === 0) {
+      if (entity.velocity.length() === 0 && selectManager.mode === 'rotate') {
         selectManager.updateButtons();
       }
 

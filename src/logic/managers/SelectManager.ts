@@ -50,8 +50,6 @@ export class SelectManager extends EventEmitter {
       }
     }
 
-    if (this.selectedEntity) this.deselect();
-
     this.updateButtons();
   }
 

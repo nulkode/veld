@@ -61,77 +61,85 @@ export class PanelManager {
 
   onEntityAdded(entity: PhysicalEntity) {
     if (entity instanceof Charge) {
-      const chargePanel = new Panel(`charge-${entity.uuid}`, 'Charge', [
-        new PanelValueScientificField(
-          `charge-${entity.uuid}-value`,
-          'Charge',
-          'C',
-          entity.value,
-          (value) => {
-            entity.setCharge(value);
-          },
-          undefined,
-          false
-        ),
-        new PanelValueScientificField(
-          `mass-${entity.uuid}`,
-          'Mass',
-          'kg',
-          entity.mass,
-          (value) => {
-            entity.mass = value;
-          },
-          undefined,
-          false,
-          false
-        ),
-        new PanelValueScientificField(
-          `velocity-${entity.uuid}`,
-          'Velocity',
-          'm/s',
-          entity.velocity.length(),
-          (value) => {
-            if (entity.velocity.length() === 0) {
-              entity.velocity = new THREE.Vector3(0, value, 0);
-              selectManager.updateButtons();
-            } else {
-              entity.velocity.setLength(
-                (value * sandbox.context.distanceUnit) /
-                  sandbox.context.timeUnit
-              );
+      const chargePanel = new Panel(
+        `charge-${entity.uuid}`,
+        'Charge',
+        [
+          new PanelValueScientificField(
+            `charge-${entity.uuid}-value`,
+            'Charge',
+            'C',
+            entity.value,
+            (value) => {
+              entity.setCharge(value);
+            },
+            undefined,
+            false
+          ),
+          new PanelValueScientificField(
+            `mass-${entity.uuid}`,
+            'Mass',
+            'kg',
+            entity.mass,
+            (value) => {
+              entity.mass = value;
+            },
+            undefined,
+            false,
+            false
+          ),
+          new PanelValueScientificField(
+            `velocity-${entity.uuid}`,
+            'Velocity',
+            'm/s',
+            entity.velocity.length(),
+            (value) => {
               if (entity.velocity.length() === 0) {
+                entity.velocity = new THREE.Vector3(0, value, 0);
                 selectManager.updateButtons();
-                if (selectManager.mode === 'rotate') {
-                  selectManager.deselect();
+              } else {
+                entity.velocity.setLength(value);
+                if (entity.velocity.length() === 0) {
+                  selectManager.updateButtons();
+                  if (selectManager.mode === 'rotate') {
+                    selectManager.deselect();
+                  }
                 }
               }
+            },
+            undefined,
+            true,
+            false
+          ),
+          new PanelValueToggleField(
+            `show-velocity-${entity.uuid}`,
+            'Show Velocity',
+            entity.showVelocity,
+            (value) => {
+              entity.setShowVelocity(value);
             }
-          },
-          undefined,
-          true,
-          false
-        ),
-        new PanelValueToggleField(
-          `show-velocity-${entity.uuid}`,
-          'Show Velocity',
-          entity.showVelocity,
-          (value) => {
-            entity.setShowVelocity(value);
-          }
-        ),
-        new PanelValueToggleField(
-          `show-acceleration-${entity.uuid}`,
-          'Show Acceleration',
-          entity.showAcceleration,
-          (value) => {
-            entity.setShowAcceleration(value);
-          }
-        )
-      ], [
-        new PanelButton('delete', 'X', () => {
-          sandbox.deleteEntity(entity);
-        }, 0xC63434, false)
-      ]);
+          ),
+          new PanelValueToggleField(
+            `show-acceleration-${entity.uuid}`,
+            'Show Acceleration',
+            entity.showAcceleration,
+            (value) => {
+              entity.setShowAcceleration(value);
+            }
+          )
+        ],
+        [
+          new PanelButton(
+            'delete',
+            'X',
+            () => {
+              sandbox.deleteEntity(entity);
+            },
+            0xc63434,
+            false
+          )
+        ]
+      );
       this.addPanel(chargePanel);
     }
   }
@@ -156,8 +164,7 @@ export class PanelManager {
         }
 
         velocityPanel.setValue(
-          (entity.velocity.length() * sandbox.context.timeUnit) /
-            sandbox.context.distanceUnit
+          entity.velocity.length(),
         );
       }
     }
@@ -192,9 +199,15 @@ export class PanelManager {
       }
     );
 
-    const deleteButton = new PanelButton('delete', 'X', () => {
-      sandbox.deleteField(field);
-    }, 0xC63434, false);
+    const deleteButton = new PanelButton(
+      'delete',
+      'X',
+      () => {
+        sandbox.deleteField(field);
+      },
+      0xc63434,
+      false
+    );
 
     if (field instanceof MagneticField) {
       const magneticFieldPanel = new Panel(

@@ -140,6 +140,8 @@ export class Sandbox extends EventEmitter {
   }
 
   update(deltaTime: number) {
+    const sandboxDelta = deltaTime;
+
     for (const entity of this.entities) {
       if (entity instanceof Charge) {
         const charges = this.entities.filter((e) => e instanceof Charge);
@@ -152,12 +154,18 @@ export class Sandbox extends EventEmitter {
           .clone()
           .divideScalar(entity.mass)
           .divideScalar(this.context.timeUnit ** 2)
-          .divideScalar(this.context.distanceUnit);
+          .multiplyScalar(this.context.distanceUnit);
 
         if (this.status === SandboxStatus.PLAYING) {
-          entity.velocity.add(acceleration.clone().multiplyScalar(deltaTime));
+          entity.velocity.add(
+            acceleration.clone().multiplyScalar(sandboxDelta)
+          );
           entity.object.position.add(
-            entity.velocity.clone().multiplyScalar(deltaTime)
+            entity.velocity
+              .clone()
+              .divideScalar(this.context.timeUnit)
+              .multiplyScalar(sandboxDelta)
+              .multiplyScalar(this.context.distanceUnit)
           );
         }
 
@@ -184,9 +192,7 @@ export class Sandbox extends EventEmitter {
   }
 
   addCharge(target: THREE.Vector3) {
-    this.appendEntity(
-      new Charge(-1, new THREE.Vector3(0, 0, 0), target)
-    );
+    this.appendEntity(new Charge(-1, new THREE.Vector3(0, 0, 0), target));
   }
 
   addElectricField() {

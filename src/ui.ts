@@ -44,9 +44,9 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
     10,
     0,
     (value) => {
-      sandbox.context.timeUnit = Math.pow(10, value);
+      sandbox.context.timeUnit = 1 / Math.pow(10, value);
     },
-    (value) => `10<sup>${value}</sup> s`
+    (value) => `1 s → 10<sup>${value}</sup> s`
   ),
   new PanelValueSliderField(
     'distance-unit',
@@ -55,7 +55,7 @@ const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [
     10,
     0,
     (value) => {
-      sandbox.context.distanceUnit = Math.pow(10, value);
+      sandbox.setDistanceUnit(1 / Math.pow(10, value));
     },
     (value) =>
       `i&#770; = 10<sup>${value}</sup> m; j&#770; = 10<sup>${value}</sup> m; k&#770; = 10<sup>${value}</sup> m`

@@ -1,8 +1,8 @@
 import {
   camera,
+  gizmo,
   renderer,
   sandbox,
-  rotateCameraToPosition,
   scene
 } from '@/renderer';
 import { PanelManager } from '@/managers/PanelManager';
@@ -35,20 +35,11 @@ assetsManager.on('loadingStateChanged', () => {
     assetsManager.getLoadingString();
 });
 
-document
-  .getElementById('top-face')
-  ?.addEventListener('click', () => rotateCameraToPosition(0, 1, 0));
-document
-  .getElementById('front-face')
-  ?.addEventListener('click', () => rotateCameraToPosition(0, 0, 1));
-document
-  .getElementById('side-face')
-  ?.addEventListener('click', () => rotateCameraToPosition(1, 0, 0));
-
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  gizmo.update();
 });
 
 const sandboxPanel = new Panel('sandbox', 'Sandbox Settings', [

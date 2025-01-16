@@ -1,20 +1,14 @@
-import {
-  camera,
-  gizmo,
-  renderer,
-  sandbox,
-  scene
-} from '@/renderer';
-import { PanelManager } from '@/managers/PanelManager';
+import { camera, gizmo, renderer, sandbox, scene } from '@/renderer';
+import { PanelManager } from '@/logic/managers/PanelManager';
 import { Panel } from '@/ui/components/Panel';
 import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
-import { SelectManager } from '@/managers/SelectManager';
+import { SelectManager } from '@/logic/managers/SelectManager';
 import '@/styles/global.css';
 import '@/styles/overlay.css';
 import { DebugPanel } from '@/ui/components/DebugPanel';
 import { Toolbar } from '@/ui/components/overlay/Toolbar';
-import { AssetsManager } from '@/managers/AssetsManager';
+import { AssetsManager } from '@/logic/managers/AssetsManager';
 
 export const assetsManager = new AssetsManager();
 

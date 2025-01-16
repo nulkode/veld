@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { Sandbox } from '@/sandbox';
+import { Sandbox } from '@/logic/physics/sandbox';
 import { selectManager } from '@/ui';
 import { ViewportGizmo } from 'three-viewport-gizmo';
 
@@ -108,5 +108,5 @@ export {
   transformControls,
   orbitControls,
   gizmo,
-  scene,
+  scene
 };

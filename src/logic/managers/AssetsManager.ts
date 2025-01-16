@@ -1,4 +1,4 @@
-import { EventEmitter } from '@/managers/EventManager';
+import { EventEmitter } from '@/logic/managers/EventManager';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 

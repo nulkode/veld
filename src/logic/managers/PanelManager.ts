@@ -1,11 +1,9 @@
 import { sandbox } from '@/renderer';
-import {
-  PhysicalEntity,
-  Charge,
-  Field,
-  MagneticField,
-  ElectricField
-} from '@/sandbox';
+import { Charge } from '@/logic/physics/entities/Charge';
+import { Field } from '@/logic/physics/fields/Field';
+import { ElectricField } from '@/logic/physics/fields/ElectricField';
+import { MagneticField } from '@/logic/physics/fields/MagneticField';
+import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import { selectManager } from '@/ui';
 import { Panel } from '@/ui/components/Panel';
 import { PanelButtonField } from '@/ui/components/fields/Button';
@@ -99,7 +97,7 @@ export class PanelManager {
             } else {
               entity.velocity.setLength(
                 (value * sandbox.context.distanceUnit) /
-                sandbox.context.timeUnit
+                  sandbox.context.timeUnit
               );
               if (entity.velocity.length() === 0) {
                 selectManager.updateButtons();

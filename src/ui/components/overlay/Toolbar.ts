@@ -1,8 +1,7 @@
 import { Component } from '@/ui/components/Component';
-import { Charge, ElectricField, MagneticField, SandboxStatus } from '@/sandbox';
-import { orbitControls, sandbox, scene } from '@/renderer';
+import { SandboxStatus } from '@/logic/physics/sandbox';
+import { orbitControls, sandbox } from '@/renderer';
 import { selectManager } from '@/ui';
-import * as THREE from 'three';
 import '@/styles/overlay/Toolbar.css';
 
 export enum ToolbarButton {
@@ -95,17 +94,14 @@ class Toolbar extends Component {
 
     this.buttons[ToolbarButton.CHARGE]!.addEventListener('click', () => {
       selectManager.deselect();
-
-      sandbox.appendEntity(
-        new Charge(-1, new THREE.Vector3(0, 0, 0), orbitControls.target)
-      );
+      sandbox.addCharge(orbitControls.target.clone());
     });
 
     this.buttons[ToolbarButton.ELECTRIC_FIELD]!.addEventListener(
       'click',
       () => {
         selectManager.deselect();
-        sandbox.addField(new ElectricField(scene, new THREE.Vector3(0, 1, 0)));
+        sandbox.addElectricField();
       }
     );
 
@@ -113,7 +109,7 @@ class Toolbar extends Component {
       'click',
       () => {
         selectManager.deselect();
-        sandbox.addField(new MagneticField(scene, new THREE.Vector3(0, 1, 0)));
+        sandbox.addMagneticField();
       }
     );
 

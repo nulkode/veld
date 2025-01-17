@@ -1,0 +1,63 @@
+{
+    "panels": {
+        "sandbox": {
+            "title": "Paramètres du Bac à Sable",
+            "timeUnit": "Unité de Temps",
+            "distanceUnit": "Unité de Distance",
+            "ignoreGravity": "Ignorer la Gravité"
+        },
+        "charge": {
+            "title": "Charge",
+            "charge": "Charge",
+            "mass": "Masse",
+            "velocity": "Vitesse",
+            "showVelocity": "Afficher la Vitesse",
+            "showAcceleration": "Afficher l'Accélération"
+        },
+        "magneticField": {
+            "title": "Champ Magnétique",
+            "strength": "Intensité",
+            "color": "Couleur",
+            "showField": "Afficher le Champ",
+            "rotate": "Tourner"
+        },
+        "electricField": {
+            "title": "Champ Électrique",
+            "strength": "Intensité",
+            "color": "Couleur",
+            "showField": "Afficher le Champ",
+            "rotate": "Tourner"
+        }
+    },
+    "loadingScreen": {
+        "loadingScripts": "Chargement des scripts...",
+        "loadingModels": "Chargement des modèles...",
+        "loading": "Chargement..."
+    },
+    "toolbar": {
+        "new": "Nouveau bac à sable",
+        "move": "Déplacer",
+        "rotate": "Tourner",
+        "charge": "Ajouter une charge",
+        "electric-field": "Définir le champ électrique",
+        "magnetic-field": "Définir le champ magnétique",
+        "play-pause": "Lecture/Pause",
+        "reset": "Réinitialiser le bac à sable"
+    },
+    "debugPanel": {
+        "objects": "Objets",
+        "fps": "IPS",
+        "status": "Statut",
+        "good": "Bon",
+        "elevated": "Élevé",
+        "critical": "Critique"
+    },
+    "settings": {
+        "language": {
+            "label": "Langue",
+            "en": "Anglais",
+            "es": "Espagnol",
+            "fr": "Français"
+        }
+    }
+}

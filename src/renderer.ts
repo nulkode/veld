@@ -4,6 +4,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { Sandbox } from '@/logic/physics/sandbox';
 import { selectManager } from '@/ui';
 import { ViewportGizmo } from 'three-viewport-gizmo';
+import { GridManager } from '@/logic/managers/GridsManager';
 
 let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;
@@ -42,18 +43,10 @@ function init() {
   sandbox = new Sandbox(scene);
   sandbox.updateVisuals(camera.position);
 
+  const gridManager = new GridManager(scene);
+
   const light = new THREE.AmbientLight(0xffffff, 1);
   scene.add(light);
-
-  const size = 3000;
-  const divisions = 160;
-  const gridHelper = new THREE.GridHelper(size, divisions);
-  gridHelper.material.color.setHex(0x404040);
-  gridHelper.material.opacity = 0.6;
-  gridHelper.material.transparent = true;
-
-  const grid = gridHelper.clone();
-  scene.add(grid);
 
   camera.position.set(40, 40, 40);
   camera.lookAt(0, 0, 0);
@@ -91,9 +84,10 @@ function init() {
     lastTime = time;
 
     orbitControls.update();
+    sandbox.update(deltaTime);
+    gridManager.update(camera.position);
     renderer.render(scene, camera);
     gizmo.render();
-    sandbox.update(deltaTime);
   }
 
   animate(0);

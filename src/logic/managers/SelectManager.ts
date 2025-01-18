@@ -21,6 +21,8 @@ export class SelectManager extends EventEmitter {
       'change',
       this.onTransformChange.bind(this)
     );
+    sandbox.on('entityRemoved', this.onEntityRemoved.bind(this));
+    sandbox.on('fieldRemoved', this.onFieldRemoved.bind(this));
 
     this.updateButtons();
   }
@@ -176,6 +178,18 @@ export class SelectManager extends EventEmitter {
         [ToolbarButton.MOVE]: 'disabled',
         [ToolbarButton.ROTATE]: 'disabled'
       });
+    }
+  }
+
+  private onEntityRemoved(entity: PhysicalEntity) {
+    if (entity === this.selectedEntity) {
+      this.deselect();
+    }
+  }
+
+  private onFieldRemoved(field: Field) {
+    if (field === this.selectedEntity) {
+      this.deselect();
     }
   }
 }

@@ -86,8 +86,8 @@ function init() {
     orbitControls.update();
     sandbox.update(deltaTime);
     gridManager.update(camera.position);
-    gizmo.render();
     renderer.render(scene, camera);
+    gizmo.render();
   }
 
   animate(0);

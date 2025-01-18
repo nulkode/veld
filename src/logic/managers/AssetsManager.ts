@@ -1,7 +1,6 @@
 import { EventEmitter } from '@/logic/managers/EventManager';
 import { t } from '@/ui';
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Object3D } from 'three';
 
 export class AssetsManager extends EventEmitter {
   loadingState = {
@@ -9,8 +8,8 @@ export class AssetsManager extends EventEmitter {
     models: true
   };
   models: {
-    proton: THREE.Object3D | null;
-    electron: THREE.Object3D | null;
+    proton: Object3D | null;
+    electron: Object3D | null;
   } = {
     proton: null,
     electron: null
@@ -19,17 +18,9 @@ export class AssetsManager extends EventEmitter {
   constructor() {
     super();
 
-    const loader = new GLTFLoader();
-
-    loader.load('./models/proton.glb', (gltf) => {
-      this.models.proton = gltf.scene.children[0];
-      this.checkModelsLoaded();
-    });
-
-    loader.load('./models/electron.glb', (gltf) => {
-      this.models.electron = gltf.scene.children[0];
-      this.checkModelsLoaded();
-    });
+    this.models.electron = new Object3D();
+    this.models.proton = new Object3D();
+    this.checkModelsLoaded();
 
     window.addEventListener('load', () => {
       this.loadingState.scripts = false;

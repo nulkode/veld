@@ -1,12 +1,12 @@
-import * as THREE from 'three';
 import { Field } from '@/logic/physics/fields/Field';
 import { Sandbox, SandboxContext } from '@/logic/physics/sandbox';
+import { MathUtils, Object3D, Vector3 } from 'three';
 
 export abstract class PhysicalEntity {
-  readonly uuid = THREE.MathUtils.generateUUID();
-  object: THREE.Object3D;
+  readonly uuid = MathUtils.generateUUID();
+  object: Object3D;
 
-  constructor(object: THREE.Object3D) {
+  constructor(object: Object3D) {
     this.object = object;
   }
 
@@ -14,7 +14,7 @@ export abstract class PhysicalEntity {
     context: SandboxContext,
     fields: Field[],
     ...entities: PhysicalEntity[]
-  ): THREE.Vector3;
+  ): Vector3;
 
   abstract updateVisuals(sandbox: Sandbox): void;
   abstract deleteVisuals(): void;

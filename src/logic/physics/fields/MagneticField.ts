@@ -1,27 +1,27 @@
-import * as THREE from 'three';
 import { Field } from '@/logic/physics/fields/Field';
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import { Charge } from '@/logic/physics/entities/Charge';
+import { Scene, Vector3 } from 'three';
 
 export class MagneticField extends Field {
   constructor(
-    scene: THREE.Scene,
-    field: THREE.Vector3,
+    scene: Scene,
+    field: Vector3,
     show: boolean = true,
-    variation?: THREE.Vector3,
+    variation?: Vector3,
     arrowColor?: number
   ) {
     super(scene, field, show, variation, arrowColor);
   }
 
-  calculateForce(entity: PhysicalEntity): THREE.Vector3 {
+  calculateForce(entity: PhysicalEntity): Vector3 {
     if (entity instanceof Charge) {
       return this.value
         .clone()
         .cross(entity.velocity)
         .multiplyScalar(entity.value);
     } else {
-      return new THREE.Vector3();
+      return new Vector3();
     }
   }
 
@@ -36,12 +36,12 @@ export class MagneticField extends Field {
     };
   }
 
-  static fromJSON(scene: THREE.Scene, data: any) {
+  static fromJSON(scene: Scene, data: any) {
     return new MagneticField(
       scene,
-      new THREE.Vector3().fromArray(data.value),
+      new Vector3().fromArray(data.value),
       data.show,
-      new THREE.Vector3().fromArray(data.variation),
+      new Vector3().fromArray(data.variation),
       data.arrowColor
     );
   }

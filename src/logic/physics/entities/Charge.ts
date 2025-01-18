@@ -1,23 +1,23 @@
-import * as THREE from 'three';
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import { Sandbox, SandboxContext } from '@/logic/physics/sandbox';
 import { Field } from '@/logic/physics/fields/Field';
 import { assetsManager } from '@/ui';
+import { Vector3, Object3D, ArrowHelper } from 'three';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
 
 export class Charge extends PhysicalEntity {
   value: number;
-  velocity: THREE.Vector3;
+  velocity: Vector3;
   mass: number = 1; // kg
   showVelocity: boolean = false;
   showAcceleration: boolean = false;
-  visuals: THREE.Object3D[] = [];
+  visuals: Object3D[] = [];
 
   constructor(
     charge: number,
-    velocity: THREE.Vector3,
-    position: THREE.Vector3,
+    velocity: Vector3,
+    position: Vector3,
     mass: number = 1
   ) {
     if (!assetsManager.models.proton || !assetsManager.models.electron) {
@@ -35,7 +35,7 @@ export class Charge extends PhysicalEntity {
     this.mass = mass;
   }
 
-  private replace3DObject(newObject: THREE.Object3D) {
+  private replace3DObject(newObject: Object3D) {
     newObject.position.copy(this.object.position);
     newObject.rotation.copy(this.object.rotation);
     this.object.parent?.add(newObject);
@@ -75,9 +75,9 @@ export class Charge extends PhysicalEntity {
     }
 
     if (this.showVelocity && this.velocity.length() > 0) {
-      const velocityArrow = new THREE.ArrowHelper(
+      const velocityArrow = new ArrowHelper(
         this.velocity.clone().normalize(),
-        new THREE.Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
         5,
         0xff0000
       );
@@ -87,9 +87,9 @@ export class Charge extends PhysicalEntity {
     if (this.showAcceleration) {
       const acceleration = this.calculateAcceleration(sandbox);
       if (acceleration.length() === 0) return;
-      const accelerationArrow = new THREE.ArrowHelper(
+      const accelerationArrow = new ArrowHelper(
         acceleration.clone().normalize(),
-        new THREE.Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
         4,
         0x00ff00,
         0.5,
@@ -107,7 +107,7 @@ export class Charge extends PhysicalEntity {
     this.visuals = [];
   }
 
-  calculateAcceleration(sandbox: Sandbox): THREE.Vector3 {
+  calculateAcceleration(sandbox: Sandbox): Vector3 {
     return this.calculateForce(
       sandbox.context,
       sandbox.fields,
@@ -120,7 +120,7 @@ export class Charge extends PhysicalEntity {
     fields: Field[],
     ...charges: Charge[]
   ) {
-    let force = new THREE.Vector3(0, 0, 0);
+    let force = new Vector3(0, 0, 0);
 
     for (const field of fields) {
       force.add(field.calculateForce(this));
@@ -143,7 +143,7 @@ export class Charge extends PhysicalEntity {
     }
 
     if (!context.ignoreGravity) {
-      force.add(new THREE.Vector3(0, -9.8 * this.mass, 0));
+      force.add(new Vector3(0, -9.8 * this.mass, 0));
     }
 
     return force;
@@ -162,8 +162,8 @@ export class Charge extends PhysicalEntity {
   static fromJSON(data: any) {
     const charge = new Charge(
       data.value,
-      new THREE.Vector3().fromArray(data.velocity),
-      new THREE.Vector3().fromArray(data.position),
+      new Vector3().fromArray(data.velocity),
+      new Vector3().fromArray(data.position),
       data.mass
     );
     return charge;

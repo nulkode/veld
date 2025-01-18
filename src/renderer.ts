@@ -1,29 +1,38 @@
-import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { Sandbox } from '@/logic/physics/sandbox';
 import { selectManager } from '@/ui';
-import { ViewportGizmo } from 'three-viewport-gizmo';
+//import { ViewportGizmo } from 'three-viewport-gizmo';
 import { GridManager } from '@/logic/managers/GridsManager';
+import {
+  PerspectiveCamera,
+  WebGLRenderer,
+  Scene,
+  Fog,
+  AmbientLight,
+  Raycaster,
+  Vector2
+} from 'three';
+import { ViewportGizmo } from 'three-viewport-gizmo';
 
-let camera: THREE.PerspectiveCamera;
-let renderer: THREE.WebGLRenderer;
+let camera: PerspectiveCamera;
+let renderer: WebGLRenderer;
 let orbitControls: OrbitControls;
 let transformControls: TransformControls;
 let sandbox: Sandbox;
-let scene: THREE.Scene;
+let scene: Scene;
 let gizmo: ViewportGizmo;
 
 function init() {
-  scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0xd0d0d0, 100, 500);
-  camera = new THREE.PerspectiveCamera(
+  scene = new Scene();
+  scene.fog = new Fog(0xd0d0d0, 100, 500);
+  camera = new PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
     500
   );
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new WebGLRenderer({ antialias: true });
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -45,7 +54,7 @@ function init() {
 
   const gridManager = new GridManager(scene);
 
-  const light = new THREE.AmbientLight(0xffffff, 1);
+  const light = new AmbientLight(0xffffff, 1);
   scene.add(light);
 
   camera.position.set(40, 40, 40);
@@ -53,8 +62,8 @@ function init() {
 
   sandbox.updateVisuals(camera.position);
 
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
+  const raycaster = new Raycaster();
+  const mouse = new Vector2();
 
   function onMouseClick(event: MouseEvent) {
     event.preventDefault();

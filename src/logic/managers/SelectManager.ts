@@ -123,16 +123,12 @@ export class SelectManager extends EventEmitter {
       if (mode === 'rotate') {
         if (this.selectedEntity instanceof Charge) {
           this.rotationObject = new Object3D();
-          this.rotationObject.position.copy(
-            this.selectedEntity.object.position
-          );
           this.rotationObject.lookAt(
             this.selectedEntity.velocity
               .clone()
               .normalize()
-              .add(this.selectedEntity.object.position)
           );
-          scene.add(this.rotationObject);
+          this.selectedEntity.object.add(this.rotationObject);
           transformControls.attach(this.rotationObject);
         }
       } else if (mode === 'translate') {

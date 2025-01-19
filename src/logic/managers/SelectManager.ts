@@ -135,6 +135,15 @@ export class SelectManager extends EventEmitter {
           scene.add(this.rotationObject);
           transformControls.attach(this.rotationObject);
         }
+      } else if (mode === 'translate') {
+        if (this.rotationObject) {
+          scene.remove(this.rotationObject);
+          this.rotationObject = null;
+        }
+
+        if (this.selectedEntity instanceof Charge) {
+          transformControls.attach(this.selectedEntity.object);
+        }
       }
     } else {
       this.deselect();

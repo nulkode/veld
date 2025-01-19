@@ -166,6 +166,14 @@ export class PanelManager {
             (value) => {
               entity.showAcceleration = value;
             }
+          ),
+          new PanelValueToggleField(
+            `show-trajectory-${entity.uuid}`,
+            'panels.charge.showTrajectory',
+            entity.showTrajectory,
+            (value) => {
+              entity.showTrajectory = value;
+            }
           )
         ],
         [

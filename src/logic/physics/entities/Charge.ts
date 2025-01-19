@@ -11,7 +11,10 @@ import {
   Mesh,
   MeshBasicMaterial,
   SphereGeometry,
-  Group
+  Group,
+  BufferGeometry,
+  Line,
+  LineBasicMaterial
 } from 'three';
 import { MagneticField } from '@/logic/physics/fields/MagneticField';
 
@@ -45,7 +48,10 @@ export class Charge extends PhysicalEntity {
   mass: number = 1; // kg
   showVelocity: boolean = false;
   showAcceleration: boolean = false;
+  showTrajectory: boolean = false;
   visuals: Object3D[] = [];
+  trajectoryLine: Line | null = null;
+  trajectoryPoints: Vector3[] = [];
 
   constructor(
     charge: number,
@@ -134,9 +140,7 @@ export class Charge extends PhysicalEntity {
         const dotGeometry = new SphereGeometry(0.1, 4, 4);
         const dotMaterial = new MeshBasicMaterial({ color: 0xff0000 });
         const dot = new Mesh(dotGeometry, dotMaterial);
-        dot.position.copy(
-          this.velocity.clone().normalize().multiplyScalar(5)
-        );
+        dot.position.copy(this.velocity.clone().normalize().multiplyScalar(5));
         velocityGroup.add(dot);
       }
 
@@ -157,11 +161,17 @@ export class Charge extends PhysicalEntity {
       const dotGeometry = new SphereGeometry(0.1, 4, 4);
       const dotMaterial = new MeshBasicMaterial({ color: magneticField.color });
       const dot = new Mesh(dotGeometry, dotMaterial);
-      dot.position.copy(magneticField.field.clone().normalize().multiplyScalar(4));
+      dot.position.copy(
+        magneticField.field.clone().normalize().multiplyScalar(4)
+      );
       magneticFieldGroup.add(dot);
 
       const magneticFieldForceArrow = new ArrowHelper(
-        magneticField.field.clone().cross(this.velocity).multiplyScalar(this.value).normalize(),
+        magneticField.field
+          .clone()
+          .cross(this.velocity)
+          .multiplyScalar(this.value)
+          .normalize(),
         new Vector3(0, 0, 0),
         4,
         0x00ffff
@@ -170,7 +180,11 @@ export class Charge extends PhysicalEntity {
 
       const plane = createTransparentPlane(
         new Vector3(0, 0, 0),
-        magneticField.field.clone().cross(this.velocity).normalize().multiplyScalar(10)
+        magneticField.field
+          .clone()
+          .cross(this.velocity)
+          .normalize()
+          .multiplyScalar(10)
       );
       magneticFieldGroup.add(plane);
 
@@ -191,13 +205,52 @@ export class Charge extends PhysicalEntity {
       this.visuals.push(accelerationArrow);
     }
 
-    if (this.visuals.length === 0) return;
-    this.object.add(...this.visuals);
+    if (this.visuals.length !== 0) this.object.add(...this.visuals);
+
+    if (this.showTrajectory) {
+      if (
+        this.trajectoryPoints.length === 0 ||
+        this.object.position.distanceToSquared(
+          this.trajectoryPoints[this.trajectoryPoints.length - 1]
+        ) > 0.3
+      ) {
+        this.trajectoryPoints.push(this.object.position.clone());
+      }
+      if (this.trajectoryLine) {
+        const geometry = new BufferGeometry().setFromPoints(
+          this.trajectoryPoints
+        );
+        this.trajectoryLine.geometry.dispose();
+        this.trajectoryLine.geometry = geometry;
+      } else {
+        const geometry = new BufferGeometry().setFromPoints(
+          this.trajectoryPoints
+        );
+        const material = new LineBasicMaterial({ color: 0x00ff00 });
+        this.trajectoryLine = new Line(geometry, material);
+        this.object.parent!.add(this.trajectoryLine);
+      }
+    } else if (this.trajectoryLine) {
+      this.trajectoryLine.geometry.dispose();
+      this.object.parent?.remove(this.trajectoryLine);
+      this.trajectoryLine = null;
+      this.trajectoryPoints = [];
+    }
   }
 
   deleteVisuals() {
     this.object.remove(...this.visuals);
     this.visuals = [];
+    this.deleteTrajectory();
+  }
+
+  deleteTrajectory() {
+    if (this.trajectoryLine) {
+      this.trajectoryLine.geometry.dispose();
+      this.object.parent?.remove(this.trajectoryLine);
+      this.trajectoryLine = null;
+      this.trajectoryPoints = [];
+    }
   }
 
   calculateAcceleration(sandbox: Sandbox): Vector3 {

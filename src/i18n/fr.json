@@ -12,7 +12,8 @@
             "mass": "Masse",
             "velocity": "Vitesse",
             "showVelocity": "Afficher la Vitesse",
-            "showAcceleration": "Afficher l'Accélération"
+            "showAcceleration": "Afficher l'Accélération",
+            "showTrajectory": "Afficher la Trajectoire"
         },
         "magneticField": {
             "title": "Champ Magnétique",

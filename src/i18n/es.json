@@ -12,7 +12,8 @@
             "mass": "Masa",
             "velocity": "Velocidad",
             "showVelocity": "Mostrar Velocidad",
-            "showAcceleration": "Mostrar Aceleración"
+            "showAcceleration": "Mostrar Aceleración",
+            "showTrajectory": "Mostrar Trayectoria"
         },
         "magneticField": {
             "title": "Campo Magnético",

@@ -56,10 +56,10 @@
     },
     "settings": {
         "language": {
-            "label": "Idioma",
-            "en": "Inglés",
-            "es": "Español",
-            "fr": "Francés"
+            "label": "Language",
+            "en": "English",
+            "es": "Spanish",
+            "fr": "French"
         }
     }
 }

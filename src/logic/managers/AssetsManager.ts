@@ -1,7 +1,32 @@
 import { EventEmitter } from '@/logic/managers/EventManager';
 import { t } from '@/ui';
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { CanvasTexture, Mesh, MeshBasicMaterial, Object3D, SphereGeometry } from 'three';
+
+function createTextSphere(text: string, sphereColor: string, textColor = '#ffffff', size = 1) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d')!;
+  canvas.width = 1024;
+  canvas.height = 512;
+
+  context.fillStyle = sphereColor;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  context.font = '400px Arial';
+  context.fillStyle = textColor;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(text, canvas.width/2, canvas.height/2);
+
+  const texture = new CanvasTexture(canvas);
+
+  const geometry = new SphereGeometry(size, 32, 32);
+  const material = new MeshBasicMaterial({
+    map: texture,
+    transparent: true
+  });
+
+  return new Mesh(geometry, material);
+}
 
 export class AssetsManager extends EventEmitter {
   loadingState = {
@@ -9,8 +34,8 @@ export class AssetsManager extends EventEmitter {
     models: true
   };
   models: {
-    proton: THREE.Object3D | null;
-    electron: THREE.Object3D | null;
+    proton: Object3D | null;
+    electron: Object3D | null;
   } = {
     proton: null,
     electron: null
@@ -19,17 +44,9 @@ export class AssetsManager extends EventEmitter {
   constructor() {
     super();
 
-    const loader = new GLTFLoader();
-
-    loader.load('./models/proton.glb', (gltf) => {
-      this.models.proton = gltf.scene.children[0];
-      this.checkModelsLoaded();
-    });
-
-    loader.load('./models/electron.glb', (gltf) => {
-      this.models.electron = gltf.scene.children[0];
-      this.checkModelsLoaded();
-    });
+    this.models.electron = createTextSphere('-', '#0000ff', '#ffffff', 0.5);
+    this.models.proton = createTextSphere('+', '#ff0000', '#ffffff', 0.5);
+    this.checkModelsLoaded();
 
     window.addEventListener('load', () => {
       this.loadingState.scripts = false;

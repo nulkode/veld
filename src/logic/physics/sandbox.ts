@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { selectManager } from '@/ui';
 import { EventEmitter } from '@/logic/managers/EventManager';
 import { camera } from '@/renderer';
@@ -7,6 +6,7 @@ import { Charge } from '@/logic/physics/entities/Charge';
 import { ElectricField } from '@/logic/physics/fields/ElectricField';
 import { MagneticField } from '@/logic/physics/fields/MagneticField';
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
+import { Scene, Vector3 } from 'three';
 
 export enum SandboxStatus {
   PLAYING,
@@ -26,7 +26,7 @@ export interface SandboxContext {
 }
 
 export class Sandbox extends EventEmitter {
-  scene: THREE.Scene;
+  scene: Scene;
   entities: PhysicalEntity[];
   fields: Field[];
   status: SandboxStatus;
@@ -41,7 +41,7 @@ export class Sandbox extends EventEmitter {
     sandboxContext: SandboxContext;
   };
 
-  constructor(scene: THREE.Scene) {
+  constructor(scene: Scene) {
     super();
     this.scene = scene;
     this.entities = [];
@@ -67,7 +67,7 @@ export class Sandbox extends EventEmitter {
     this.context.distanceUnit = unit;
   }
 
-  updateVisuals(cameraPosition: THREE.Vector3) {
+  updateVisuals(cameraPosition: Vector3) {
     for (const field of this.fields) {
       field.updateVisuals(cameraPosition);
     }
@@ -150,9 +150,7 @@ export class Sandbox extends EventEmitter {
           this.fields,
           ...charges
         );
-        const acceleration = forces
-          .clone()
-          .divideScalar(entity.mass);
+        const acceleration = forces.clone().divideScalar(entity.mass);
 
         if (this.status === SandboxStatus.PLAYING) {
           entity.velocity.add(
@@ -188,19 +186,22 @@ export class Sandbox extends EventEmitter {
     this.emit('fieldRemoved', field);
   }
 
-  addCharge(target: THREE.Vector3) {
-    this.appendEntity(new Charge(-1, new THREE.Vector3(0, 0, 0), target));
+  addCharge(target: Vector3) {
+    this.appendEntity(new Charge(-1, new Vector3(0, 0, 0), target));
   }
 
   addElectricField() {
-    this.addField(new ElectricField(this.scene, new THREE.Vector3(0, 1, 0)));
+    this.addField(new ElectricField(this.scene, new Vector3(0, 1, 0)));
   }
 
   addMagneticField() {
-    this.addField(new MagneticField(this.scene, new THREE.Vector3(0, 1, 0)));
+    this.addField(new MagneticField(this.scene, new Vector3(0, 1, 0)));
   }
 
   new() {
+    this.status = SandboxStatus.PAUSED;
+    selectManager.deselect();
+
     for (const entity of this.entities) {
       this.deleteEntity(entity);
     }

@@ -2,10 +2,12 @@ import get from 'lodash/get';
 import { EventEmitter } from '@/logic/managers/EventManager';
 import enTranslations from '@/i18n/en.json';
 import esTranslations from '@/i18n/es.json';
+import frTranslations from '@/i18n/fr.json';
 
 export enum Language {
   EN = 'en',
   ES = 'es',
+  FR = 'fr',
 }
 
 export class I18nManager extends EventEmitter {
@@ -43,6 +45,8 @@ export class I18nManager extends EventEmitter {
         return enTranslations;
       case Language.ES:
         return esTranslations;
+      case Language.FR:
+        return frTranslations;
       default:
         return enTranslations;
     }

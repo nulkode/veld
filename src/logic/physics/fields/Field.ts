@@ -1,20 +1,20 @@
-import * as THREE from 'three';
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
+import { MathUtils, Vector3, Scene, ArrowHelper } from 'three';
 
 export abstract class Field {
-  readonly uuid = THREE.MathUtils.generateUUID();
-  value: THREE.Vector3;
+  readonly uuid = MathUtils.generateUUID();
+  value: Vector3;
   visible: boolean = true;
-  variation: THREE.Vector3;
+  variation: Vector3;
   arrowColor: number = 0x0000ff;
-  protected scene: THREE.Scene;
-  protected visuals: THREE.ArrowHelper[] = [];
+  protected scene: Scene;
+  protected visuals: ArrowHelper[] = [];
 
   constructor(
-    scene: THREE.Scene,
-    field: THREE.Vector3,
+    scene: Scene,
+    field: Vector3,
     show: boolean = true,
-    variation?: THREE.Vector3,
+    variation?: Vector3,
     arrowColor?: number
   ) {
     this.scene = scene;
@@ -22,7 +22,7 @@ export abstract class Field {
     this.visible = show;
     this.variation =
       variation ??
-      new THREE.Vector3(
+      new Vector3(
         Math.random() * 3,
         Math.random() * 3,
         Math.random() * 3
@@ -32,12 +32,12 @@ export abstract class Field {
     }
   }
 
-  changeField(newField: THREE.Vector3) {
+  changeField(newField: Vector3) {
     this.value = newField;
   }
 
   // TODO: Research on how to optimize this
-  updateVisuals(cameraPosition: THREE.Vector3) {
+  updateVisuals(cameraPosition: Vector3) {
     this.scene.remove(...this.visuals);
     this.visuals = [];
 
@@ -63,14 +63,14 @@ export abstract class Field {
         const pointY = baseY + y * distance;
         for (let z = -maxPointsPerAxis; z < maxPointsPerAxis; z++) {
           const pointZ = baseZ + z * distance;
-          const point = new THREE.Vector3(pointX, pointY, pointZ);
+          const point = new Vector3(pointX, pointY, pointZ);
 
           const distanceToCamera = point.distanceTo(cameraPosition);
           if (distanceToCamera > maxDistance || distanceToCamera < minDistance)
             continue;
 
           this.visuals.push(
-            new THREE.ArrowHelper(direction, point, 5, this.arrowColor)
+            new ArrowHelper(direction, point, 5, this.arrowColor)
           );
         }
       }
@@ -84,10 +84,10 @@ export abstract class Field {
     this.visuals = [];
   }
 
-  abstract calculateForce(entity: PhysicalEntity): THREE.Vector3;
+  abstract calculateForce(entity: PhysicalEntity): Vector3;
 
   abstract toJSON(): any;
-  static fromJSON(_scene: THREE.Scene, _data: any): Field {
+  static fromJSON(_scene: Scene, _data: any): Field {
     throw new Error('Method not implemented.');
   }
 }

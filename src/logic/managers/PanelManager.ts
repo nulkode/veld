@@ -11,9 +11,9 @@ import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import { PanelValueColorField } from '@/ui/components/fields/ValueColor';
 import { PanelValueScientificField } from '@/ui/components/fields/ValueScientific';
 import { PanelValueToggleField } from '@/ui/components/fields/ValueToggle';
-import * as THREE from 'three';
 import '@/styles/panels/panels.css';
 import { PanelValueSliderField } from '@/ui/components/fields/ValueSlider';
+import { Vector3 } from 'three';
 
 export class PanelManager {
   panels: Panel[];
@@ -135,7 +135,7 @@ export class PanelManager {
             entity.velocity.length(),
             (value) => {
               if (entity.velocity.length() === 0) {
-                entity.velocity = new THREE.Vector3(0, value, 0);
+                entity.velocity = new Vector3(0, value, 0);
                 selectManager.updateButtons();
               } else {
                 entity.velocity.setLength(value);
@@ -156,7 +156,7 @@ export class PanelManager {
             'panels.charge.showVelocity',
             entity.showVelocity,
             (value) => {
-              entity.setShowVelocity(value);
+              entity.showVelocity = value;
             }
           ),
           new PanelValueToggleField(
@@ -164,7 +164,15 @@ export class PanelManager {
             'panels.charge.showAcceleration',
             entity.showAcceleration,
             (value) => {
-              entity.setShowAcceleration(value);
+              entity.showAcceleration = value;
+            }
+          ),
+          new PanelValueToggleField(
+            `show-trajectory-${entity.uuid}`,
+            'panels.charge.showTrajectory',
+            entity.showTrajectory,
+            (value) => {
+              entity.showTrajectory = value;
             }
           )
         ],
@@ -266,6 +274,14 @@ export class PanelManager {
           ),
           colorField,
           toggleVisibilityField,
+          new PanelValueToggleField(
+            `show-vector-product-plane-${field.uuid}`,
+            'panels.magneticField.showVectorProductPlane',
+            field.showVectorProductPlane,
+            (value) => {
+              field.showVectorProductPlane = value;
+            }
+          ),
           rotateField
         ],
         [deleteButton]

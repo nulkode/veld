@@ -2,14 +2,14 @@ import { orbitControls, sandbox, scene, transformControls } from '@/renderer';
 import { Charge } from '@/logic/physics/entities/Charge';
 import { Field } from '@/logic/physics/fields/Field';
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
-import * as THREE from 'three';
 import { ToolbarButton } from '@/ui/components/overlay/Toolbar';
 import { EventEmitter } from '@/logic/managers/EventManager';
+import { ArrowHelper, Intersection, Object3D, Vector3 } from 'three';
 
 export class SelectManager extends EventEmitter {
   mode: 'translate' | 'rotate' | null;
   private selectedEntity: PhysicalEntity | Field | null;
-  private rotationObject: THREE.Object3D | null;
+  private rotationObject: Object3D | null;
 
   constructor() {
     super();
@@ -21,18 +21,20 @@ export class SelectManager extends EventEmitter {
       'change',
       this.onTransformChange.bind(this)
     );
+    sandbox.on('entityRemoved', this.onEntityRemoved.bind(this));
+    sandbox.on('fieldRemoved', this.onFieldRemoved.bind(this));
 
     this.updateButtons();
   }
 
   private onTransformChange() {
     if (this.selectedEntity instanceof Field && this.rotationObject) {
-      const direction = new THREE.Vector3();
+      const direction = new Vector3();
       this.rotationObject.getWorldDirection(direction);
       direction.normalize().multiplyScalar(this.selectedEntity.value.length());
       this.selectedEntity.value.copy(direction);
     } else if (this.selectedEntity instanceof Charge && this.rotationObject) {
-      const direction = new THREE.Vector3();
+      const direction = new Vector3();
       this.rotationObject.getWorldDirection(direction);
       direction
         .normalize()
@@ -41,7 +43,7 @@ export class SelectManager extends EventEmitter {
     }
   }
 
-  onIntersects(intersects: THREE.Intersection[]) {
+  onIntersects(intersects: Intersection[]) {
     if (intersects.length > 0) {
       let selectedNewEntity = false;
       for (const intersect of intersects) {
@@ -53,7 +55,7 @@ export class SelectManager extends EventEmitter {
     this.updateButtons();
   }
 
-  private selectObject(intersect: THREE.Intersection) {
+  private selectObject(intersect: Intersection) {
     const entity = sandbox.entities.find(
       (entity) => entity.object === intersect.object
     );
@@ -74,14 +76,14 @@ export class SelectManager extends EventEmitter {
   selectField(field: Field) {
     if (field !== this.selectedEntity) {
       this.selectedEntity = field;
-      this.rotationObject = new THREE.Object3D();
+      this.rotationObject = new Object3D();
       this.rotationObject.position.copy(orbitControls.target);
       this.rotationObject.lookAt(field.value.clone().add(orbitControls.target));
       scene.add(this.rotationObject);
 
-      const arrowHelper = new THREE.ArrowHelper(
-        new THREE.Vector3(0, 0, 1),
-        new THREE.Vector3(0, 0, 0),
+      const arrowHelper = new ArrowHelper(
+        new Vector3(0, 0, 1),
+        new Vector3(0, 0, 0),
         5,
         0xffff00
       );
@@ -120,18 +122,23 @@ export class SelectManager extends EventEmitter {
 
       if (mode === 'rotate') {
         if (this.selectedEntity instanceof Charge) {
-          this.rotationObject = new THREE.Object3D();
-          this.rotationObject.position.copy(
-            this.selectedEntity.object.position
-          );
+          this.rotationObject = new Object3D();
           this.rotationObject.lookAt(
             this.selectedEntity.velocity
               .clone()
               .normalize()
-              .add(this.selectedEntity.object.position)
           );
-          scene.add(this.rotationObject);
+          this.selectedEntity.object.add(this.rotationObject);
           transformControls.attach(this.rotationObject);
+        }
+      } else if (mode === 'translate') {
+        if (this.rotationObject) {
+          scene.remove(this.rotationObject);
+          this.rotationObject = null;
+        }
+
+        if (this.selectedEntity instanceof Charge) {
+          transformControls.attach(this.selectedEntity.object);
         }
       }
     } else {
@@ -176,6 +183,18 @@ export class SelectManager extends EventEmitter {
         [ToolbarButton.MOVE]: 'disabled',
         [ToolbarButton.ROTATE]: 'disabled'
       });
+    }
+  }
+
+  private onEntityRemoved(entity: PhysicalEntity) {
+    if (entity === this.selectedEntity) {
+      this.deselect();
+    }
+  }
+
+  private onFieldRemoved(field: Field) {
+    if (field === this.selectedEntity) {
+      this.deselect();
     }
   }
 }

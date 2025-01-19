@@ -12,14 +12,16 @@
             "mass": "Mass",
             "velocity": "Velocity",
             "showVelocity": "Show Velocity",
-            "showAcceleration": "Show Acceleration"
+            "showAcceleration": "Show Acceleration",
+            "showTrajectory": "Show Trajectory"
         },
         "magneticField": {
             "title": "Magnetic Field",
             "strength": "Strength",
             "color": "Color",
             "showField": "Show Field",
-            "rotate": "Rotate"
+            "rotate": "Rotate",
+            "showVectorProductPlane": "Show Vector Product Plane"
         },
         "electricField": {
             "title": "Electric Field",
@@ -54,9 +56,10 @@
     },
     "settings": {
         "language": {
-            "label": "Idioma",
-            "en": "Inglés",
-            "es": "Español"
+            "label": "Language",
+            "en": "English",
+            "es": "Spanish",
+            "fr": "French"
         }
     }
 }

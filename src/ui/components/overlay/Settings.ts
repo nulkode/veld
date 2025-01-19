@@ -14,6 +14,7 @@ export class Settings extends Component {
           <select id="language-select">
             <option value="en" ${currentLanguage === Language.EN ? 'selected' : ''}>${t('settings.language.en')}</option>
             <option value="es" ${currentLanguage === Language.ES ? 'selected' : ''}>${t('settings.language.es')}</option>
+            <option value="fr" ${currentLanguage === Language.FR ? 'selected' : ''}>${t('settings.language.fr')}</option>
           </select>
         </div>
       </div>`;

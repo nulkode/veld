@@ -12,14 +12,16 @@
             "mass": "Masa",
             "velocity": "Velocidad",
             "showVelocity": "Mostrar Velocidad",
-            "showAcceleration": "Mostrar Aceleración"
+            "showAcceleration": "Mostrar Aceleración",
+            "showTrajectory": "Mostrar Trayectoria"
         },
         "magneticField": {
             "title": "Campo Magnético",
             "strength": "Intensidad",
             "color": "Color",
             "showField": "Mostrar Campo",
-            "rotate": "Rotar"
+            "rotate": "Rotar",
+            "showVectorProductPlane": "Mostrar Plano de Producto Vectorial"
         },
         "electricField": {
             "title": "Campo Eléctrico",
@@ -56,7 +58,8 @@
         "language": {
             "label": "Idioma",
             "en": "Inglés",
-            "es": "Español"
+            "es": "Español",
+            "fr": "Francés"
         }
     }
 }

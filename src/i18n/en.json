@@ -19,7 +19,8 @@
             "strength": "Strength",
             "color": "Color",
             "showField": "Show Field",
-            "rotate": "Rotate"
+            "rotate": "Rotate",
+            "showVectorProductPlane": "Show Vector Product Plane"
         },
         "electricField": {
             "title": "Electric Field",

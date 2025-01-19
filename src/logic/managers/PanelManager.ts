@@ -156,7 +156,7 @@ export class PanelManager {
             'panels.charge.showVelocity',
             entity.showVelocity,
             (value) => {
-              entity.setShowVelocity(value);
+              entity.showVelocity = value;
             }
           ),
           new PanelValueToggleField(
@@ -164,7 +164,7 @@ export class PanelManager {
             'panels.charge.showAcceleration',
             entity.showAcceleration,
             (value) => {
-              entity.setShowAcceleration(value);
+              entity.showAcceleration = value;
             }
           )
         ],
@@ -266,6 +266,14 @@ export class PanelManager {
           ),
           colorField,
           toggleVisibilityField,
+          new PanelValueToggleField(
+            `show-vector-product-plane-${field.uuid}`,
+            'panels.magneticField.showVectorProductPlane',
+            field.showVectorProductPlane,
+            (value) => {
+              field.showVectorProductPlane = value;
+            }
+          ),
           rotateField
         ],
         [deleteButton]

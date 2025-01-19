@@ -19,7 +19,8 @@
             "strength": "Intensidad",
             "color": "Color",
             "showField": "Mostrar Campo",
-            "rotate": "Rotar"
+            "rotate": "Rotar",
+            "showVectorProductPlane": "Mostrar Plano de Producto Vectorial"
         },
         "electricField": {
             "title": "Campo Eléctrico",

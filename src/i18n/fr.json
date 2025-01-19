@@ -19,7 +19,8 @@
             "strength": "Intensité",
             "color": "Couleur",
             "showField": "Afficher le Champ",
-            "rotate": "Tourner"
+            "rotate": "Tourner",
+            "showVectorProductPlane": "Afficher le Plan de Produit Vectoriel"
         },
         "electricField": {
             "title": "Champ Électrique",

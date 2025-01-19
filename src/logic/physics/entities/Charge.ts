@@ -2,9 +2,42 @@ import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import { Sandbox, SandboxContext } from '@/logic/physics/sandbox';
 import { Field } from '@/logic/physics/fields/Field';
 import { assetsManager } from '@/ui';
-import { Vector3, Object3D, ArrowHelper } from 'three';
+import {
+  Vector3,
+  Object3D,
+  ArrowHelper,
+  PlaneGeometry,
+  DoubleSide,
+  Mesh,
+  MeshBasicMaterial,
+  SphereGeometry,
+  Group
+} from 'three';
+import { MagneticField } from '@/logic/physics/fields/MagneticField';
 
 const k = 8.9875517873681764e9; // N m^2 / C^2
+
+function createTransparentPlane(position: Vector3, orientation: Vector3) {
+  const planeGeometry = new PlaneGeometry(
+    orientation.length(),
+    orientation.length()
+  );
+
+  const planeMaterial = new MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.5,
+    side: DoubleSide
+  });
+
+  const plane = new Mesh(planeGeometry, planeMaterial);
+
+  plane.position.copy(position);
+
+  plane.lookAt(position.clone().add(orientation));
+
+  return plane;
+}
 
 export class Charge extends PhysicalEntity {
   value: number;
@@ -60,28 +93,88 @@ export class Charge extends PhysicalEntity {
     // TODO: scale it based on the charge
   }
 
-  setShowVelocity(show: boolean) {
-    this.showVelocity = show;
-  }
-
-  setShowAcceleration(show: boolean) {
-    this.showAcceleration = show;
-  }
-
   updateVisuals(sandbox: Sandbox) {
     if (this.visuals.length !== 0) {
       this.object.remove(...this.visuals);
       this.visuals = [];
     }
 
-    if (this.showVelocity && this.velocity.length() > 0) {
+    const showMagneticFieldPlane = sandbox.fields.filter(
+      (f) => f instanceof MagneticField && f.showVectorProductPlane
+    );
+
+    let magneticFields: {
+      field: Vector3;
+      color: number;
+    }[] = [];
+
+    for (const field of showMagneticFieldPlane) {
+      const magneticField = field as MagneticField;
+      const force = magneticField.calculateForce(this);
+      if (force.length() !== 0)
+        magneticFields.push({
+          field: field.value,
+          color: magneticField.arrowColor
+        });
+    }
+
+    if (
+      (this.showVelocity && this.velocity.length() > 0) ||
+      magneticFields.length > 0
+    ) {
+      const velocityGroup = new Group();
       const velocityArrow = new ArrowHelper(
         this.velocity.clone().normalize(),
         new Vector3(0, 0, 0),
         5,
         0xff0000
       );
-      this.visuals.push(velocityArrow);
+
+      if (magneticFields.length > 0) {
+        const dotGeometry = new SphereGeometry(0.1, 4, 4);
+        const dotMaterial = new MeshBasicMaterial({ color: 0xff0000 });
+        const dot = new Mesh(dotGeometry, dotMaterial);
+        dot.position.copy(
+          this.velocity.clone().normalize().multiplyScalar(5)
+        );
+        velocityGroup.add(dot);
+      }
+
+      velocityGroup.add(velocityArrow);
+      this.visuals.push(velocityGroup);
+    }
+
+    for (const magneticField of magneticFields) {
+      const magneticFieldGroup = new Group();
+      const magneticFieldArrow = new ArrowHelper(
+        magneticField.field.clone().normalize(),
+        new Vector3(0, 0, 0),
+        4,
+        magneticField.color
+      );
+      magneticFieldGroup.add(magneticFieldArrow);
+
+      const dotGeometry = new SphereGeometry(0.1, 4, 4);
+      const dotMaterial = new MeshBasicMaterial({ color: magneticField.color });
+      const dot = new Mesh(dotGeometry, dotMaterial);
+      dot.position.copy(magneticField.field.clone().normalize().multiplyScalar(4));
+      magneticFieldGroup.add(dot);
+
+      const magneticFieldForceArrow = new ArrowHelper(
+        magneticField.field.clone().cross(this.velocity).multiplyScalar(this.value).normalize(),
+        new Vector3(0, 0, 0),
+        4,
+        0x00ffff
+      );
+      magneticFieldGroup.add(magneticFieldForceArrow);
+
+      const plane = createTransparentPlane(
+        new Vector3(0, 0, 0),
+        magneticField.field.clone().cross(this.velocity).normalize().multiplyScalar(10)
+      );
+      magneticFieldGroup.add(plane);
+
+      this.visuals.push(magneticFieldGroup);
     }
 
     if (this.showAcceleration) {
@@ -129,7 +222,9 @@ export class Charge extends PhysicalEntity {
     for (const charge of charges) {
       if (charge === this) continue;
 
-      const distance = this.object.position.distanceTo(charge.object.position) / context.distanceUnit;
+      const distance =
+        this.object.position.distanceTo(charge.object.position) /
+        context.distanceUnit;
       const direction = charge.object.position
         .clone()
         .sub(this.object.position)

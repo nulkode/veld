@@ -150,9 +150,7 @@ export class Sandbox extends EventEmitter {
           this.fields,
           ...charges
         );
-        const acceleration = forces
-          .clone()
-          .divideScalar(entity.mass);
+        const acceleration = forces.clone().divideScalar(entity.mass);
 
         if (this.status === SandboxStatus.PLAYING) {
           entity.velocity.add(

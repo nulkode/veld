@@ -42,6 +42,10 @@ function createTransparentPlane(position: Vector3, orientation: Vector3) {
   return plane;
 }
 
+function scaleValue(value: number, scalingFactor: number): number {
+  return Math.sign(value) * Math.log10(Math.abs(value) + 1) * scalingFactor;
+}
+
 export class Charge extends PhysicalEntity {
   value: number;
   velocity: Vector3;
@@ -132,7 +136,7 @@ export class Charge extends PhysicalEntity {
       const velocityArrow = new ArrowHelper(
         this.velocity.clone().normalize(),
         new Vector3(0, 0, 0),
-        5,
+        scaleValue(this.velocity.length(), 4),
         0xff0000
       );
 
@@ -140,7 +144,12 @@ export class Charge extends PhysicalEntity {
         const dotGeometry = new SphereGeometry(0.1, 4, 4);
         const dotMaterial = new MeshBasicMaterial({ color: 0xff0000 });
         const dot = new Mesh(dotGeometry, dotMaterial);
-        dot.position.copy(this.velocity.clone().normalize().multiplyScalar(5));
+        dot.position.copy(
+          this.velocity
+            .clone()
+            .normalize()
+            .multiplyScalar(scaleValue(this.velocity.length(), 4))
+        );
         velocityGroup.add(dot);
       }
 
@@ -193,16 +202,18 @@ export class Charge extends PhysicalEntity {
 
     if (this.showAcceleration) {
       const acceleration = this.calculateAcceleration(sandbox);
-      if (acceleration.length() === 0) return;
-      const accelerationArrow = new ArrowHelper(
-        acceleration.clone().normalize(),
-        new Vector3(0, 0, 0),
-        4,
-        0x00ff00,
-        0.5,
-        0.3
-      );
-      this.visuals.push(accelerationArrow);
+      const accelerationScale = scaleValue(acceleration.length(), 3);
+      if (accelerationScale > 0.5) {
+        const accelerationArrow = new ArrowHelper(
+          acceleration.clone().normalize(),
+          new Vector3(0, 0, 0),
+          accelerationScale,
+          0x00ff00,
+          0.5,
+          0.3
+        );
+        this.visuals.push(accelerationArrow);
+      }
     }
 
     if (this.visuals.length !== 0) this.object.add(...this.visuals);

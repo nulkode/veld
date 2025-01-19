@@ -199,6 +199,9 @@ export class Sandbox extends EventEmitter {
   }
 
   new() {
+    this.status = SandboxStatus.PAUSED;
+    selectManager.deselect();
+
     for (const entity of this.entities) {
       this.deleteEntity(entity);
     }

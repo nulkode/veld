@@ -106,7 +106,7 @@ export class Charge extends PhysicalEntity {
     }
 
     const showMagneticFieldPlane = sandbox.fields.filter(
-      (f) => f instanceof MagneticField && f.showVectorProductPlane
+      (f) => f instanceof MagneticField && f.showCrossProductPlane
     );
 
     let magneticFields: {

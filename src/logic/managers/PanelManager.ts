@@ -275,11 +275,11 @@ export class PanelManager {
           colorField,
           toggleVisibilityField,
           new PanelValueToggleField(
-            `show-vector-product-plane-${field.uuid}`,
-            'panels.magneticField.showVectorProductPlane',
-            field.showVectorProductPlane,
+            `show-cross-product-plane-${field.uuid}`,
+            'panels.magneticField.showCrossProductPlane',
+            field.showCrossProductPlane,
             (value) => {
-              field.showVectorProductPlane = value;
+              field.showCrossProductPlane = value;
             }
           ),
           rotateField

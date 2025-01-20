@@ -4,7 +4,7 @@ import { Charge } from '@/logic/physics/entities/Charge';
 import { Scene, Vector3 } from 'three';
 
 export class MagneticField extends Field {
-  showVectorProductPlane: boolean = false;
+  showCrossProductPlane: boolean = false;
 
   constructor(
     scene: Scene,
@@ -12,10 +12,10 @@ export class MagneticField extends Field {
     show: boolean = true,
     variation?: Vector3,
     arrowColor?: number,
-    showVectorProductPlane: boolean = false
+    showCrossProductPlane: boolean = false
   ) {
     super(scene, field, show, variation, arrowColor);
-    this.showVectorProductPlane = showVectorProductPlane;
+    this.showCrossProductPlane = showCrossProductPlane;
   }
 
   calculateForce(entity: PhysicalEntity): Vector3 {

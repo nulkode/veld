@@ -1,6 +1,6 @@
 import { selectManager } from '@/ui';
 import { EventEmitter } from '@/logic/managers/EventManager';
-import { camera } from '@/renderer';
+import { camera, orbitControls } from '@/renderer';
 import { Field } from '@/logic/physics/fields/Field';
 import { Charge } from '@/logic/physics/entities/Charge';
 import { ElectricField } from '@/logic/physics/fields/ElectricField';
@@ -214,6 +214,15 @@ export class Sandbox extends EventEmitter {
       fields: [],
       sandboxContext: this.context
     };
+
+    this.context = {
+      timeUnit: 1,
+      distanceUnit: 1,
+      ignoreGravity: true
+    };
+
+    camera.position.set(40, 40, 40);
+    orbitControls.target.set(0, 0, 0);
 
     this.emit('reset');
   }

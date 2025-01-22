@@ -1,20 +1,15 @@
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
-import { Sandbox, SandboxContext } from '@/logic/physics/sandbox';
-import { Field } from '@/logic/physics/fields/Field';
+import { Sandbox } from '@/logic/physics/sandbox';
 import { assetsManager } from '@/ui';
 import {
   Vector3,
-  Object3D,
   ArrowHelper,
   PlaneGeometry,
   DoubleSide,
   Mesh,
   MeshBasicMaterial,
   SphereGeometry,
-  Group,
-  BufferGeometry,
-  Line,
-  LineBasicMaterial
+  Group
 } from 'three';
 import { MagneticField } from '@/logic/physics/fields/MagneticField';
 
@@ -44,42 +39,33 @@ function createTransparentPlane(position: Vector3, orientation: Vector3) {
 
 export class Charge extends PhysicalEntity {
   value: number;
-  velocity: Vector3;
-  mass: number = 1; // kg
-  showVelocity: boolean = false;
-  showAcceleration: boolean = false;
-  showTrajectory: boolean = false;
-  visuals: Object3D[] = [];
-  trajectoryLine: Line | null = null;
-  trajectoryPoints: Vector3[] = [];
 
   constructor(
-    charge: number,
-    velocity: Vector3,
-    position: Vector3,
-    mass: number = 1
+    sandbox: Sandbox,
+    {
+      charge,
+      velocity,
+      position,
+      mass
+    }: {
+      charge: number;
+      velocity: Vector3;
+      position: Vector3;
+      mass: number;
+    }
   ) {
     if (!assetsManager.models.proton || !assetsManager.models.electron) {
       throw new Error('Models not loaded');
     }
+
     const object =
       charge < 0
         ? assetsManager.models.electron.clone()
         : assetsManager.models.proton.clone();
     object.position.copy(position);
 
-    super(object);
+    super(sandbox, { object, velocity, mass });
     this.value = charge;
-    this.velocity = velocity;
-    this.mass = mass;
-  }
-
-  private replace3DObject(newObject: Object3D) {
-    newObject.position.copy(this.object.position);
-    newObject.rotation.copy(this.object.rotation);
-    this.object.parent?.add(newObject);
-    this.object.parent?.remove(this.object);
-    this.object = newObject;
   }
 
   setCharge(charge: number) {
@@ -99,13 +85,18 @@ export class Charge extends PhysicalEntity {
     // TODO: scale it based on the charge
   }
 
-  updateVisuals(sandbox: Sandbox) {
-    if (this.visuals.length !== 0) {
-      this.object.remove(...this.visuals);
-      this.visuals = [];
-    }
+  updateVisuals() {
+    this.cleanVisuals();
 
-    const showMagneticFieldPlane = sandbox.fields.filter(
+    this.renderAccelerationArrow();
+    this.renderCrossProductPlaneAndVelocityArrow();
+    this.renderTrajectory();
+
+    if (this.visualsObjects.length !== 0) this.object.add(...this.visualsObjects);
+  }
+
+  renderCrossProductPlaneAndVelocityArrow() {
+    const showMagneticFieldPlane = this.parent.fields.filter(
       (f) => f instanceof MagneticField && f.showCrossProductPlane
     );
 
@@ -124,10 +115,7 @@ export class Charge extends PhysicalEntity {
         });
     }
 
-    if (
-      (this.showVelocity && this.velocity.length() > 0) ||
-      magneticFields.length > 0
-    ) {
+    if (magneticFields.length > 0) {
       const velocityGroup = new Group();
       const velocityArrow = new ArrowHelper(
         this.velocity.clone().normalize(),
@@ -145,7 +133,10 @@ export class Charge extends PhysicalEntity {
       }
 
       velocityGroup.add(velocityArrow);
-      this.visuals.push(velocityGroup);
+      this.visualsObjects.push(velocityGroup);
+    } else {
+      this.renderVelocityArrow();
+      return;
     }
 
     for (const magneticField of magneticFields) {
@@ -188,96 +179,27 @@ export class Charge extends PhysicalEntity {
       );
       magneticFieldGroup.add(plane);
 
-      this.visuals.push(magneticFieldGroup);
-    }
-
-    if (this.showAcceleration) {
-      const acceleration = this.calculateAcceleration(sandbox);
-      if (acceleration.length() === 0) return;
-      const accelerationArrow = new ArrowHelper(
-        acceleration.clone().normalize(),
-        new Vector3(0, 0, 0),
-        4,
-        0x00ff00,
-        0.5,
-        0.3
-      );
-      this.visuals.push(accelerationArrow);
-    }
-
-    if (this.visuals.length !== 0) this.object.add(...this.visuals);
-
-    if (this.showTrajectory) {
-      if (
-        this.trajectoryPoints.length === 0 ||
-        this.object.position.distanceToSquared(
-          this.trajectoryPoints[this.trajectoryPoints.length - 1]
-        ) > 0.3
-      ) {
-        this.trajectoryPoints.push(this.object.position.clone());
-      }
-      if (this.trajectoryLine) {
-        const geometry = new BufferGeometry().setFromPoints(
-          this.trajectoryPoints
-        );
-        this.trajectoryLine.geometry.dispose();
-        this.trajectoryLine.geometry = geometry;
-      } else {
-        const geometry = new BufferGeometry().setFromPoints(
-          this.trajectoryPoints
-        );
-        const material = new LineBasicMaterial({ color: 0x00ff00 });
-        this.trajectoryLine = new Line(geometry, material);
-        this.object.parent!.add(this.trajectoryLine);
-      }
-    } else if (this.trajectoryLine) {
-      this.trajectoryLine.geometry.dispose();
-      this.object.parent?.remove(this.trajectoryLine);
-      this.trajectoryLine = null;
-      this.trajectoryPoints = [];
+      this.visualsObjects.push(magneticFieldGroup);
     }
   }
 
-  deleteVisuals() {
-    this.object.remove(...this.visuals);
-    this.visuals = [];
-    this.deleteTrajectory();
-  }
-
-  deleteTrajectory() {
-    if (this.trajectoryLine) {
-      this.trajectoryLine.geometry.dispose();
-      this.object.parent?.remove(this.trajectoryLine);
-      this.trajectoryLine = null;
-      this.trajectoryPoints = [];
-    }
-  }
-
-  calculateAcceleration(sandbox: Sandbox): Vector3 {
-    return this.calculateForce(
-      sandbox.context,
-      sandbox.fields,
-      ...sandbox.entities.filter((e) => e instanceof Charge)
-    ).divideScalar(this.mass);
-  }
-
-  calculateForce(
-    context: SandboxContext,
-    fields: Field[],
-    ...charges: Charge[]
-  ) {
+  calculateForce() {
     let force = new Vector3(0, 0, 0);
 
-    for (const field of fields) {
+    for (const field of this.parent.fields) {
       force.add(field.calculateForce(this));
     }
+
+    const charges = this.parent.entities.filter(
+      (entity) => entity instanceof Charge && entity !== this
+    ) as Charge[];
 
     for (const charge of charges) {
       if (charge === this) continue;
 
       const distance =
         this.object.position.distanceTo(charge.object.position) /
-        context.distanceUnit;
+        this.parent.context.distanceUnit;
       const direction = charge.object.position
         .clone()
         .sub(this.object.position)
@@ -290,7 +212,7 @@ export class Charge extends PhysicalEntity {
       );
     }
 
-    if (!context.ignoreGravity) {
+    if (!this.parent.context.ignoreGravity) {
       force.add(new Vector3(0, -9.8 * this.mass, 0));
     }
 
@@ -307,12 +229,15 @@ export class Charge extends PhysicalEntity {
     };
   }
 
-  static fromJSON(data: any) {
+  static fromJSON(sandbox: Sandbox, data: any) {
     const charge = new Charge(
-      data.value,
-      new Vector3().fromArray(data.velocity),
-      new Vector3().fromArray(data.position),
-      data.mass
+      sandbox,
+      {
+        charge: data.value,
+        velocity: new Vector3().fromArray(data.velocity),
+        position: new Vector3().fromArray(data.position),
+        mass: data.mass
+      }
     );
     return charge;
   }

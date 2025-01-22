@@ -154,25 +154,25 @@ export class PanelManager {
           new PanelValueToggleField(
             `show-velocity-${entity.uuid}`,
             'panels.charge.showVelocity',
-            entity.showVelocity,
+            entity.visuals.velocity,
             (value) => {
-              entity.showVelocity = value;
+              entity.visuals.velocity = value;
             }
           ),
           new PanelValueToggleField(
             `show-acceleration-${entity.uuid}`,
             'panels.charge.showAcceleration',
-            entity.showAcceleration,
+            entity.visuals.acceleration,
             (value) => {
-              entity.showAcceleration = value;
+              entity.visuals.acceleration = value;
             }
           ),
           new PanelValueToggleField(
             `show-trajectory-${entity.uuid}`,
             'panels.charge.showTrajectory',
-            entity.showTrajectory,
+            entity.visuals.trajectory,
             (value) => {
-              entity.showTrajectory = value;
+              entity.visuals.trajectory = value;
             }
           )
         ],

@@ -73,7 +73,7 @@ export class Sandbox extends EventEmitter {
     }
 
     for (const entity of this.entities) {
-      entity.updateVisuals(this);
+      entity.updateVisuals();
     }
   }
 
@@ -102,7 +102,7 @@ export class Sandbox extends EventEmitter {
       this.deleteEntity(entity);
     }
     const entities = this.initialState.entities.map((data: any) =>
-      Charge.fromJSON(data)
+      Charge.fromJSON(this, data)
     );
 
     for (const entity of entities) {
@@ -143,32 +143,23 @@ export class Sandbox extends EventEmitter {
     const sandboxDelta = deltaTime / this.context.timeUnit;
 
     for (const entity of this.entities) {
-      if (entity instanceof Charge) {
-        const charges = this.entities.filter((e) => e instanceof Charge);
-        const forces = entity.calculateForce(
-          this.context,
-          this.fields,
-          ...charges
+      const forces = entity.calculateForce();
+      const acceleration = forces.clone().divideScalar(entity.mass);
+
+      if (this.status === SandboxStatus.PLAYING) {
+        entity.velocity.add(acceleration.clone().multiplyScalar(sandboxDelta));
+        entity.object.position.add(
+          entity.velocity
+            .clone()
+            .multiplyScalar(sandboxDelta)
+            .multiplyScalar(this.context.distanceUnit)
         );
-        const acceleration = forces.clone().divideScalar(entity.mass);
+      }
 
-        if (this.status === SandboxStatus.PLAYING) {
-          entity.velocity.add(
-            acceleration.clone().multiplyScalar(sandboxDelta)
-          );
-          entity.object.position.add(
-            entity.velocity
-              .clone()
-              .multiplyScalar(sandboxDelta)
-              .multiplyScalar(this.context.distanceUnit)
-          );
-        }
+      this.emit('entityUpdated', entity);
 
-        this.emit('entityUpdated', entity);
-
-        if (entity.object.position.length() > 1e5) {
-          this.deleteEntity(entity);
-        }
+      if (entity.object.position.length() > 1e5) {
+        this.deleteEntity(entity);
       }
     }
 
@@ -187,7 +178,15 @@ export class Sandbox extends EventEmitter {
   }
 
   addCharge(target: Vector3) {
-    this.appendEntity(new Charge(-1, new Vector3(0, 0, 0), target));
+    this.appendEntity(new Charge(
+      this,
+      {
+        position: target,
+        charge: -1,
+        mass: 1,
+        velocity: new Vector3(0, 0, 0)
+      }
+    ));
   }
 
   addElectricField() {

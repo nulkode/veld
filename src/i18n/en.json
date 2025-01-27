@@ -21,7 +21,7 @@
             "color": "Color",
             "showField": "Show Field",
             "rotate": "Rotate",
-            "showVectorProductPlane": "Show Vector Product Plane"
+            "showCrossProductPlane": "Show Cross Product Plane"
         },
         "electricField": {
             "title": "Electric Field",

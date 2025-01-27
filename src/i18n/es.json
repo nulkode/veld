@@ -21,7 +21,7 @@
             "color": "Color",
             "showField": "Mostrar Campo",
             "rotate": "Rotar",
-            "showVectorProductPlane": "Mostrar Plano de Producto Vectorial"
+            "showCrossProductPlane": "Mostrar Plano de Producto Vectorial"
         },
         "electricField": {
             "title": "Campo Eléctrico",

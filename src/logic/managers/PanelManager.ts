@@ -1,11 +1,11 @@
-import { sandbox } from '@/renderer';
+import { followManager, sandbox } from '@/renderer';
 import { Charge } from '@/logic/physics/entities/Charge';
 import { Field } from '@/logic/physics/fields/Field';
 import { ElectricField } from '@/logic/physics/fields/ElectricField';
 import { MagneticField } from '@/logic/physics/fields/MagneticField';
 import { PhysicalEntity } from '@/logic/physics/entities/PhysicalEntity';
 import { selectManager } from '@/ui';
-import { Panel, PanelButton } from '@/ui/components/Panel';
+import { Panel, PanelButton, TogglePanelButton } from '@/ui/components/Panel';
 import { PanelButtonField } from '@/ui/components/fields/Button';
 import { ValuePanelField } from '@/ui/components/fields/PanelField';
 import { PanelValueColorField } from '@/ui/components/fields/ValueColor';
@@ -71,10 +71,7 @@ export class PanelManager {
 
   addPanel(panel: Panel) {
     this.panels.push(panel);
-    this.container.innerHTML = this.panels.map((p) => p.getHTML()).join('');
-    for (const panel of this.panels) {
-      panel.attachEvents();
-    }
+    this.refresh();
   }
 
   removePanel(panelId: string) {
@@ -154,29 +151,42 @@ export class PanelManager {
           new PanelValueToggleField(
             `show-velocity-${entity.uuid}`,
             'panels.charge.showVelocity',
-            entity.showVelocity,
+            entity.visuals.velocity,
             (value) => {
-              entity.showVelocity = value;
+              entity.visuals.velocity = value;
             }
           ),
           new PanelValueToggleField(
             `show-acceleration-${entity.uuid}`,
             'panels.charge.showAcceleration',
-            entity.showAcceleration,
+            entity.visuals.acceleration,
             (value) => {
-              entity.showAcceleration = value;
+              entity.visuals.acceleration = value;
             }
           ),
           new PanelValueToggleField(
             `show-trajectory-${entity.uuid}`,
             'panels.charge.showTrajectory',
-            entity.showTrajectory,
+            entity.visuals.trajectory,
             (value) => {
-              entity.showTrajectory = value;
+              entity.visuals.trajectory = value;
             }
           )
         ],
         [
+          new TogglePanelButton(
+            `follow-${entity.uuid}`,
+            '<img src="icons/camera-follow.svg" style="width: 20px; height: 20px; margin: -5px">',
+            (value) => {
+              if (value) {
+                followManager.follow(entity);
+              } else {
+                followManager.unfollow();
+              }
+            },
+            0xc49600,
+            false
+          ),
           new PanelButton(
             'delete',
             'X',
@@ -275,11 +285,11 @@ export class PanelManager {
           colorField,
           toggleVisibilityField,
           new PanelValueToggleField(
-            `show-vector-product-plane-${field.uuid}`,
-            'panels.magneticField.showVectorProductPlane',
-            field.showVectorProductPlane,
+            `show-cross-product-plane-${field.uuid}`,
+            'panels.magneticField.showCrossProductPlane',
+            field.showCrossProductPlane,
             (value) => {
-              field.showVectorProductPlane = value;
+              field.showCrossProductPlane = value;
             }
           ),
           rotateField

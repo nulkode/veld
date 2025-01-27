@@ -13,6 +13,7 @@ import {
   Vector2
 } from 'three';
 import { ViewportGizmo } from 'three-viewport-gizmo';
+import { FollowManager } from '@/logic/managers/FollowManager';
 
 let camera: PerspectiveCamera;
 let renderer: WebGLRenderer;
@@ -21,6 +22,7 @@ let transformControls: TransformControls;
 let sandbox: Sandbox;
 let scene: Scene;
 let gizmo: ViewportGizmo;
+let followManager: FollowManager;
 
 function init() {
   scene = new Scene();
@@ -52,6 +54,8 @@ function init() {
   sandbox.updateVisuals(camera.position);
 
   const gridManager = new GridManager(scene);
+
+  followManager = new FollowManager();
 
   const light = new AmbientLight(0xffffff, 1);
   scene.add(light);
@@ -91,9 +95,11 @@ function init() {
     const deltaTime = (time - lastTime) / 1000;
     lastTime = time;
 
-    orbitControls.update();
     sandbox.update(deltaTime);
     gridManager.update(camera.position);
+    followManager.update();
+    orbitControls.update();
+    sandbox.updateVisuals(camera.position);
     renderer.render(scene, camera);
     gizmo.render();
   }
@@ -109,6 +115,7 @@ export {
   sandbox,
   transformControls,
   orbitControls,
+  followManager,
   gizmo,
   scene
 };

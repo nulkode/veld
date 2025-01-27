@@ -57,7 +57,6 @@ export class I18nManager extends EventEmitter {
     this.translations = this.getTranslations(language);
     this.saveLanguagePreference(language);
     if (!this.initializing) {
-      console.log('Language changed to', language);
       this.emit('languageChange', language);
     }
   }

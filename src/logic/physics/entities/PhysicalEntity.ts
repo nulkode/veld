@@ -99,9 +99,7 @@ export abstract class PhysicalEntity {
   }
 
   protected renderTrajectory() {
-    console.log('renderTrajectory1');
-    if (this.visuals.trajectory) {    
-      console.log('renderTrajectory2');
+    if (this.visuals.trajectory) {
       if (
         this.trajectoryPoints.length === 0 ||
         this.object.position.distanceToSquared(

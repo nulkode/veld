@@ -1,6 +1,6 @@
 import { selectManager } from '@/ui';
 import { EventEmitter } from '@/logic/managers/EventManager';
-import { camera, orbitControls } from '@/renderer';
+import { camera, followManager, orbitControls } from '@/renderer';
 import { Field } from '@/logic/physics/fields/Field';
 import { Charge } from '@/logic/physics/entities/Charge';
 import { ElectricField } from '@/logic/physics/fields/ElectricField';
@@ -162,8 +162,6 @@ export class Sandbox extends EventEmitter {
         this.deleteEntity(entity);
       }
     }
-
-    this.updateVisuals(camera.position);
   }
 
   addField(field: Field) {
@@ -220,6 +218,8 @@ export class Sandbox extends EventEmitter {
       distanceUnit: 1,
       ignoreGravity: true
     };
+
+    followManager.unfollow();
 
     camera.position.set(40, 40, 40);
     orbitControls.target.set(0, 0, 0);

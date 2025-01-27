@@ -25,18 +25,51 @@ export class PanelButton {
   }
 }
 
+export class TogglePanelButton {
+  id: string;
+  innerHTML: string;
+  value: boolean;
+  onClick: (value: boolean) => void;
+  color?: number;
+  beforeMinimize?: boolean;
+
+  constructor(
+    id: string,
+    innerHTML: string,
+    onClick: (value: boolean) => void,
+    color?: number,
+    beforeMinimize?: boolean
+  ) {
+    this.id = id;
+    this.innerHTML = innerHTML;
+    this.onClick = onClick;
+    this.color = color;
+    this.beforeMinimize = beforeMinimize;
+    this.value = false;
+  }
+
+  toggle() {
+    this.value = !this.value;
+    const buttonElement = document.getElementById(this.id);
+    if (buttonElement) {
+      buttonElement.classList.toggle('active', this.value);
+    }
+    this.onClick(this.value);
+  }
+}
+
 export class Panel extends Component {
   id: string;
   title: string;
   fields: PanelField[];
   minimized: boolean;
-  buttons: PanelButton[];
+  buttons: (PanelButton | TogglePanelButton)[];
 
   constructor(
     id: string,
     title: string,
     fields: PanelField[],
-    buttons: PanelButton[] = []
+    buttons: (PanelButton | TogglePanelButton)[] = []
   ) {
     super();
     this.id = id;
@@ -65,8 +98,9 @@ export class Panel extends Component {
                 .filter((button) => button.beforeMinimize)
                 .map(
                   (button) => `
-                    <button id="${this.id}-${button.id}"
+                    <button id="${button.id}"
                       style="background-color: ${button.color ? '#' + button.color.toString(16) : 'transparent'}"
+                      class="${button instanceof TogglePanelButton ? 'toggle-button' : ''}"
                     >${button.innerHTML}</button>
                   `
                 )
@@ -76,8 +110,9 @@ export class Panel extends Component {
                 .filter((button) => !button.beforeMinimize)
                 .map(
                   (button) => `
-                    <button id="${this.id}-${button.id}"
+                    <button id="${button.id}"
                       style="background-color: ${button.color ? '#' + button.color.toString(16) : 'transparent'}"
+                      class="${button instanceof TogglePanelButton ? 'toggle-button' : ''}"
                     >${button.innerHTML}</button>
                   `
                 )
@@ -96,9 +131,12 @@ export class Panel extends Component {
       .getElementById(`${this.id}-toggle`)
       ?.addEventListener('click', () => this.toggleMinimize());
     this.buttons.forEach((button) => {
-      document
-        .getElementById(`${this.id}-${button.id}`)
-        ?.addEventListener('click', button.onClick);
+      const buttonElement = document.getElementById(`${button.id}`);
+      if (button instanceof TogglePanelButton) {
+        buttonElement?.addEventListener('click', () => button.toggle());
+      } else {
+        buttonElement?.addEventListener('click', button.onClick);
+      }
     });
     this.fields.forEach((field) => field.attachEvents());
   }

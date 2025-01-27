@@ -41,3 +41,23 @@
   display: block;
   margin-bottom: 5px;
 }
+
+.panel-buttons > button {
+  height: 24px;
+}
+
+.toggle-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, filter 0.2s, transform 0.2s;
+}
+
+.toggle-button.active {
+  background-color: #0056b3;
+  filter: brightness(0.9);
+  transform: scale(0.95);
+}

@@ -97,6 +97,16 @@ class Toolbar extends Component {
       }
     });
 
+    const icon = document.getElementById(
+      'play-pause-icon'
+    ) as HTMLImageElement;
+    console.log(sandbox.status);
+    if (sandbox.status === SandboxStatus.PAUSED) {
+      icon.src = 'icons/play.svg';
+    } else {
+      icon.src = 'icons/pause.svg';
+    }
+
     this.buttons[ToolbarButton.RESET]!.addEventListener('click', () => {
       sandbox.reset();
       const icon = document.getElementById(

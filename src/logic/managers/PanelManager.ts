@@ -55,7 +55,7 @@ export class PanelManager {
         10,
         0,
         (value) => {
-          sandbox.setDistanceUnit(1 / Math.pow(10, value));
+          sandbox.updateDistanceUnit(1 / Math.pow(10, value));
         },
         (value) =>
           `i&#770; = 10<sup>${value}</sup> m; j&#770; = 10<sup>${value}</sup> m; k&#770; = 10<sup>${value}</sup> m`

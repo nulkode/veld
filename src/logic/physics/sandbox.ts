@@ -60,9 +60,9 @@ export class Sandbox extends EventEmitter {
     this.emit('entityAdded', entity);
   }
 
-  setDistanceUnit(unit: number) {
+  updateDistanceUnit(unit: number) {
     for (const entity of this.entities) {
-      entity.object.position.multiplyScalar(unit / this.context.distanceUnit);
+      entity.updateDistanceUnit(this.context.distanceUnit, unit);
     }
     this.context.distanceUnit = unit;
   }

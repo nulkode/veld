@@ -67,6 +67,11 @@ export abstract class PhysicalEntity {
     this.deleteTrajectory();
   }
 
+  updateDistanceUnit(oldUnit: number, newUnit: number) {
+    this.object.position.multiplyScalar(newUnit / oldUnit);
+    this.trajectoryPoints.forEach((point) => point.multiplyScalar(newUnit / oldUnit));
+  }
+
   protected renderVelocityArrow() {
     if (!this.visuals.velocity) return;
     if (this.velocity.length() === 0) return;

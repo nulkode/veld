@@ -100,7 +100,6 @@ class Toolbar extends Component {
     const icon = document.getElementById(
       'play-pause-icon'
     ) as HTMLImageElement;
-    console.log(sandbox.status);
     if (sandbox.status === SandboxStatus.PAUSED) {
       icon.src = 'icons/play.svg';
     } else {

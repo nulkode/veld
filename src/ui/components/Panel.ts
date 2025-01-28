@@ -99,8 +99,20 @@ export class Panel extends Component {
                 .map(
                   (button) => `
                     <button id="${button.id}"
-                      style="background-color: ${button.color ? '#' + button.color.toString(16) : 'transparent'}"
-                      class="${button instanceof TogglePanelButton ? 'toggle-button' : ''}"
+                      style="background-color: ${
+                        button.color
+                          ? '#' + button.color.toString(16)
+                          : 'transparent'
+                      }"
+                      class="${
+                        button instanceof TogglePanelButton
+                          ? button.value
+                            ? 'active'
+                            : ''
+                          : ''
+                      } ${
+                    button instanceof TogglePanelButton ? 'toggle-button' : ''
+                  }"
                     >${button.innerHTML}</button>
                   `
                 )
@@ -111,15 +123,29 @@ export class Panel extends Component {
                 .map(
                   (button) => `
                     <button id="${button.id}"
-                      style="background-color: ${button.color ? '#' + button.color.toString(16) : 'transparent'}"
-                      class="${button instanceof TogglePanelButton ? 'toggle-button' : ''}"
+                      style="background-color: ${
+                        button.color
+                          ? '#' + button.color.toString(16)
+                          : 'transparent'
+                      }"
+                      class="${
+                        button instanceof TogglePanelButton
+                          ? button.value
+                            ? 'active'
+                            : ''
+                          : ''
+                      } ${
+                    button instanceof TogglePanelButton ? 'toggle-button' : ''
+                  }"
                     >${button.innerHTML}</button>
                   `
                 )
                 .join('')}
             </div>
           </div>
-          <div class="panel-content" id="${this.id}-content">
+          <div class="panel-content" id="${this.id}-content" style="${
+      this.minimized ? 'display: none' : ''
+    }">
             ${fieldsHTML}
           </div>
         </div>

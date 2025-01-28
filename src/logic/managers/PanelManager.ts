@@ -30,6 +30,8 @@ export class PanelManager {
     sandbox.on('entityUpdated', this.onEntityUpdated.bind(this));
     sandbox.on('fieldAdded', this.onFieldAdded.bind(this));
     sandbox.on('fieldRemoved', this.onFieldRemoved.bind(this));
+
+    followManager.on('follow', this.onEntityFollowed.bind(this));
   }
 
   createSandboxPanel() {
@@ -222,6 +224,20 @@ export class PanelManager {
         }
 
         velocityPanel.setValue(entity.velocity.length());
+      }
+    }
+  }
+
+  onEntityFollowed(entity: PhysicalEntity) {
+    for (const panel of this.panels) {
+      const followButtons = panel.buttons.filter(
+        (button) => button.id.startsWith('follow-')
+      );
+      
+      for (const button of followButtons) {
+        if (button instanceof TogglePanelButton) {
+          button.setValue(button.id === `follow-${entity.uuid}`);
+        }
       }
     }
   }

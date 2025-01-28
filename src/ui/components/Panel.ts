@@ -23,6 +23,13 @@ export class PanelButton {
     this.color = color;
     this.beforeMinimize = beforeMinimize;
   }
+
+  attachEvents() {
+    const buttonElement = document.getElementById(this.id);
+    if (buttonElement) {
+      buttonElement.addEventListener('click', this.onClick);
+    }
+  }
 }
 
 export class TogglePanelButton {
@@ -55,6 +62,21 @@ export class TogglePanelButton {
       buttonElement.classList.toggle('active', this.value);
     }
     this.onClick(this.value);
+  }
+
+  attachEvents() {
+    const buttonElement = document.getElementById(this.id);
+    if (buttonElement) {
+      buttonElement.addEventListener('click', () => this.toggle());
+    }
+  }
+
+  setValue(value: boolean) {
+    this.value = value;
+    const buttonElement = document.getElementById(this.id);
+    if (buttonElement) {
+      buttonElement.classList.toggle('active', this.value);
+    }
   }
 }
 
@@ -156,14 +178,7 @@ export class Panel extends Component {
     document
       .getElementById(`${this.id}-toggle`)
       ?.addEventListener('click', () => this.toggleMinimize());
-    this.buttons.forEach((button) => {
-      const buttonElement = document.getElementById(`${button.id}`);
-      if (button instanceof TogglePanelButton) {
-        buttonElement?.addEventListener('click', () => button.toggle());
-      } else {
-        buttonElement?.addEventListener('click', button.onClick);
-      }
-    });
+    this.buttons.forEach((button) => button.attachEvents());
     this.fields.forEach((field) => field.attachEvents());
   }
 }

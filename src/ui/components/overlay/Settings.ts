@@ -7,7 +7,7 @@ export class Settings extends Component {
   getHTML() {
     const currentLanguage = i18nManager.currentLanguage;
     return `
-      <div id="settings">
+      <div id="settings" class="ui">
         <img id="settings-icon" src="icons/settings.svg" />
         <div id="settings-menu">
           <label for="language-select">${t('settings.language.label')}</label>

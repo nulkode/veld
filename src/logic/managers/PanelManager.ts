@@ -30,6 +30,7 @@ export class PanelManager {
     sandbox.on('entityUpdated', this.onEntityUpdated.bind(this));
     sandbox.on('fieldAdded', this.onFieldAdded.bind(this));
     sandbox.on('fieldRemoved', this.onFieldRemoved.bind(this));
+    sandbox.on('contextUpdate', this.contextUpdate.bind(this));
 
     followManager.on('follow', this.onEntityFollowed.bind(this));
   }
@@ -345,6 +346,33 @@ export class PanelManager {
       this.removePanel(`magnetic-field-${field.uuid}`);
     } else if (field instanceof ElectricField) {
       this.removePanel(`electric-field-${field.uuid}`);
+    }
+  }
+
+  contextUpdate() {
+    const contextPanel = this.panels.find((p) => p.id === 'sandbox');
+
+    if (contextPanel) {
+      const timeUnitField = contextPanel.fields.find(
+        (f) => f.id === 'time-unit'
+      ) as ValuePanelField<number>;
+      if (timeUnitField) {
+        timeUnitField.setValue(Math.log10(1 / sandbox.context.timeUnit));
+      }
+
+      const distanceUnitField = contextPanel.fields.find(
+        (f) => f.id === 'distance-unit'
+      ) as ValuePanelField<number>;
+      if (distanceUnitField) {
+        distanceUnitField.setValue(Math.log10(1 / sandbox.context.distanceUnit));
+      }
+
+      const ignoreGravityField = contextPanel.fields.find(
+        (f) => f.id === 'ignore-gravity'
+      ) as ValuePanelField<boolean>;
+      if (ignoreGravityField) {
+        ignoreGravityField.setValue(sandbox.context.ignoreGravity);
+      }
     }
   }
 

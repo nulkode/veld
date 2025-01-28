@@ -219,6 +219,8 @@ export class Sandbox extends EventEmitter {
       ignoreGravity: true
     };
 
+    this.emit('contextUpdate');
+
     followManager.unfollow();
 
     camera.position.set(40, 40, 40);

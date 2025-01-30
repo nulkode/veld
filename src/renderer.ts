@@ -1,5 +1,5 @@
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { TransformControls } from '@/logic/TransformControls';
+import { TransformControls } from '@/logic/utils/TransformControls';
 import { Sandbox } from '@/logic/physics/sandbox';
 import { selectManager } from '@/ui';
 import { GridManager } from '@/logic/managers/GridsManager';

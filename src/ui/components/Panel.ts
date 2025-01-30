@@ -163,8 +163,6 @@ export class Panel extends Component {
   }
 
   attachEvents() {
-    console.log('events');
-
     document
       .getElementById(`${this.id}-toggle`)
       ?.addEventListener('click', () => this.toggleMinimize());

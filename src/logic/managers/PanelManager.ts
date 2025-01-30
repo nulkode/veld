@@ -191,7 +191,7 @@ export class PanelManager {
             false
           ),
           new PanelButton(
-            'delete',
+            `delete-${entity.uuid}`,
             'X',
             () => {
               sandbox.deleteEntity(entity);
@@ -273,7 +273,7 @@ export class PanelManager {
     );
 
     const deleteButton = new PanelButton(
-      'delete',
+      `delete-${field.uuid}`,
       'X',
       () => {
         sandbox.deleteField(field);

@@ -19,10 +19,12 @@ export class PanelValueToggleField extends ValuePanelField<boolean> {
   getHTML() {
     return `
         <div class="value-toggle-container">
-          <label for="${this.id}" class="value-toggle-label">${t(this.label) ?? this.label}</label>
+          <label for="${this.id}" class="value-toggle-label">${
+      t(this.label) ?? this.label
+    }</label>
           <button id="${this.id}" class="toggle-button ${
-            this.value ? 'on' : 'off'
-          }">
+      this.value ? 'on' : 'off'
+    }">
             ${this.value ? 'On' : 'Off'}
           </button>
         </div>

@@ -34,12 +34,14 @@ export class PanelValueScientificField extends ValuePanelField<number> {
 
     return `
         <div>
-          <label for="${this.id}">${t(this.label) ?? this.label} (${this.unit})</label>
+          <label for="${this.id}">${t(this.label) ?? this.label} (${
+      this.unit
+    })</label>
           <div class="scientific-input">
             <input type="number" id="${this.id}-decimal" value="${decimal}">
             ×10<sup><input type="number" id="${this.id}-exponent" value="${
-              !exponent ? '0' : parseInt(exponent)
-            }"></sup>
+      !exponent ? '0' : parseInt(exponent)
+    }"></sup>
           </div>
         </div>
       `;

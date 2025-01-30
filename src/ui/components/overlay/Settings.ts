@@ -7,14 +7,20 @@ export class Settings extends Component {
   getHTML() {
     const currentLanguage = i18nManager.currentLanguage;
     return `
-      <div id="settings">
+      <div id="settings" class="ui">
         <img id="settings-icon" src="icons/settings.svg" />
         <div id="settings-menu">
           <label for="language-select">${t('settings.language.label')}</label>
           <select id="language-select">
-            <option value="en" ${currentLanguage === Language.EN ? 'selected' : ''}>${t('settings.language.en')}</option>
-            <option value="es" ${currentLanguage === Language.ES ? 'selected' : ''}>${t('settings.language.es')}</option>
-            <option value="fr" ${currentLanguage === Language.FR ? 'selected' : ''}>${t('settings.language.fr')}</option>
+            <option value="en" ${
+              currentLanguage === Language.EN ? 'selected' : ''
+            }>${t('settings.language.en')}</option>
+            <option value="es" ${
+              currentLanguage === Language.ES ? 'selected' : ''
+            }>${t('settings.language.es')}</option>
+            <option value="fr" ${
+              currentLanguage === Language.FR ? 'selected' : ''
+            }>${t('settings.language.fr')}</option>
           </select>
         </div>
       </div>`;
@@ -23,13 +29,15 @@ export class Settings extends Component {
   attachEvents() {
     const settingsIcon = document.getElementById('settings-icon')!;
     const settingsMenu = document.getElementById('settings-menu')!;
-    const languageSelect = document.getElementById('language-select')! as HTMLSelectElement;
+    const languageSelect = document.getElementById(
+      'language-select'
+    )! as HTMLSelectElement;
 
     settingsIcon.addEventListener('click', () => {
       settingsMenu.classList.toggle('visible');
     });
 
-    languageSelect.addEventListener('change', (event) => {
+    languageSelect.addEventListener('change', event => {
       const selectedLanguage = (event.target as HTMLSelectElement).value;
       i18nManager.setLanguage(selectedLanguage as Language);
     });

@@ -22,8 +22,11 @@ export class FollowManager extends EventEmitter {
 
   update() {
     if (this.followedEntity) {
-      const offset = new Vector3().subVectors(camera.position, orbitControls.target);
-      
+      const offset = new Vector3().subVectors(
+        camera.position,
+        orbitControls.target
+      );
+
       const targetPosition = this.followedEntity.object.position;
       orbitControls.target.copy(targetPosition);
 

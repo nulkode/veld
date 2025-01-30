@@ -42,8 +42,8 @@ function registerTooltips() {
 
   const tooltipElements = document.querySelectorAll('[data-tooltip]');
 
-  tooltipElements.forEach((el) => {
-    el.addEventListener('mouseenter', (event) => {
+  tooltipElements.forEach(el => {
+    el.addEventListener('mouseenter', event => {
       const tooltipText = el.getAttribute('data-tooltip')!;
       tooltip.classList.add('tooltip-visible');
       tooltip.innerText = tooltipText;
@@ -117,6 +117,6 @@ i18nManager.on('languageChange', () => {
   document.getElementById('debug-panel')?.remove();
   createDebugPanel();
   panelManager.refresh();
-  document.querySelectorAll('.tooltip').forEach((el) => el.remove());
+  document.querySelectorAll('.tooltip').forEach(el => el.remove());
   registerTooltips();
 });

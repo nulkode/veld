@@ -10,7 +10,9 @@ export class PanelTextField extends PanelField {
   }
 
   getHTML() {
-    return `<div><label>${t(this.label) ?? this.label}</label><p>${t(this.content) ?? this.content}</p></div>`;
+    return `<div><label>${t(this.label) ?? this.label}</label><p>${
+      t(this.content) ?? this.content
+    }</p></div>`;
   }
 
   attachEvents() {}

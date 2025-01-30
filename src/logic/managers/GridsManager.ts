@@ -1,4 +1,4 @@
-import { Scene, GridHelper, Vector2, Vector3 } from "three";
+import { Scene, GridHelper, Vector2, Vector3 } from 'three';
 
 export class GridManager {
   scene: Scene;
@@ -19,18 +19,25 @@ export class GridManager {
     const currentGridY = Math.floor(cameraPosition.z / this.size);
 
     for (let x = currentGridX - 1; x <= currentGridX + 1; x++) {
-        for (let y = currentGridY - 1; y <= currentGridY + 1; y++) {
-            const position = new Vector2(x, y);
-            if (!this.grids.find(grid => grid.position.x === x && grid.position.y === y)) {
-                this.createGrid(position);
-            }
+      for (let y = currentGridY - 1; y <= currentGridY + 1; y++) {
+        const position = new Vector2(x, y);
+        if (
+          !this.grids.find(
+            grid => grid.position.x === x && grid.position.y === y
+          )
+        ) {
+          this.createGrid(position);
         }
+      }
     }
 
     this.grids.forEach((grid, index) => {
-        if (Math.abs(grid.position.x - currentGridX) > 1 || Math.abs(grid.position.y - currentGridY) > 1) {
-            this.removeGrid(index);
-        }
+      if (
+        Math.abs(grid.position.x - currentGridX) > 1 ||
+        Math.abs(grid.position.y - currentGridY) > 1
+      ) {
+        this.removeGrid(index);
+      }
     });
   }
 

@@ -43,10 +43,10 @@ export class PanelManager {
         -10,
         10,
         0,
-        (value) => {
+        value => {
           sandbox.context.timeUnit = 1 / Math.pow(10, value);
         },
-        (value) => `1 s → 10<sup>${value}</sup> s`
+        value => `1 s → 10<sup>${value}</sup> s`
       ),
       new PanelValueSliderField(
         'distance-unit',
@@ -54,17 +54,17 @@ export class PanelManager {
         -10,
         10,
         0,
-        (value) => {
+        value => {
           sandbox.updateDistanceUnit(1 / Math.pow(10, value));
         },
-        (value) =>
+        value =>
           `i&#770; = 10<sup>${value}</sup> m; j&#770; = 10<sup>${value}</sup> m; k&#770; = 10<sup>${value}</sup> m`
       ),
       new PanelValueToggleField(
         'ignore-gravity',
         'panels.sandbox.ignoreGravity',
         true,
-        (value) => {
+        value => {
           sandbox.context.ignoreGravity = value;
         }
       )
@@ -78,9 +78,9 @@ export class PanelManager {
   }
 
   removePanel(panelId: string) {
-    const panel = this.panels.find((p) => p.id === panelId);
+    const panel = this.panels.find(p => p.id === panelId);
     if (panel) {
-      this.panels = this.panels.filter((p) => p !== panel);
+      this.panels = this.panels.filter(p => p !== panel);
       const panelElement = document.getElementById(panelId);
       if (panelElement) {
         panelElement.remove();
@@ -92,9 +92,9 @@ export class PanelManager {
     panelId: string,
     fieldId: string
   ): ValuePanelField<any> | undefined {
-    const panel = this.panels.find((p) => p.id === panelId);
+    const panel = this.panels.find(p => p.id === panelId);
     if (panel) {
-      return panel.fields.find((f) => f.id === fieldId) as ValuePanelField<any>;
+      return panel.fields.find(f => f.id === fieldId) as ValuePanelField<any>;
     }
     return undefined;
   }
@@ -110,7 +110,7 @@ export class PanelManager {
             'panels.charge.charge',
             'C',
             entity.value,
-            (value) => {
+            value => {
               entity.setCharge(value);
             },
             undefined,
@@ -121,7 +121,7 @@ export class PanelManager {
             'panels.charge.mass',
             'kg',
             entity.mass,
-            (value) => {
+            value => {
               entity.mass = value;
             },
             undefined,
@@ -133,7 +133,7 @@ export class PanelManager {
             'panels.charge.velocity',
             'm/s',
             entity.velocity.length(),
-            (value) => {
+            value => {
               if (entity.velocity.length() === 0) {
                 entity.velocity = new Vector3(0, value, 0);
                 selectManager.updateButtons();
@@ -155,7 +155,7 @@ export class PanelManager {
             `show-velocity-${entity.uuid}`,
             'panels.charge.showVelocity',
             entity.visuals.velocity,
-            (value) => {
+            value => {
               entity.visuals.velocity = value;
             }
           ),
@@ -163,7 +163,7 @@ export class PanelManager {
             `show-acceleration-${entity.uuid}`,
             'panels.charge.showAcceleration',
             entity.visuals.acceleration,
-            (value) => {
+            value => {
               entity.visuals.acceleration = value;
             }
           ),
@@ -171,7 +171,7 @@ export class PanelManager {
             `show-trajectory-${entity.uuid}`,
             'panels.charge.showTrajectory',
             entity.visuals.trajectory,
-            (value) => {
+            value => {
               entity.visuals.trajectory = value;
             }
           )
@@ -180,7 +180,7 @@ export class PanelManager {
           new TogglePanelButton(
             `follow-${entity.uuid}`,
             '<img src="icons/camera-follow.svg" style="width: 20px; height: 20px; margin: -5px">',
-            (value) => {
+            value => {
               if (value) {
                 followManager.follow(entity);
               } else {
@@ -231,10 +231,10 @@ export class PanelManager {
 
   onEntityFollowed(entity: PhysicalEntity) {
     for (const panel of this.panels) {
-      const followButtons = panel.buttons.filter(
-        (button) => button.id.startsWith('follow-')
+      const followButtons = panel.buttons.filter(button =>
+        button.id.startsWith('follow-')
       );
-      
+
       for (const button of followButtons) {
         if (button instanceof TogglePanelButton) {
           button.setValue(button.id === `follow-${entity.uuid}`);
@@ -258,7 +258,7 @@ export class PanelManager {
       `color-${field.uuid}`,
       'panels.magneticField.color',
       field.arrowColor,
-      (value) => {
+      value => {
         field.arrowColor = value;
       }
     );
@@ -267,7 +267,7 @@ export class PanelManager {
       `show-${field.uuid}`,
       'panels.magneticField.showField',
       field.visible,
-      (value) => {
+      value => {
         field.visible = value;
       }
     );
@@ -292,7 +292,7 @@ export class PanelManager {
             'panels.magneticField.strength',
             'T',
             field.value.length(),
-            (value) => {
+            value => {
               field.value.setLength(value);
             },
             undefined,
@@ -305,7 +305,7 @@ export class PanelManager {
             `show-cross-product-plane-${field.uuid}`,
             'panels.magneticField.showCrossProductPlane',
             field.showCrossProductPlane,
-            (value) => {
+            value => {
               field.showCrossProductPlane = value;
             }
           ),
@@ -324,7 +324,7 @@ export class PanelManager {
             'panels.electricField.strength',
             'N/C',
             field.value.length(),
-            (value) => {
+            value => {
               field.value.setLength(value);
             },
             undefined,
@@ -350,25 +350,27 @@ export class PanelManager {
   }
 
   contextUpdate() {
-    const contextPanel = this.panels.find((p) => p.id === 'sandbox');
+    const contextPanel = this.panels.find(p => p.id === 'sandbox');
 
     if (contextPanel) {
       const timeUnitField = contextPanel.fields.find(
-        (f) => f.id === 'time-unit'
+        f => f.id === 'time-unit'
       ) as ValuePanelField<number>;
       if (timeUnitField) {
         timeUnitField.setValue(Math.log10(1 / sandbox.context.timeUnit));
       }
 
       const distanceUnitField = contextPanel.fields.find(
-        (f) => f.id === 'distance-unit'
+        f => f.id === 'distance-unit'
       ) as ValuePanelField<number>;
       if (distanceUnitField) {
-        distanceUnitField.setValue(Math.log10(1 / sandbox.context.distanceUnit));
+        distanceUnitField.setValue(
+          Math.log10(1 / sandbox.context.distanceUnit)
+        );
       }
 
       const ignoreGravityField = contextPanel.fields.find(
-        (f) => f.id === 'ignore-gravity'
+        f => f.id === 'ignore-gravity'
       ) as ValuePanelField<boolean>;
       if (ignoreGravityField) {
         ignoreGravityField.setValue(sandbox.context.ignoreGravity);
@@ -377,7 +379,7 @@ export class PanelManager {
   }
 
   refresh() {
-    this.container.innerHTML = this.panels.map((p) => p.getHTML()).join('');
+    this.container.innerHTML = this.panels.map(p => p.getHTML()).join('');
     for (const panel of this.panels) {
       panel.attachEvents();
     }

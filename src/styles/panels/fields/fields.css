@@ -23,9 +23,7 @@ input[type='password'] {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 input[type='text']:focus,

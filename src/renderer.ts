@@ -48,7 +48,11 @@ function init() {
   sandbox = new Sandbox(scene);
   sandbox.updateVisuals(camera.position);
 
-  transformControls = new TransformControls(camera, sandbox, renderer.domElement);
+  transformControls = new TransformControls(
+    camera,
+    sandbox,
+    renderer.domElement
+  );
   transformControls.addEventListener('dragging-changed', function (event) {
     orbitControls.enabled = !event.value;
   });

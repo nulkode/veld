@@ -5,9 +5,7 @@ button {
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
-  transition:
-    background-color 0.2s,
-    transform 0.2s;
+  transition: background-color 0.2s, transform 0.2s;
 }
 
 button:hover {

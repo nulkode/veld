@@ -28,14 +28,18 @@ export class PanelValueSliderField extends ValuePanelField<number> {
     const label = this.getLabel(this.value);
     return `
         <div>
-          <label for="${this.id}">${t(this.label) ?? this.label}: <span id="${this.id}-value">${label}</span></label>
-          <input type="range" id="${this.id}" min="${this.min}" max="${this.max}" value="${this.value}">
+          <label for="${this.id}">${t(this.label) ?? this.label}: <span id="${
+      this.id
+    }-value">${label}</span></label>
+          <input type="range" id="${this.id}" min="${this.min}" max="${
+      this.max
+    }" value="${this.value}">
         </div>
       `;
   }
 
   attachEvents() {
-    document.getElementById(this.id)?.addEventListener('input', (event) => {
+    document.getElementById(this.id)?.addEventListener('input', event => {
       const input = event.target as HTMLInputElement;
       const value = parseInt(input.value);
       this.value = value;

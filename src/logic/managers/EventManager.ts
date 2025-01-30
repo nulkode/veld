@@ -19,7 +19,7 @@ export class EventEmitter {
     const listeners = this.events[event];
 
     if (listeners) {
-      listeners.forEach((listener) => {
+      listeners.forEach(listener => {
         listener(...args);
       });
     }
@@ -29,7 +29,7 @@ export class EventEmitter {
     const listeners = this.events[event];
 
     if (listeners) {
-      this.events[event] = listeners.filter((l) => l !== listener);
+      this.events[event] = listeners.filter(l => l !== listener);
     }
   }
 }

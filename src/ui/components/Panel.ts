@@ -133,14 +133,14 @@ export class Panel extends Component {
   }
 
   getHTML() {
-    const fieldsHTML = this.fields.map((field) => field.getHTML()).join('');
+    const fieldsHTML = this.fields.map(field => field.getHTML()).join('');
     const beforeMinimizeButtonsHTML = this.buttons
-      .filter((button) => button.beforeMinimize)
-      .map((button) => button.getHTML())
+      .filter(button => button.beforeMinimize)
+      .map(button => button.getHTML())
       .join('');
     const afterMinimizeButtonsHTML = this.buttons
-      .filter((button) => !button.beforeMinimize)
-      .map((button) => button.getHTML())
+      .filter(button => !button.beforeMinimize)
+      .map(button => button.getHTML())
       .join('');
 
     return `
@@ -166,7 +166,7 @@ export class Panel extends Component {
     document
       .getElementById(`${this.id}-toggle`)
       ?.addEventListener('click', () => this.toggleMinimize());
-    this.buttons.forEach((button) => button.attachEvents());
-    this.fields.forEach((field) => field.attachEvents());
+    this.buttons.forEach(button => button.attachEvents());
+    this.fields.forEach(field => field.attachEvents());
   }
 }

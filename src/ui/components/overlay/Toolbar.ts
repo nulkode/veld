@@ -40,13 +40,19 @@ class Toolbar extends Component {
         <div class="button" id="charge" data-tooltip="${t('toolbar.charge')}">
           <img src="icons/charge.svg" />
         </div>
-        <div class="button" id="electric-field" data-tooltip="${t('toolbar.electric-field')}">
+        <div class="button" id="electric-field" data-tooltip="${t(
+          'toolbar.electric-field'
+        )}">
           <img src="icons/electric-field.svg" />
         </div>
-        <div class="button" id="magnetic-field" data-tooltip="${t('toolbar.magnetic-field')}">
+        <div class="button" id="magnetic-field" data-tooltip="${t(
+          'toolbar.magnetic-field'
+        )}">
           <img src="icons/magnetic-field.svg" />
         </div>
-        <div class="button" id="play-pause" data-tooltip="${t('toolbar.play-pause')}">
+        <div class="button" id="play-pause" data-tooltip="${t(
+          'toolbar.play-pause'
+        )}">
           <img id="play-pause-icon" src="icons/play.svg" />
         </div>
         <div class="button" id="reset" data-tooltip="${t('toolbar.reset')}">
@@ -97,9 +103,7 @@ class Toolbar extends Component {
       }
     });
 
-    const icon = document.getElementById(
-      'play-pause-icon'
-    ) as HTMLImageElement;
+    const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
     if (sandbox.status === SandboxStatus.PAUSED) {
       icon.src = 'icons/play.svg';
     } else {
@@ -135,7 +139,7 @@ class Toolbar extends Component {
       }
     );
 
-    selectManager.on('updateButtons', (buttons) => {
+    selectManager.on('updateButtons', buttons => {
       for (const button in buttons) {
         this.updateButton(button as ToolbarButton, buttons[button]);
       }

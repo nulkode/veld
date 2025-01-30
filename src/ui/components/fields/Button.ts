@@ -10,7 +10,7 @@ export class PanelButtonField extends PanelField {
     id: string,
     label: string,
     buttonText: string,
-    onClick: () => void,
+    onClick: () => void
   ) {
     super(id, label);
     this.buttonText = buttonText;
@@ -20,8 +20,14 @@ export class PanelButtonField extends PanelField {
   getHTML() {
     return `
         <div>
-          ${this.label === '' ? '' : `<label for="${this.id}">${t(this.label) ?? this.label}</label>`}
-          <button id="${this.id}">${t(this.buttonText) ?? this.buttonText}</button>
+          ${
+            this.label === ''
+              ? ''
+              : `<label for="${this.id}">${t(this.label) ?? this.label}</label>`
+          }
+          <button id="${this.id}">${
+      t(this.buttonText) ?? this.buttonText
+    }</button>
         </div>
       `;
   }

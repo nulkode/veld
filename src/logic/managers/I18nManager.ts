@@ -7,7 +7,7 @@ import frTranslations from '@/i18n/fr.json';
 export enum Language {
   EN = 'en',
   ES = 'es',
-  FR = 'fr',
+  FR = 'fr'
 }
 
 export class I18nManager extends EventEmitter {

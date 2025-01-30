@@ -398,7 +398,7 @@ class TransformControls extends Controls {
           return `${base}×10${exponent
             .toString()
             .split('')
-            .map((char) => {
+            .map(char => {
               const superIndexMap = {
                 '-': '⁻',
                 0: '⁰',

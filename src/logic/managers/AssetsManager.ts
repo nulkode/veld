@@ -1,8 +1,19 @@
 import { EventEmitter } from '@/logic/managers/EventManager';
 import { t } from '@/ui';
-import { CanvasTexture, Mesh, MeshBasicMaterial, Object3D, SphereGeometry } from 'three';
+import {
+  CanvasTexture,
+  Mesh,
+  MeshBasicMaterial,
+  Object3D,
+  SphereGeometry
+} from 'three';
 
-function createTextSphere(text: string, sphereColor: string, textColor = '#ffffff', size = 1) {
+function createTextSphere(
+  text: string,
+  sphereColor: string,
+  textColor = '#ffffff',
+  size = 1
+) {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d')!;
   canvas.width = 1024;
@@ -15,7 +26,7 @@ function createTextSphere(text: string, sphereColor: string, textColor = '#fffff
   context.fillStyle = textColor;
   context.textAlign = 'center';
   context.textBaseline = 'middle';
-  context.fillText(text, canvas.width/2, canvas.height/2);
+  context.fillText(text, canvas.width / 2, canvas.height / 2);
 
   const texture = new CanvasTexture(canvas);
 
@@ -69,7 +80,7 @@ export class AssetsManager extends EventEmitter {
 
     if (this.loadingState.models) {
       return `${t('loadingScreen.loadingModels')} (${
-        Object.values(this.models).filter((model) => model !== null).length
+        Object.values(this.models).filter(model => model !== null).length
       }/${Object.keys(this.models).length})`;
     }
 

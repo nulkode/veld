@@ -92,12 +92,13 @@ export class Charge extends PhysicalEntity {
     this.renderCrossProductPlaneAndVelocityArrow();
     this.renderTrajectory();
 
-    if (this.visualsObjects.length !== 0) this.object.add(...this.visualsObjects);
+    if (this.visualsObjects.length !== 0)
+      this.object.add(...this.visualsObjects);
   }
 
   renderCrossProductPlaneAndVelocityArrow() {
     const showMagneticFieldPlane = this.parent.fields.filter(
-      (f) => f instanceof MagneticField && f.showCrossProductPlane
+      f => f instanceof MagneticField && f.showCrossProductPlane
     );
 
     let magneticFields: {
@@ -191,7 +192,7 @@ export class Charge extends PhysicalEntity {
     }
 
     const charges = this.parent.entities.filter(
-      (entity) => entity instanceof Charge && entity !== this
+      entity => entity instanceof Charge && entity !== this
     ) as Charge[];
 
     for (const charge of charges) {
@@ -230,15 +231,12 @@ export class Charge extends PhysicalEntity {
   }
 
   static fromJSON(sandbox: Sandbox, data: any) {
-    const charge = new Charge(
-      sandbox,
-      {
-        charge: data.value,
-        velocity: new Vector3().fromArray(data.velocity),
-        position: new Vector3().fromArray(data.position),
-        mass: data.mass
-      }
-    );
+    const charge = new Charge(sandbox, {
+      charge: data.value,
+      velocity: new Vector3().fromArray(data.velocity),
+      position: new Vector3().fromArray(data.position),
+      mass: data.mass
+    });
     return charge;
   }
 }

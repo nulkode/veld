@@ -81,7 +81,7 @@ export abstract class PhysicalEntity {
 
   updateDistanceUnit(oldUnit: number, newUnit: number) {
     this.object.position.multiplyScalar(newUnit / oldUnit);
-    this.trajectoryPoints.forEach((point) =>
+    this.trajectoryPoints.forEach(point =>
       point.multiplyScalar(newUnit / oldUnit)
     );
   }
@@ -137,7 +137,9 @@ export abstract class PhysicalEntity {
         const geometry = new BufferGeometry().setFromPoints(
           this.trajectoryPoints
         );
-        const material = new LineBasicMaterial({ color: 0x00ff00 });
+        const material = new LineBasicMaterial({
+          color: 0x00ff00
+        });
         this.trajectoryLine = new Line(geometry, material);
         this.object.parent!.add(this.trajectoryLine);
       }

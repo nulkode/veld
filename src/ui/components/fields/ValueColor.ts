@@ -25,8 +25,10 @@ export class PanelValueColorField extends ValuePanelField<number> {
   getHTML() {
     const colorOptions = this.predefinedColors
       .map(
-        (color) => `
-        <div class="color-option" data-color="${color}" style="background-color: #${color.toString(16).padStart(6, '0')}"></div>
+        color => `
+        <div class="color-option" data-color="${color}" style="background-color: #${color
+          .toString(16)
+          .padStart(6, '0')}"></div>
       `
       )
       .join('');
@@ -45,7 +47,7 @@ export class PanelValueColorField extends ValuePanelField<number> {
     const colorOptionsContainer = document.getElementById(
       `${this.id}-color-options`
     ) as HTMLDivElement;
-    colorOptionsContainer?.addEventListener('click', (event) => {
+    colorOptionsContainer?.addEventListener('click', event => {
       const target = event.target as HTMLDivElement;
       if (target.classList.contains('color-option')) {
         const newValue = parseInt(target.dataset.color!, 10);

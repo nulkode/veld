@@ -22,11 +22,7 @@ export abstract class Field {
     this.visible = show;
     this.variation =
       variation ??
-      new Vector3(
-        Math.random() * 3,
-        Math.random() * 3,
-        Math.random() * 3
-      );
+      new Vector3(Math.random() * 3, Math.random() * 3, Math.random() * 3);
     if (arrowColor) {
       this.arrowColor = arrowColor;
     }

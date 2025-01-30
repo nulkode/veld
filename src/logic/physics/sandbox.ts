@@ -81,8 +81,8 @@ export class Sandbox extends EventEmitter {
     selectManager.deselect();
 
     this.initialState = {
-      entities: this.entities.map((e) => e.toJSON()),
-      fields: this.fields.map((f) => f.toJSON()),
+      entities: this.entities.map(e => e.toJSON()),
+      fields: this.fields.map(f => f.toJSON()),
       sandboxContext: this.context
     };
 
@@ -134,7 +134,7 @@ export class Sandbox extends EventEmitter {
 
   deleteEntity(entity: PhysicalEntity) {
     entity.deleteVisuals();
-    this.entities = this.entities.filter((e) => e !== entity);
+    this.entities = this.entities.filter(e => e !== entity);
     this.scene.remove(entity.object);
     this.emit('entityRemoved', entity);
   }
@@ -171,20 +171,19 @@ export class Sandbox extends EventEmitter {
 
   deleteField(field: Field) {
     field.deleteVisuals();
-    this.fields = this.fields.filter((f) => f !== field);
+    this.fields = this.fields.filter(f => f !== field);
     this.emit('fieldRemoved', field);
   }
 
   addCharge(target: Vector3) {
-    this.appendEntity(new Charge(
-      this,
-      {
+    this.appendEntity(
+      new Charge(this, {
         position: target,
         charge: -1,
         mass: 1,
         velocity: new Vector3(0, 0, 0)
-      }
-    ));
+      })
+    );
   }
 
   addElectricField() {

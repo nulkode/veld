@@ -61,7 +61,7 @@ export class SelectManager extends EventEmitter {
 
   private selectObject(intersect: Intersection) {
     const entity = sandbox.entities.find(
-      (entity) => entity.object === intersect.object
+      entity => entity.object === intersect.object
     );
 
     if (entity && entity !== this.selectedEntity) {
@@ -128,9 +128,7 @@ export class SelectManager extends EventEmitter {
         if (this.selectedEntity instanceof Charge) {
           this.rotationObject = new Object3D();
           this.rotationObject.lookAt(
-            this.selectedEntity.velocity
-              .clone()
-              .normalize()
+            this.selectedEntity.velocity.clone().normalize()
           );
           this.selectedEntity.object.add(this.rotationObject);
           transformControls.attach(this.rotationObject);

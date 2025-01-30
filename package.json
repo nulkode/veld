@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/lodash": "^4.17.14",
     "@types/three": "^0.172.0",
+    "terser": "^5.37.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-tsconfig-paths": "^5.1.4"

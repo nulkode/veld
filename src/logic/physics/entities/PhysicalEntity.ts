@@ -1,5 +1,14 @@
 import { Sandbox } from '@/logic/physics/sandbox';
-import { ArrowHelper, BufferGeometry, Line, LineBasicMaterial, MathUtils, Object3D, Vector3 } from 'three';
+import { selectManager } from '@/ui';
+import {
+  ArrowHelper,
+  BufferGeometry,
+  Line,
+  LineBasicMaterial,
+  MathUtils,
+  Object3D,
+  Vector3
+} from 'three';
 
 export abstract class PhysicalEntity {
   readonly uuid = MathUtils.generateUUID();
@@ -16,15 +25,18 @@ export abstract class PhysicalEntity {
   private trajectoryPoints: Vector3[] = [];
   private trajectoryLine: Line | null = null;
 
-  constructor(sandbox: Sandbox, {
-    object,
-    velocity,
-    mass
-  }: {
-    object: Object3D;
-    velocity: Vector3;
-    mass: number;
-  }) {
+  constructor(
+    sandbox: Sandbox,
+    {
+      object,
+      velocity,
+      mass
+    }: {
+      object: Object3D;
+      velocity: Vector3;
+      mass: number;
+    }
+  ) {
     this.parent = sandbox;
     this.object = object;
     this.velocity = velocity;
@@ -69,16 +81,18 @@ export abstract class PhysicalEntity {
 
   updateDistanceUnit(oldUnit: number, newUnit: number) {
     this.object.position.multiplyScalar(newUnit / oldUnit);
-    this.trajectoryPoints.forEach((point) => point.multiplyScalar(newUnit / oldUnit));
+    this.trajectoryPoints.forEach((point) =>
+      point.multiplyScalar(newUnit / oldUnit)
+    );
   }
 
   protected renderVelocityArrow() {
-    if (!this.visuals.velocity) return;
+    if (!selectManager.amISelected(this)) if (!this.visuals.velocity) return;
     if (this.velocity.length() === 0) return;
 
     const velocityArrow = new ArrowHelper(
       this.velocity.clone().normalize(),
-      new Vector3(0,0,0),
+      new Vector3(0, 0, 0),
       5,
       0xff0000
     );
@@ -93,7 +107,7 @@ export abstract class PhysicalEntity {
 
     const accelerationArrow = new ArrowHelper(
       acceleration.clone().normalize(),
-      new Vector3(0,0,0),
+      new Vector3(0, 0, 0),
       4,
       0x00ff00,
       0.5,

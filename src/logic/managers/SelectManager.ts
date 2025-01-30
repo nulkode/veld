@@ -43,6 +43,10 @@ export class SelectManager extends EventEmitter {
     }
   }
 
+  amISelected(entity: PhysicalEntity | Field) {
+    return entity === this.selectedEntity;
+  }
+
   onIntersects(intersects: Intersection[]) {
     if (intersects.length > 0) {
       let selectedNewEntity = false;

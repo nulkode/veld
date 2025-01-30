@@ -1,5 +1,5 @@
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { TransformControls } from '@/logic/TransformControls';
 import { Sandbox } from '@/logic/physics/sandbox';
 import { selectManager } from '@/ui';
 import { GridManager } from '@/logic/managers/GridsManager';
@@ -41,17 +41,17 @@ function init() {
   document.body.appendChild(renderer.domElement);
 
   orbitControls = new OrbitControls(camera, renderer.domElement);
-  transformControls = new TransformControls(camera, renderer.domElement);
-
-  transformControls.addEventListener('dragging-changed', function (event) {
-    orbitControls.enabled = !event.value;
-  });
 
   gizmo = new ViewportGizmo(camera, renderer);
   gizmo.attachControls(orbitControls);
 
   sandbox = new Sandbox(scene);
   sandbox.updateVisuals(camera.position);
+
+  transformControls = new TransformControls(camera, sandbox, renderer.domElement);
+  transformControls.addEventListener('dragging-changed', function (event) {
+    orbitControls.enabled = !event.value;
+  });
 
   const gridManager = new GridManager(scene);
 

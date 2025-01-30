@@ -18,7 +18,7 @@ export class SelectManager extends EventEmitter {
     this.rotationObject = null;
 
     transformControls.addEventListener(
-      'change',
+      'objectChange',
       this.onTransformChange.bind(this)
     );
     sandbox.on('entityRemoved', this.onEntityRemoved.bind(this));

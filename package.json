@@ -21,16 +21,5 @@
     "three": "^0.172.0",
     "three-spritetext": "^1.9.4",
     "three-viewport-gizmo": "^2.0.2"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "semi": true,
-    "tabWidth": 2,
-    "trailingComma": "none",
-    "printWidth": 80,
-    "useTabs": false,
-    "bracketSpacing": true,
-    "arrowParens": "avoid",
-    "endOfLine": "lf"
   }
 }

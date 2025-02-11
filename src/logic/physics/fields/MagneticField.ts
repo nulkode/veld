@@ -23,7 +23,7 @@ export class MagneticField extends Field {
       return this.value
         .clone()
         .cross(entity.velocity)
-        .multiplyScalar(entity.value);
+        .multiplyScalar(-entity.value);
     } else {
       return new Vector3();
     }

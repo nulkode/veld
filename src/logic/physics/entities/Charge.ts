@@ -165,7 +165,7 @@ export class Charge extends PhysicalEntity {
           .multiplyScalar(-this.value)
           .normalize(),
         new Vector3(0, 0, 0),
-        4,
+        2 + Math.sin(this.velocity.angleTo(magneticField.field)) * 3,
         0x00ffff
       );
       magneticFieldGroup.add(magneticFieldForceArrow);

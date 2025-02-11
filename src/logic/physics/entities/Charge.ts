@@ -162,7 +162,7 @@ export class Charge extends PhysicalEntity {
         magneticField.field
           .clone()
           .cross(this.velocity)
-          .multiplyScalar(this.value)
+          .multiplyScalar(-this.value)
           .normalize(),
         new Vector3(0, 0, 0),
         4,

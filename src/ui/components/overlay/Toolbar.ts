@@ -29,34 +29,34 @@ class Toolbar extends Component {
     return `
       <div id="toolbar" class="ui">
         <div class="button" id="new" data-tooltip="${t('toolbar.new')}">
-          <img src="icons/new.svg" />
+          <img src="${import.meta.env.BASE_URL}icons/new.svg" />
         </div>
         <div class="button" id="move" data-tooltip="${t('toolbar.move')}">
-          <img src="icons/move.svg" />
+          <img src="${import.meta.env.BASE_URL}icons/move.svg" />
         </div>
         <div class="button" id="rotate" data-tooltip="${t('toolbar.rotate')}">
-          <img src="icons/rotate.svg" />
+          <img src="${import.meta.env.BASE_URL}icons/rotate.svg" />
         </div>
         <div class="button" id="charge" data-tooltip="${t('toolbar.charge')}">
-          <img src="icons/charge.svg" />
+          <img src="${import.meta.env.BASE_URL}icons/charge.svg" />
         </div>
         <div class="button" id="electric-field" data-tooltip="${t(
           'toolbar.electric-field'
         )}">
-          <img src="icons/electric-field.svg" />
+          <img src="${import.meta.env.BASE_URL}icons/electric-field.svg" />
         </div>
         <div class="button" id="magnetic-field" data-tooltip="${t(
           'toolbar.magnetic-field'
         )}">
-          <img src="icons/magnetic-field.svg" />
+          <img src="${import.meta.env.BASE_URL}icons/magnetic-field.svg" />
         </div>
         <div class="button" id="play-pause" data-tooltip="${t(
           'toolbar.play-pause'
         )}">
-          <img id="play-pause-icon" src="icons/play.svg" />
+          <img id="play-pause-icon" src="${import.meta.env.BASE_URL}icons/play.svg" />
         </div>
         <div class="button" id="reset" data-tooltip="${t('toolbar.reset')}">
-          <img src="icons/stop.svg" />
+          <img src="${import.meta.env.BASE_URL}icons/stop.svg" />
         </div>
       </div>`;
   }
@@ -80,7 +80,7 @@ class Toolbar extends Component {
       const icon = document.getElementById(
         'play-pause-icon'
       ) as HTMLImageElement;
-      icon.src = 'icons/play.svg';
+      icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
     });
 
     this.buttons[ToolbarButton.MOVE]!.addEventListener('click', () =>
@@ -96,18 +96,18 @@ class Toolbar extends Component {
       ) as HTMLImageElement;
       if (sandbox.status === SandboxStatus.PLAYING) {
         sandbox.pause();
-        icon.src = 'icons/play.svg';
+        icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
       } else {
         sandbox.play();
-        icon.src = 'icons/pause.svg';
+        icon.src = '${import.meta.env.BASE_URL}icons/pause.svg';
       }
     });
 
     const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
     if (sandbox.status === SandboxStatus.PAUSED) {
-      icon.src = 'icons/play.svg';
+      icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
     } else {
-      icon.src = 'icons/pause.svg';
+      icon.src = '${import.meta.env.BASE_URL}icons/pause.svg';
     }
 
     this.buttons[ToolbarButton.RESET]!.addEventListener('click', () => {
@@ -115,7 +115,7 @@ class Toolbar extends Component {
       const icon = document.getElementById(
         'play-pause-icon'
       ) as HTMLImageElement;
-      icon.src = 'icons/play.svg';
+      icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
     });
 
     this.buttons[ToolbarButton.CHARGE]!.addEventListener('click', () => {

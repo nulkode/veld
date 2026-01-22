@@ -2,7 +2,7 @@ import { Component } from '@/ui/components/Component';
 import { SandboxStatus } from '@/logic/physics/sandbox';
 import { orbitControls, sandbox } from '@/renderer';
 import { selectManager, t } from '@/ui';
-import '@/styles/overlay/Toolbar.css';
+import '@/styles/overlay/toolbar.css';
 
 export enum ToolbarButton {
   NEW = 'new',

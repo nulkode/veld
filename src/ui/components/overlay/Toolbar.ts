@@ -80,7 +80,7 @@ class Toolbar extends Component {
       const icon = document.getElementById(
         'play-pause-icon'
       ) as HTMLImageElement;
-      icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
+      icon.src = `${import.meta.env.BASE_URL}icons/play.svg`;
     });
 
     this.buttons[ToolbarButton.MOVE]!.addEventListener('click', () =>
@@ -96,18 +96,18 @@ class Toolbar extends Component {
       ) as HTMLImageElement;
       if (sandbox.status === SandboxStatus.PLAYING) {
         sandbox.pause();
-        icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
+        icon.src = `${import.meta.env.BASE_URL}icons/play.svg`;
       } else {
         sandbox.play();
-        icon.src = '${import.meta.env.BASE_URL}icons/pause.svg';
+        icon.src = `${import.meta.env.BASE_URL}icons/pause.svg`;
       }
     });
 
     const icon = document.getElementById('play-pause-icon') as HTMLImageElement;
     if (sandbox.status === SandboxStatus.PAUSED) {
-      icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
+      icon.src = `${import.meta.env.BASE_URL}icons/play.svg`;
     } else {
-      icon.src = '${import.meta.env.BASE_URL}icons/pause.svg';
+      icon.src = `${import.meta.env.BASE_URL}icons/pause.svg`;
     }
 
     this.buttons[ToolbarButton.RESET]!.addEventListener('click', () => {
@@ -115,7 +115,7 @@ class Toolbar extends Component {
       const icon = document.getElementById(
         'play-pause-icon'
       ) as HTMLImageElement;
-      icon.src = '${import.meta.env.BASE_URL}icons/play.svg';
+      icon.src = `${import.meta.env.BASE_URL}icons/play.svg`;
     });
 
     this.buttons[ToolbarButton.CHARGE]!.addEventListener('click', () => {

@@ -179,7 +179,7 @@ export class PanelManager {
         [
           new TogglePanelButton(
             `follow-${entity.uuid}`,
-            '<img src="${import.meta.env.BASE_URL}icons/camera-follow.svg" style="width: 20px; height: 20px; margin: -5px">',
+            `<img src="${import.meta.env.BASE_URL}icons/camera-follow.svg" style="width: 20px; height: 20px; margin: -5px">`,
             value => {
               if (value) {
                 followManager.follow(entity);

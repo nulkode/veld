@@ -22,6 +22,10 @@ export class Settings extends Component {
               currentLanguage === Language.FR ? 'selected' : ''
             }>${t('settings.language.fr')}</option>
           </select>
+          <p class="license-notice">${t('settings.copyright')}</p>
+          <p class="license-notice">${t('settings.license')}</p>
+          <p class="license-notice">${t('settings.warranty')}</p>
+          <a class="source-link" href="https://github.com/nulkode/veld" target="_blank" rel="noopener noreferrer">${t('settings.source')}</a>
         </div>
       </div>`;
   }

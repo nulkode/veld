@@ -30,7 +30,8 @@
   padding: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  min-width: 200px;
+  min-width: 340px;
+  max-width: 400px;
 }
 
 #settings-menu.visible {
@@ -47,4 +48,17 @@
   padding: 5px;
   border-radius: 4px;
   border: 1px solid #ccc;
+}
+
+.license-notice {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.source-link {
+  font-size: 11px;
+  color: #666;
 }

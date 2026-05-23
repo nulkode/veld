@@ -60,6 +60,10 @@
       "en": "Anglais",
       "es": "Espagnol",
       "fr": "Français"
-    }
+    },
+    "copyright": "Copyright (C) 2026 nulkode",
+    "license": "Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le modifier selon les termes de la Licence Publique Générale Affero GNU publiée par la Free Software Foundation, soit la version 3 de la Licence, soit (à votre choix) toute version ultérieure.",
+    "warranty": "Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de QUALITÉ MARCHANDE ou d'ADÉQUATION À UN USAGE PARTICULIER. Consultez la Licence Publique Générale Affero GNU pour plus de détails.",
+    "source": "Code source"
   }
 }
